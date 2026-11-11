@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Easy Qaida — Interactive</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<link href="practice.css?v=1111121757" rel="stylesheet">
+<style>
+@page{size:148mm 210mm;margin:0}
+:root{
+  --green:#098A46;--deep:#0B3D2E;--gold:#C9A227;--cream:#FAF6EE;--ink:#2B2A26;--muted:#6E6A60;--rule:#2F2D28;--paper:#FFFDF7;
+  --P:#D2186E;--B:#1A84C6;--G:#2A9443;--R:#CF3A2C;
+  --S:#1C6FD1;--M:#0E8A43;--E:#D6336C;--A:#7048E8;
+  --hf:#E03131;--hk:#1971C2;--hd:#2F9E44;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:'Source Sans 3',Arial,sans-serif;color:var(--ink);font-size:10.6pt;line-height:1.36;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:148mm;height:210mm;position:relative;overflow:hidden;background:var(--cream);page-break-after:always;break-after:page}
+.page:last-child{page-break-after:auto;break-after:auto}
+.frame{position:absolute;inset:4.5mm;border:.8mm solid var(--deep);border-radius:3mm;pointer-events:none}
+.frame::after{content:"";position:absolute;inset:1mm;border:.3mm solid var(--gold);border-radius:2mm}
+.hdr{position:absolute;top:7.6mm;left:9mm;right:9mm;height:7mm;display:flex;align-items:center;gap:2mm}
+.hdr .pill{flex:1;background:var(--deep);color:#FAF6EE;font-family:'Montserrat',sans-serif;font-weight:700;font-size:7pt;letter-spacing:.05em;text-align:center;border-radius:1.5mm;padding:1.25mm 0}
+.hdr .no{min-width:10mm;height:10mm;padding:0 1.5mm;border-radius:5mm;background:var(--cream);border:.5mm solid var(--gold);display:grid;place-items:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:10.5pt;color:var(--deep)}
+.body{position:absolute;top:18.5mm;left:10mm;right:10mm;bottom:9.5mm;display:flex;flex-direction:column;font-size:12.6pt;line-height:1.38}
+.body.compact{font-size:10.6pt;line-height:1.36}
+.body.mid{font-size:11.4pt}
+p{margin:0}
+
+/* text */
+.qa{margin:0 0 2.2mm}
+.q,.a{display:flex;align-items:baseline}
+.q{font-weight:700;color:var(--deep)}
+.q>span:last-child,.a>span:last-child{flex:1;min-width:0}
+.l{flex:none;width:5.2mm;font-family:'Montserrat',sans-serif;font-weight:800;color:var(--green)}
+.a .l{color:var(--gold)}
+.a{margin-top:.3mm}
+.ind{padding-left:5.2mm}
+.ar{font-family:'Noto Naskh Arabic',serif;font-weight:700;direction:rtl;unicode-bidi:isolate;font-size:1.38em;line-height:1}
+.arl{font-family:'Noto Naskh Arabic',serif;font-weight:700;direction:rtl;font-size:16pt;line-height:1.75;text-align:right;margin:0 0 1.4mm;word-spacing:.6mm}
+.mx{margin:0 0 2.4mm}
+.title{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--deep);text-align:center;font-size:14pt;line-height:1.2}
+.subt{font-style:italic;text-align:center;color:var(--deep);font-size:10.5pt;margin-top:.6mm}
+.note-h{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--green)}
+.rel{font-family:'Amiri',serif;font-weight:700;direction:rtl;text-align:center;color:var(--deep);font-size:19.5pt;line-height:2.15}
+.tr{font-size:12pt;text-align:left;margin:.5mm 0 3mm}
+.kh{display:block;margin:2.6mm auto 0;width:max-content;background:var(--deep);color:var(--gold);font-family:'Montserrat',sans-serif;font-weight:800;letter-spacing:.08em;font-size:9.6pt;padding:1.3mm 5mm;border-radius:2mm}
+.orn{text-align:center;color:var(--gold);font-size:13pt;letter-spacing:2mm;margin-top:3mm}
+
+/* lesson banner */
+.lesson{display:flex;align-items:center;justify-content:center;margin:2.4mm 0 2.2mm}
+.lw{background:var(--deep);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:9.6pt;padding:1.3mm 5mm 1.3mm 4mm;border-radius:2mm 0 0 2mm;letter-spacing:.07em;text-transform:uppercase}
+.ln{width:9.5mm;height:9.5mm;border-radius:50%;background:var(--gold);color:var(--deep);font-family:'Montserrat',sans-serif;font-weight:800;font-size:13pt;display:grid;place-items:center;margin:0 -1.6mm;position:relative;z-index:1;border:.7mm solid var(--cream)}
+.lt{background:var(--green);color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:9.6pt;padding:1.3mm 4mm 1.3mm 5mm;border-radius:0 2mm 2mm 0}
+
+/* progress markers (as in the book) */
+.mk{display:inline-grid;place-items:center;font-family:'Montserrat',sans-serif;font-weight:800;color:#fff;font-size:5.6pt;line-height:1;vertical-align:middle;margin-left:.8mm}
+.mk.g{width:4.3mm;height:4.3mm;border-radius:50%;background:#2E8B3E}
+.mk.b{width:5mm;height:4.4mm;background:#2F7FD1;clip-path:polygon(50% 0,100% 100%,0 100%);padding-top:1.3mm}
+.mk.r{width:4mm;height:4mm;background:#D63939}
+.mks{position:absolute;display:flex;flex-direction:column;align-items:center;gap:.4mm;z-index:3;line-height:1}
+.mks .mk{margin:0}
+.mks.L{left:-2.6mm;top:50%;transform:translateY(-50%)}
+.mks.R{right:-2.6mm;top:50%;transform:translateY(-50%)}
+.mks.TL{left:-1.6mm;top:-1.8mm;flex-direction:row}
+.mks.TR{right:-1.6mm;top:-1.8mm;flex-direction:row}
+
+/* grids */
+.grid{display:grid;direction:rtl;gap:.4mm;background:var(--rule);border:.4mm solid var(--rule);grid-auto-rows:1fr}
+.cell{background:var(--paper);position:relative;min-width:0}
+.cell.empty{background:var(--cream)}
+.lc .un{position:absolute;top:.4mm;left:1.3mm;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:8.6pt;line-height:1.5}
+.lc .bg{position:absolute;right:2mm;top:46%;transform:translateY(-50%);font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:29pt;line-height:1}
+.lc .en{position:absolute;left:1.3mm;bottom:.5mm;font-weight:700;font-size:8.2pt;color:var(--ink)}
+.cc{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cc .w{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:20pt;line-height:1.3;display:flex;direction:rtl}
+.cc .w span{white-space:pre}
+.cc .sm{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:7.6pt;line-height:1.1;direction:rtl;word-spacing:1.2mm;margin-top:-.6mm}
+.cc .cap{font-family:'Noto Naskh Arabic',serif;font-weight:600;font-size:6.6pt;color:var(--R);direction:rtl;line-height:1.2}
+.hc .hg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:23pt;line-height:1}
+.hc .hg.base{color:#1F1E1B}
+.wc{display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:18.5pt;line-height:1;color:#1F1E1B}
+.label{background:var(--deep);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:8pt;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 1.5mm;line-height:1.2}
+.lets{display:flex;align-items:center;justify-content:space-evenly;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:19pt;line-height:1;direction:rtl}
+.mtab{display:grid;direction:rtl;gap:.4mm;background:var(--rule);border:.4mm solid var(--rule)}
+.mtab .cell{display:flex;align-items:center;justify-content:space-evenly;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:19pt;line-height:1.55;direction:rtl}
+.t1{display:grid;grid-template-columns:1fr 22mm;direction:rtl;gap:.4mm;background:var(--rule);border:.4mm solid var(--rule);margin:2.4mm 0 1.6mm}
+.t1 .cell{display:flex;align-items:center;justify-content:center;padding:0 1.5mm}
+.t1 .k{font-family:'Noto Naskh Arabic',serif;font-weight:700;color:var(--R);font-size:13pt;line-height:1.9}
+.t1 .v{font-family:'Amiri',serif;font-weight:700;color:var(--B);font-size:13.4pt;line-height:2;direction:rtl}
+
+/* new exercise pages */
+.new{display:inline-block;background:var(--gold);color:var(--deep);font-family:'Montserrat',sans-serif;font-weight:800;font-size:7.4pt;letter-spacing:.1em;padding:.8mm 2.4mm;border-radius:1.2mm;text-transform:uppercase}
+.exh{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--deep);font-size:13.6pt;line-height:1.15;margin-top:1.4mm}
+.exs{color:var(--muted);font-size:9.8pt;margin-top:.6mm}
+.hand{color:var(--gold)}
+.g4{display:flex;direction:rtl;gap:2mm;margin:2.4mm 0 1.2mm}
+.sb{flex:1;background:#fff;border:.35mm solid #D9D1BC;border-radius:2.4mm;overflow:hidden;text-align:center;direction:ltr}
+.sb .gl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:27pt;line-height:1.55;display:flex;justify-content:center;direction:rtl}
+.sb .lb{color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:7.6pt;padding:.9mm 0;letter-spacing:.05em;text-transform:uppercase}
+.c-S{color:var(--S)}.c-M{color:var(--M)}.c-E{color:var(--E)}.c-A{color:var(--A)}
+.b-S{background:var(--S)}.b-M{background:var(--M)}.b-E{background:var(--E)}.b-A{background:var(--A)}
+.box{background:#fff;border:.35mm solid #D9D1BC;border-left:1.2mm solid var(--gold);border-radius:2mm;padding:2mm 2.6mm;margin-top:2mm}
+.box b{color:var(--deep)}
+.tip{background:#FFF6DB;border:.3mm solid #F0DFA6;border-radius:2mm;padding:1.6mm 2.4mm;margin-top:2mm;font-size:9.6pt}
+.tip b{color:#8A6A0C}
+.ew{display:flex;align-items:center;justify-content:center;gap:3mm;direction:rtl;margin-top:1.6mm}
+.ew .wd{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:30pt;line-height:1.4;display:flex;direction:rtl}
+.ew .eq{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--gold);font-size:14pt}
+.ew .pcs{display:flex;gap:2.4mm;direction:rtl}
+.ew .pc{display:flex;flex-direction:column;align-items:center;background:#fff;border:.35mm solid #D9D1BC;border-radius:2mm;padding:0 2mm .8mm}
+.ew .pc .gl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:22pt;line-height:1.45;display:flex;direction:rtl}
+.ew .pc small{font-size:7.4pt;font-weight:700;line-height:1.1}
+.njrow{display:flex;direction:rtl;gap:1.6mm;margin-top:1.4mm;flex-wrap:wrap;justify-content:center}
+.nj{background:var(--paper);border:.3mm solid #D9D1BC;border-radius:1.6mm;padding:0 2mm;text-align:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:17pt;line-height:1.5;display:flex;gap:1.5mm;align-items:center;direction:rtl}
+.nj .d{color:#B8B09E}
+.legend{display:flex;direction:rtl;gap:1.6mm;flex-wrap:wrap;justify-content:center;margin-top:1.4mm}
+.legend span{color:#fff;font-weight:700;font-size:7.6pt;padding:.5mm 2.2mm;border-radius:99px}
+.st{display:grid;grid-template-columns:23mm repeat(4,1fr) 24mm;direction:rtl;gap:.35mm;background:#CFC6B2;border:.35mm solid #CFC6B2;margin-top:2mm;flex:1;grid-auto-rows:auto}
+.st .th{background:var(--deep);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:7pt;text-align:center;padding:1.2mm .5mm;letter-spacing:.04em;text-transform:uppercase;direction:ltr}
+.st .th.S{background:var(--S)}.st .th.M{background:var(--M)}.st .th.E{background:var(--E)}.st .th.A{background:var(--A)}
+.st .td{background:#fff;display:flex;align-items:center;justify-content:center;min-height:0}
+.st .nm{flex-direction:column;direction:ltr;gap:0}
+.st .nm .ar{font-size:15pt;line-height:1.25}
+.st .nm b{font-size:8.2pt;color:var(--deep);line-height:1.1}
+.st .gl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:20pt;line-height:1.5;display:flex;direction:rtl}
+.st .same{flex-direction:column;gap:0}
+.st .same small{font-size:6.4pt;color:var(--muted);font-weight:700;line-height:1;margin-top:-1mm}
+.st .na{color:#B8B09E;font-size:9pt}
+.st .exw{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:16pt;line-height:1.5;display:flex;direction:rtl}
+.st .exw .dim{color:#BDB5A3}
+.st .td.ex{flex-direction:column}
+.st .td.ex small{font-size:6.2pt;color:var(--muted);font-weight:600;line-height:1;margin-top:-.8mm}
+.st .td.nj6{background:#FFF4E6}
+
+/* cover */
+.cover{background:var(--cream)}
+.cover .band{position:absolute;left:0;right:0;top:0;height:112mm;background:var(--deep)}
+.cover .band .k{position:absolute;left:12mm;top:44mm;font-family:'Montserrat',sans-serif;font-weight:800;font-size:8.4pt;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.cover .band h1{position:absolute;left:12mm;top:50mm;margin:0;font-family:'Montserrat',sans-serif;font-weight:800;font-size:34pt;line-height:1.02;color:#FAF6EE}
+.cover .band .t{position:absolute;left:12mm;top:83mm;font-family:'Montserrat',sans-serif;font-weight:800;font-size:15pt;color:var(--gold)}
+.cover .band .s{position:absolute;left:12mm;right:12mm;top:93mm;font-size:10.6pt;color:#D6E4DC;line-height:1.35}
+.cover .band .arbig{position:absolute;right:12mm;top:10mm;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:40pt;line-height:1.6;direction:rtl;color:#1E5A47}
+.cover .logo{position:absolute;left:12mm;top:12mm;height:13mm}
+.cover .lower{position:absolute;left:12mm;right:12mm;top:120mm}
+.cover .letters{display:flex;direction:rtl;justify-content:space-between;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:30pt;line-height:1.5}
+.cover .toc{margin-top:3mm;border-top:.4mm solid var(--gold)}
+.cover .toc div{display:flex;justify-content:space-between;padding:1.5mm 0;border-bottom:.3mm solid #E6DFCD;font-size:9.6pt}
+.cover .toc b{color:var(--deep)}
+.cover .toc .nw b{color:#8A6A0C}
+.cover .foot{position:absolute;left:12mm;right:12mm;bottom:9mm;display:flex;justify-content:space-between;font-size:8.4pt;color:var(--muted)}
+
+/* ================= INTERACTIVE LAYER (screen only) ================= */
+.st .td{position:relative}
+.nj{position:relative}
+.hs{position:absolute;top:.7mm;right:.7mm;width:4.4mm;height:4.4mm;border-radius:50%;border:0;background:#C9A227;color:#fff;display:grid;place-items:center;cursor:pointer;z-index:6;padding:0;box-shadow:0 .3mm .9mm rgba(0,0,0,.28)}
+.hs svg{width:3.1mm;height:3.1mm}
+p.mx>.hs{position:relative;top:-.4mm;right:auto;display:inline-grid;vertical-align:middle;margin-right:1.6mm}
+.nj>.hs{top:-1.6mm;right:-1.6mm;width:3.8mm;height:3.8mm}
+@media screen{
+  body{background:#E5E0D3;min-height:100vh}
+  [data-x]{cursor:pointer;transition:box-shadow .15s}
+  [data-x]:hover{box-shadow:inset 0 0 0 .6mm rgba(201,162,39,.75)}
+  p.mx[data-x]:hover{box-shadow:none;background:rgba(201,162,39,.12);border-radius:1.5mm}
+  body.nohs .hs{display:none}
+  .tb{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:8px;padding:8px 14px;background:#0B3D2E;color:#fff;font-family:'Source Sans 3',sans-serif;font-size:15px}
+  .tbm{width:34px;height:34px;border-radius:10px;background:#098A46;display:grid;place-items:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:21px;padding-top:2px}
+  .tbt{font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;letter-spacing:.03em;line-height:1.1}
+  .tbt small{display:block;font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:12px;letter-spacing:0;opacity:.75}
+  .tbsp{flex:1}
+  .tbb{font:inherit;font-weight:700;border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:10px;height:38px;min-width:38px;padding:0 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:15px}
+  .tbb:hover{background:rgba(255,255,255,.2)}
+  .tbb.on{background:#C9A227;color:#0B3D2E}
+  .tbb svg{width:18px;height:18px}
+  #pSel{font:inherit;font-weight:700;height:38px;border-radius:10px;border:0;padding:0 10px;background:#FAF6EE;color:#0B3D2E;cursor:pointer}
+  #book{display:flex;flex-direction:column;align-items:center;gap:22px;padding:22px 0 80px;zoom:var(--z,1)}
+  .page{box-shadow:0 3px 14px rgba(0,0,0,.18)}
+}
+@media screen and (max-width:700px){ .tbt{display:none} .tbb.wide span{display:none} }
+@media print{
+  .tb,.hs,.xm{display:none!important}
+  #book{zoom:1!important;display:block;padding:0}
+  .page{box-shadow:none}
+}
+
+/* ---------- explainer pop-up ---------- */
+.xm{position:fixed;inset:0;z-index:100;background:rgba(10,24,18,.66);display:flex;align-items:center;justify-content:center;padding:2vh 2vw;font-family:'Source Sans 3',sans-serif;color:#2B2A26}
+.xm[hidden]{display:none}
+.xcard{width:min(1200px,96vw);height:min(840px,95vh);background:#FAF6EE;border-radius:22px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);animation:xIn .25s ease}
+@keyframes xIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.xhead{display:flex;align-items:center;gap:12px;padding:10px 16px 10px 22px;background:#0B3D2E;color:#fff}
+.xt{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(17px,2.1vw,25px);line-height:1.2}
+.xt .xa{unicode-bidi:isolate;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:1.35em;color:#F2D57A}
+.xsp{flex:1}
+.xcount{font-weight:700;opacity:.75;font-size:15px;white-space:nowrap}
+.xclose{width:42px;height:42px;border-radius:12px;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:22px;cursor:pointer}
+.xclose:hover{background:rgba(255,255,255,.22)}
+.xbody{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;padding:14px 26px 10px}
+.xfoot{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid #E6DFCD;background:#fff}
+.xctl{flex:1;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.xbtn{font:inherit;font-weight:700;font-size:16px;border:2px solid #E6DFCD;background:#fff;color:#0B3D2E;border-radius:12px;padding:9px 16px;cursor:pointer;white-space:nowrap}
+.xbtn:hover{border-color:#cfc5ad}
+.xbtn.pri{background:#098A46;border-color:#098A46;color:#fff}
+.xbtn[disabled]{opacity:.35;pointer-events:none}
+.xar{font-family:'Noto Naskh Arabic',serif;font-weight:700;direction:rtl;unicode-bidi:isolate}
+.cap{font-size:clamp(17px,2.2vh,24px);text-align:center;color:#0B3D2E;line-height:1.4;margin:0}
+.cap b{color:#0B3D2E}
+.note{background:#FFF6DB;border:1px solid #F0DFA6;border-radius:12px;padding:8px 14px;font-size:clamp(15px,1.9vh,19px);color:#5E4A0E;text-align:center;align-self:center;max-width:900px}
+.chipx{display:inline-block;color:#fff;font-weight:700;font-size:clamp(12px,1.6vh,15px);padding:2px 11px;border-radius:999px;font-family:'Source Sans 3',sans-serif}
+.cS{background:#1C6FD1}.cM{background:#0E8A43}.cE{background:#D6336C}.cA{background:#7048E8}
+.lgx{display:flex;direction:rtl;gap:6px;justify-content:center}
+
+/* player (mini-lesson) */
+.tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.tab{font:inherit;border:0;background:#EFE8D8;border-radius:999px;padding:7px 15px;font-weight:700;font-size:15px;color:#6E6A60;cursor:pointer;position:relative;overflow:hidden}
+.tab.on{background:#0B3D2E;color:#fff}
+.tab .pb{position:absolute;left:0;bottom:0;height:4px;background:#C9A227;width:0}
+.stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
+.sc{animation:scIn .45s ease both;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6vh}
+@keyframes scIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.meet{flex-direction:row;gap:5vw}
+.mL{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(46vh,380px);line-height:1.3;animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.mEn{font-family:'Montserrat',sans-serif;font-weight:800;font-size:min(10vh,84px);color:#0B3D2E;line-height:1}
+.mUr{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(7vh,58px);color:#6E6A60;direction:rtl;margin-top:1vh}
+.mInfo{font-size:clamp(17px,2.4vh,24px);color:#0B3D2E;margin-top:1.4vh;font-weight:600}
+.stack{position:relative;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(44vh,360px);line-height:1.4;width:1.3em;height:1.4em}
+.stack .sl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.stack .full{color:#C9A227;animation:dotFlash .7s ease-in-out infinite alternate}
+.stack .skel{color:#0B3D2E}
+@keyframes dotFlash{from{color:#C9A227}to{color:#E8590C}}
+.famrow{display:flex;direction:rtl;gap:2.4vw;justify-content:center;flex-wrap:wrap}
+.fc{direction:ltr;display:flex;flex-direction:column;align-items:center;background:#fff;border:3px solid #E6DFCD;border-radius:20px;padding:0 2vw 1.4vh;min-width:min(17vw,170px)}
+.fc.on{border-color:#C9A227;box-shadow:0 0 0 5px rgba(201,162,39,.25);transform:translateY(-6px)}
+.fc .fl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(20vh,170px);line-height:1.45}
+.fc b{font-family:'Montserrat',sans-serif;font-size:clamp(16px,2.2vh,22px);color:#0B3D2E}
+.fc small{font-size:clamp(13px,1.7vh,16px);color:#6E6A60;font-weight:600;text-align:center;max-width:180px}
+.shp{display:flex;direction:rtl;gap:1.6vw;justify-content:center}
+.shc{background:#fff;border:2px solid #E6DFCD;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;align-items:center;min-width:min(19vw,200px);direction:ltr}
+.shc .g{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(19vh,160px);line-height:1.55;display:flex;direction:rtl}
+.shc .lbx{width:100%;text-align:center;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(13px,1.9vh,18px);padding:.6vh 0;letter-spacing:.05em;text-transform:uppercase}
+.shc .sub{font-size:clamp(12px,1.6vh,15px);color:#6E6A60;font-weight:700;padding:.4vh 0 .8vh;min-height:1.4em}
+.shc.same{background:#FFF4E6}
+.exl{display:flex;align-items:center;gap:14px;font-size:clamp(16px,2.2vh,22px);color:#0B3D2E}
+.exl .xw2{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(9vh,76px);line-height:1.5;display:flex;direction:rtl}
+.exl .dim{color:#C7BFAE}
+.where{flex-direction:row;gap:3vw;align-items:center}
+.where .dg{height:min(62vh,560px);aspect-ratio:600/520}
+.where .dg svg{width:100%;height:100%}
+.where .wt{max-width:380px;display:flex;flex-direction:column;gap:1.4vh}
+.where .wl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(16vh,130px);line-height:1.4;direction:rtl}
+.where .wt p{margin:0;font-size:clamp(17px,2.4vh,24px);line-height:1.4}
+.where .wt small{color:#6E6A60;font-weight:600}
+.zring{fill:rgba(201,162,39,.35);stroke:#C9A227;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:zr 1.3s ease-out infinite}
+@keyframes zr{0%{transform:scale(.45);opacity:1}100%{transform:scale(1.8);opacity:0}}
+.zglow{fill:rgba(255,214,102,.55);stroke:#C9A227;stroke-width:2.5;animation:zg 1.1s ease-in-out infinite alternate}
+@keyframes zg{from{opacity:.35}to{opacity:1}}
+.zlist{display:flex;flex-direction:column;gap:1.6vh;max-width:430px}
+.zi{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #E6DFCD;border-radius:14px;padding:10px 14px}
+.zi .n{flex:none;width:30px;height:30px;border-radius:50%;background:#C9A227;color:#fff;font-weight:800;display:grid;place-items:center;font-family:'Montserrat',sans-serif}
+.zi .zl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(7vh,54px);line-height:1.35;direction:rtl}
+.zi p{margin:0;font-size:clamp(15px,2vh,20px);line-height:1.35}
+
+/* word break-apart */
+.wx{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vh}
+.xw{display:flex;direction:rtl;justify-content:center;align-items:flex-start;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(24vh,200px);line-height:1.55;padding-bottom:min(21vh,190px)}
+.xp{position:relative;display:flex;flex-direction:column;align-items:center;border-radius:22px;margin:0;padding:0;background:rgba(255,255,255,0);transition:margin .65s cubic-bezier(.2,.9,.3,1.25),padding .65s,background-color .45s,box-shadow .45s}
+.xp .g{white-space:pre;display:block}
+.xp .lb{position:absolute;top:100%;left:50%;transform:translate(-50%,-10px);opacity:0;transition:opacity .4s,transform .5s;display:flex;flex-direction:column;align-items:center;gap:3px;direction:ltr;white-space:nowrap;font-family:'Source Sans 3',sans-serif}
+.xw.broken .xp{margin:0 min(1.6vw,20px);padding:0 .1em;background:#fff;box-shadow:0 4px 18px rgba(11,61,46,.13)}
+.xw.broken .xp .lb{opacity:1;transform:translate(-50%,10px)}
+.lb .iso{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(7vh,56px);line-height:1.25;color:#0B3D2E}
+.lb b{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(15px,2.3vh,23px);color:#0B3D2E}
+.weq{opacity:0;transition:opacity .5s;text-align:center;display:flex;flex-direction:column;gap:.6vh;align-items:center}
+.weq.on{opacity:1}
+.weq .eqA{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(6.5vh,52px);direction:rtl;line-height:1.4}
+.weq .eqA i{font-style:normal;color:#C9A227;font-family:'Montserrat',sans-serif;font-weight:800;margin:0 .25em;font-size:.7em}
+.weq .eqE{font-size:clamp(17px,2.4vh,24px);font-weight:700;color:#0B3D2E}
+
+/* sign (harakat) */
+.hx{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:4vw}
+.hbig{position:relative;width:min(48vh,400px);height:min(58vh,470px);background:#fff;border:2px solid #E6DFCD;border-radius:28px}
+.hbig .hg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(34vh,280px);line-height:1}
+.hbig .hg.base{color:#1F1E1B}
+.htag{position:absolute;left:50%;transform:translateX(-50%);color:#fff;font-weight:700;font-size:clamp(14px,1.9vh,18px);padding:5px 14px;border-radius:999px;white-space:nowrap;animation:tagIn .6s .3s cubic-bezier(.2,1.4,.4,1) both}
+.htag.top{top:-18px}.htag.bot{bottom:-18px}
+@keyframes tagIn{from{opacity:0;transform:translateX(-50%) scale(.6)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+.hinfo{display:flex;flex-direction:column;gap:2vh;max-width:460px}
+.hsnd{font-size:clamp(22px,4vh,40px);color:#0B3D2E;font-weight:700}
+.hsnd b{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.5em;color:#098A46}
+.h3{display:flex;direction:rtl;gap:12px}
+.h3 .t{position:relative;width:min(13vh,110px);height:min(15vh,128px);background:#fff;border:3px solid #E6DFCD;border-radius:16px}
+.h3 .t.on{border-color:#C9A227;box-shadow:0 0 0 4px rgba(201,162,39,.25)}
+.h3 .t span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(8vh,66px)}
+.h3 .t small{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-weight:700;color:#6E6A60;font-size:13px}
+.rule{background:#fff;border:1px solid #E6DFCD;border-left:5px solid #C9A227;border-radius:10px;padding:8px 12px;font-size:clamp(15px,2vh,19px);line-height:1.35}
+.vid{max-width:100%;max-height:100%;border-radius:16px;background:#000}
+
+.vframe{width:100%;height:100%;border:0;border-radius:14px;background:#0d1012}
+
+/* beginner letter card (page 3) */
+.tab .tn{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.1);font-size:13px;margin-right:7px}
+.tab.on .tn{background:#C9A227;color:#0B3D2E}
+.bx .bxT{max-width:620px}
+.memo{margin-top:2.4vh;font-size:clamp(20px,3vh,32px);font-weight:700;color:#0B3D2E;background:#FFF7DE;border:2px solid #EBD9A0;border-radius:18px;padding:12px 20px;line-height:1.3}
+.dotsline{margin-top:1.4vh;font-size:clamp(16px,2.2vh,22px);color:#6E6A60;font-weight:600}
+.trace{gap:1.4vh}
+.tw{position:relative;width:min(80vw,1000px);height:min(58vh,560px);background:#fff;border:3px dashed #E0D6BE;border-radius:24px;touch-action:none;overflow:hidden}
+.tGhost-old{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(44vh,430px);line-height:1.4;color:rgba(11,61,46,.06);-webkit-text-stroke:3px #D3C8AE;pointer-events:none;user-select:none}
+.tc{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;touch-action:none}
+.trow{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap}
+.find{gap:2.4vh}
+.fq{font-size:clamp(22px,3.4vh,36px);font-weight:700;color:#0B3D2E;margin:0;text-align:center}
+.fq b{color:#098A46}
+.fbtn{cursor:pointer;font:inherit;position:relative;transition:transform .15s}
+.fbtn:hover{transform:translateY(-4px)}
+.fbtn .fl{color:#0B3D2E}
+.fbtn.ok{border-color:#2FB36B;box-shadow:0 0 0 6px rgba(47,179,107,.25)}
+.fbtn.ok::after{content:"✓";position:absolute;top:-16px;right:-16px;width:44px;height:44px;border-radius:50%;background:#2FB36B;color:#fff;font:800 26px/44px 'Montserrat',sans-serif}
+.fbtn.no{border-color:#E5484D;animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.fres{min-height:1.5em;font-weight:700}
+.fres.good{color:#098A46}
+.fres.bad{color:#C2410C}
+
+.tg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.tprog{display:flex;align-items:center;gap:10px}
+.tbar{width:min(26vw,260px);height:16px;border-radius:999px;background:#EFE8D8;overflow:hidden}
+.tbar i{display:block;height:100%;width:0;background:#C9A227;border-radius:999px;transition:width .25s,background .25s}
+.tpct{font-family:'Montserrat',sans-serif;font-size:clamp(16px,2.2vh,22px);color:#0B3D2E;min-width:5.5em}
+.tdots{font-size:clamp(15px,2vh,20px);color:#6E6A60;font-weight:600}
+.tdots b{color:#0B3D2E}
+.tmsg{font-size:clamp(15px,2vh,20px);color:#0B3D2E;min-width:16em}
+.yay{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:5;text-align:center;background:rgba(255,255,255,.95);border:5px solid #C9A227;border-radius:30px;padding:16px 50px 22px;box-shadow:0 24px 70px rgba(0,0,0,.25);animation:yayIn .55s cubic-bezier(.2,1.5,.4,1) both;pointer-events:none}
+.yay.out{opacity:0;transition:opacity .5s}
+.yAr{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(11vh,100px);color:#098A46;line-height:1.35;direction:rtl}
+.yEn{font-family:'Montserrat',sans-serif;font-weight:800;font-size:min(6vh,54px);color:#C9A227}
+@keyframes yayIn{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+#confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:99999}
+
+</style>
+</head>
+<body>
+<div class="tb">
+  <span class="tbm">ب</span><b class="tbt">Easy Qaida<small>Interactive · Takhti 1–3</small></b>
+  <div class="tbsp"></div>
+  <button class="tbb" id="pPrev" aria-label="Previous page">‹</button>
+  <select id="pSel" aria-label="Go to page"></select>
+  <button class="tbb" id="pNext" aria-label="Next page">›</button>
+  <div class="tbsp"></div>
+  <button class="tbb wide on" id="hsBtn" title="Show or hide the help buttons"><span>Help buttons</span></button>
+  <button class="tbb wide" id="fitBtn" title="Change the zoom"><span>Fit width</span></button>
+  <button class="tbb" id="fsBtn" aria-label="Full screen" title="Full screen">⛶</button>
+</div>
+<div id="book"></div>
+<div class="xm" id="xm" hidden>
+  <div class="xcard" role="dialog" aria-modal="true" aria-labelledby="xTitle">
+    <div class="xhead"><div class="xt" id="xTitle"></div><div class="xsp"></div><span class="xcount" id="xCount"></span><button class="xclose" id="xClose" aria-label="Close">✕</button></div>
+    <div class="xbody" id="xBody"></div>
+    <div class="xfoot"><button class="xbtn" id="xNext">← Next box</button><div class="xctl" id="xCtl"></div><button class="xbtn" id="xPrev">Previous box →</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const P="var(--P)",B="var(--B)",G="var(--G)",R="var(--R)";
+const ZWJ="‍", TAT="ـ";
+const FATHA="َ",KASRA="ِ",DAMMA="ُ";
+const MARKS=/[ً-ٰٗ]/;
+
+/* ---------- the 29 letters, names and colours as on page 3 ---------- */
+const L={
+ alif:{ch:"ا",en:"Alif",ur:"الف",c:P,j:"R"}, ba:{ch:"ب",en:"Ba",ur:"با",c:B,j:"D"}, ta:{ch:"ت",en:"Ta",ur:"تا",c:P,j:"D"},
+ tha:{ch:"ث",en:"Tha",ur:"ثا",c:B,j:"D"}, jeem:{ch:"ج",en:"Jeem",ur:"جیٓم",c:P,j:"D"}, hha:{ch:"ح",en:"Ha",ur:"حا",c:B,j:"D"},
+ kha:{ch:"خ",en:"Kha",ur:"خا",c:G,j:"D"}, dal:{ch:"د",en:"Daal",ur:"دآل",c:P,j:"R"}, dhal:{ch:"ذ",en:"Zaal",ur:"ذآل",c:B,j:"R"},
+ ra:{ch:"ر",en:"Ra",ur:"را",c:P,j:"R"}, zay:{ch:"ز",en:"Zaa",ur:"زا",c:P,j:"R"}, seen:{ch:"س",en:"Seen",ur:"سیٓن",c:B,j:"D"},
+ sheen:{ch:"ش",en:"Sheen",ur:"شیٓن",c:P,j:"D"}, sad:{ch:"ص",en:"Soad",ur:"صآد",c:G,j:"D"}, dad:{ch:"ض",en:"Doad",ur:"ضآد",c:G,j:"D"},
+ tta:{ch:"ط",en:"Toa",ur:"طا",c:G,j:"D"}, zza:{ch:"ظ",en:"Zoa",ur:"ظا",c:G,j:"D"}, ain:{ch:"ع",en:"Ain",ur:"عیٓن",c:B,j:"D"},
+ ghain:{ch:"غ",en:"Ghain",ur:"غیٓن",c:G,j:"D"}, fa:{ch:"ف",en:"Fa",ur:"فا",c:P,j:"D"}, qaf:{ch:"ق",en:"Qaaf",ur:"قآف",c:G,j:"D"},
+ kaf:{ch:"ك",en:"Kaaf",ur:"کآف",c:B,j:"D"}, lam:{ch:"ل",en:"Laam",ur:"لآم",c:P,j:"D"}, meem:{ch:"م",en:"Meem",ur:"میٓم",c:B,j:"D"},
+ noon:{ch:"ن",en:"Noon",ur:"نوٓن",c:P,j:"D"}, waw:{ch:"و",en:"Waaw",ur:"وآو",c:B,j:"R"}, ha:{ch:"ه",en:"Ha",ur:"ها",c:P,j:"D"},
+ hamza:{ch:"ء",en:"Hamza",ur:"همزه",c:B,j:"U"}, ya:{ch:"ی",en:"Yaa",ur:"یا",c:P,j:"D"}
+};
+const ORDER=["alif","ba","ta","tha","jeem","hha","kha","dal","dhal","ra","zay","seen","sheen","sad","dad","tta","zza","ain","ghain","fa","qaf","kaf","lam","meem","noon","waw","ha","hamza","ya"];
+const CH={}; for(const id in L) CH[L[id].ch]={id,j:L[id].j};
+Object.assign(CH,{"ي":{id:"ya",j:"D"},"ى":{id:"ya",j:"R"},"ک":{id:"kaf",j:"D"},"ڪ":{id:"kaf",j:"D"},"ھ":{id:"ha",j:"D"},"ہ":{id:"ha",j:"D"},
+ "أ":{id:"hamza",j:"R"},"إ":{id:"hamza",j:"R"},"ؤ":{id:"hamza",j:"R"},"ئ":{id:"hamza",j:"D"},"ة":{id:"ta",j:"R"},"آ":{id:"alif",j:"R"}});
+const ZONE_OF={hamza:"throatLow",ha:"throatLow",ain:"throatMid",hha:"throatMid",ghain:"throatUp",kha:"throatUp",qaf:"qaf",kaf:"kaf",jeem:"tongueMid",sheen:"tongueMid",ya:"tongueMid",dad:"tongueEdge",lam:"tipGums",noon:"tipGums",ra:"tipGums",ta:"tipRoot",dal:"tipRoot",tta:"tipRoot",tha:"tipEnd",dhal:"tipEnd",zza:"tipEnd",zay:"tipBack",seen:"tipBack",sad:"tipBack",fa:"lipTeeth",ba:"lips",meem:"lips",waw:"lipsRound",alif:"mouthSpace"};
+const zoneOf=t=>[...new Set([...t].filter(c=>CH[c]).map(c=>ZONE_OF[CH[c].id]))].join(",");
+
+function analyze(w){
+  const ps=[]; for(const c of w){ if(MARKS.test(c)){ if(ps.length) ps[ps.length-1].m+=c; continue; } const k=CH[c]; if(!k) continue; ps.push({ch:c,m:"",id:k.id,j:k.j}); }
+  ps.forEach((p,i)=>{ const a=ps[i-1], b=ps[i+1]; p.jp=!!a&&a.j==="D"&&p.j!=="U"; p.jn=!!b&&p.j==="D"&&b.j!=="U"; p.form=p.jp?(p.jn?"M":"E"):(p.jn?"S":"A"); });
+  return ps;
+}
+const ptxt=p=>(p.jp?ZWJ:"")+p.ch+p.m+(p.jn?ZWJ:"");
+const CYC=[P,B,G];
+/* a word with each letter in its own colour (lam-alif kept as one ligature) */
+function colourWord(w,colors){
+  const ps=analyze(w), out=[];
+  for(let i=0;i<ps.length;i++){
+    const p=ps[i], n=ps[i+1], col=colors?colors(i,p):CYC[i%3];
+    if(p.id==="lam"&&n&&n.ch==="ا"&&p.jn){ out.push(`<span style="color:${col}">${(p.jp?ZWJ:"")+p.ch+p.m+n.ch+n.m}</span>`); i++; }
+    else out.push(`<span style="color:${col}">${ptxt(p)}</span>`);
+  }
+  return out.join("");
+}
+const mk=(t,n)=>`<span class="mk ${t}">${n}</span>`;
+const mks=(list,pos)=>list&&list.length?`<span class="mks ${pos||"L"}">${list.map(([t,n])=>mk(t,n)).join("")}</span>`:"";
+const ar=(t,c)=>`<span class="ar" style="color:${c||R}">${t}</span>`;
+const qa=(q,a,tail="")=>`<div class="qa"><p class="q"><span class="l">Q</span><span>${q}</span></p><p class="a"><span class="l">A</span><span>${a}${tail}</span></p></div>`;
+const lesson=(n,t)=>`<div class="lesson"><span class="lw">Lesson</span><span class="ln">${n}</span><span class="lt">${t}</span></div>`;
+function page(no,inner,cls=""){
+  return `<section class="page"><div class="frame"></div>
+    <div class="hdr"><div class="pill">quranmasteronline.com</div><div class="no">${no}</div><div class="pill">Easy Qaida</div></div>
+    <div class="body ${cls}">${inner}</div></section>`;
+}
+
+/* ---------- grids ---------- */
+function letterCell(id,marks){ const l=L[id];
+  return `<div class="cell lc" data-x="l:${id}">${mks(marks)}<span class="un" style="color:${l.c}">${l.ur}</span><span class="bg" style="color:${l.c}">${l.ch}</span><span class="en">${l.en}</span></div>`; }
+function compCell(spec){
+  const s=typeof spec==="string"?{t:spec}:spec;
+  let main, small="";
+  if(s.raw){ main=`<span style="color:${s.c||P}">${s.t}</span>`; }
+  else{
+    const ps=analyze(s.t);
+    if(ps.length===1){ main=`<span style="color:${s.c||L[ps[0].id].c}">${s.t}</span>`; }
+    else{ main=colourWord(s.t); if(!s.nosmall) small=ps.map((p,i)=>`<span style="color:${CYC[i%3]}">${p.ch==="ة"?"ة":p.ch}</span>`).join(" "); }
+  }
+  return `<div class="cell cc" data-x="${(s.raw||analyze(s.t).length<=1)?"s:":"w:"}${s.t}">${mks(s.mk,s.pos)}<div class="w">${main}</div>${small?`<div class="sm">${small}</div>`:""}${s.cap?`<div class="cap">${s.cap}</div>`:""}</div>`;
+}
+function grid(rows,cellFn,cols=6,style=""){
+  return `<div class="grid" style="grid-template-columns:repeat(${cols},1fr);${style}">${rows.map(r=>r.map(cellFn).join("")).join("")}</div>`;
+}
+const HC={fatha:"var(--hf)",kasra:"var(--hk)",damma:"var(--hd)"};
+const HM={fatha:FATHA,kasra:KASRA,damma:DAMMA};
+function hCell(spec){
+  const [id,h,marks,pos]=spec; if(id==="LABEL") return "";
+  const base=id==="alif"?"ا":L[id].ch;
+  return `<div class="cell hc" data-x="h:${id}:${h}">${mks(marks,pos)}<span class="hg" style="color:${HC[h]}">${base+HM[h]}</span><span class="hg base">${base}</span></div>`;
+}
+const hrow=(a,b)=>["fatha","kasra","damma"].map(h=>[a,h]).concat(["fatha","kasra","damma"].map(h=>[b,h]));
+
+/* ---------- shapes (new exercise) ---------- */
+const SC={S:"var(--S)",M:"var(--M)",E:"var(--E)",A:"var(--A)"};
+function formHTML(id,form,col){
+  const l=L[id]; const c=col||SC[form];
+  if(l.j==="U") return `<span style="color:${c}">${l.ch}</span>`;
+  const jp=form==="M"||form==="E", jn=(form==="S"||form==="M")&&l.j==="D";
+  const hand=`<span class="hand">${ZWJ}${TAT}${ZWJ}</span>`;
+  return (jp?hand:"")+`<span style="color:${c}">${jp?ZWJ:""}${l.ch}${jn?ZWJ:""}</span>`+(jn?hand:"");
+}
+function dimWord(w,idx){
+  const ps=analyze(w);
+  return ps.map((p,i)=>`<span class="${i===idx?"":"dim"}" style="${i===idx?`color:${SC[p.form]}`:""}">${ptxt(p)}</span>`).join("");
+}
+const BOOKWORDS=("لج بلب كت كا كل بكت تكث ثا بس یس نص تض ثط ثج تح نخ یخ بج یم بم نم تم ثم بی یی تی ثی نبل بنل تنل یتل یثل بنن ینن تین یثن بثن حث خب جت تحت یجب بخت نه ههه یهب بها بهم جد خذ جر خز یر تز سل شل ظا صب طب ضا عج غح بع یغ بعد بغذ فو قو نقر یفر یف فیه منه "+
+  "بَصَرَ بَلَغَ فَعَلَ اَخَذَ عَبَسَ سَجَدَ اِرَمَ اِبِلِ كِبَرَ اَذِنَ شَهِدَ سَفِهَ مُنِعَ كُتِبَ ذُكِرَ خَبُثَ رُسُلُ یَعِدُ").split(/\s+/);
+function example(id){
+  const pref=L[id].j==="D"?["M","S","E"]:["E"];
+  for(const f of pref) for(const w of BOOKWORDS){ if(MARKS.test(w)) continue; const ps=analyze(w); const i=ps.findIndex(p=>p.id===id&&p.form===f&&p.ch===L[id].ch); if(i>=0) return {w,i}; }
+  return null;
+}
+function shapeRow(id){
+  const l=L[id], nj=l.j==="R", hz=l.j==="U";
+  const name=`<div class="td nm" data-x="l:${id}:Shapes"><span class="ar" style="color:${l.c}">${l.ch}</span><b>${l.en}</b></div>`;
+  const al=`<div class="td"><span class="gl">${formHTML(id,"A")}</span></div>`;
+  if(hz) return name+al+`<div class="td nj6" style="grid-column:span 4"><span class="na" style="color:#8A6A0C;font-weight:700;font-size:8.4pt">Never joins any letter — it always sits alone</span></div>`;
+  const st=nj?`<div class="td same nj6"><span class="gl">${formHTML(id,"A","var(--A)")}</span><small>same as alone</small></div>`:`<div class="td"><span class="gl">${formHTML(id,"S")}</span></div>`;
+  const md=nj?`<div class="td same nj6"><span class="gl">${formHTML(id,"E","var(--E)")}</span><small>same as end</small></div>`:`<div class="td"><span class="gl">${formHTML(id,"M")}</span></div>`;
+  const en=`<div class="td"><span class="gl">${formHTML(id,"E")}</span></div>`;
+  const ex=example(id);
+  const exc=ex?`<div class="td ex" data-x="w:${ex.w}"><span class="exw">${dimWord(ex.w,ex.i)}</span><small>${l.en} = ${({S:"start",M:"middle",E:"end",A:"alone"})[analyze(ex.w)[ex.i].form]}</small></div>`:`<div class="td"><span class="na">—</span></div>`;
+  return name+al+st+md+en+exc;
+}
+function shapeTable(ids){
+  const head=`<div class="th">Letter</div><div class="th A">Alone</div><div class="th S">Start</div><div class="th M">Middle</div><div class="th E">End</div><div class="th">In the book</div>`;
+  return `<div class="st" style="grid-template-rows:auto repeat(${ids.length},1fr)">${head}${ids.map(shapeRow).join("")}</div>`;
+}
+
+/* =====================================================================
+   PAGES
+   ===================================================================== */
+const pages=[];
+
+/* COVER */
+pages.push(`<section class="page cover">
+  <div class="band">
+    <img class="logo" src="img/qmo-logo.png" alt="Quran Master Online">
+    <div class="arbig">ا ب ت ث</div>
+    <div class="k">Takhti 1 – 3 · Redesigned edition</div>
+    <h1>Easy<br>Qaida</h1>
+    <div class="t">Part 1</div>
+    <div class="s">Alphabet recognition with correct pronunciation — now with a new exercise showing how every letter looks at the start, middle and end of a word.</div>
+  </div>
+  <div class="lower">
+    <div class="letters">${["alif","ba","ta","tha","jeem","hha","kha","dal"].map(id=>`<span style="color:${L[id].c}">${L[id].ch}</span>`).join("")}</div>
+    <div class="toc">
+      <div><b>Lesson 1 · Mufradaat (single letters)</b><span>pages 1 – 9</span></div>
+      <div class="nw"><b>New exercise · Start · Middle · End</b><span>pages 9A – 9D</span></div>
+      <div><b>Lesson 2 · Compounds (joined letters)</b><span>pages 9 – 12</span></div>
+      <div><b>Lesson 3 · Normal Sounds (Fatha, Kasra, Damma)</b><span>pages 12 – 15</span></div>
+      <div><b>Kalimahs and Iman</b><span>pages 15 – 16</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>quranmasteronline.com</span><span>Easy Qaida · Takhti 1 – 3</span></div>
+</section>`);
+
+/* PAGE 1 */
+pages.push(page(1,`
+  <p class="rel" style="color:var(--G);font-size:16pt;line-height:2">اَللّٰهُمَّ عَلِّمْنَا مَا يَنْفَعُنَا وَانْفَعْنَا بِمَا عَلَّمْتَنَا</p>
+  <p style="color:var(--G);font-weight:700;text-align:center;font-size:10.8pt;margin-top:-.6mm">O Allah, grant / bless us with beneficial education and give us benefit from that education.</p>
+  <p class="title" style="margin-top:3mm;font-size:17pt">Part 1</p>
+  <p class="subt">(Alphabet recognition with correct pronunciation)</p>
+  <div class="t1">
+    <div class="cell"><span class="v">اَعُوْذُ ـ بِاللّٰهِ ـ مِنَ الشَّيْطٰنِ الرْ ـ رَجِيْمِ</span></div><div class="cell"><span class="k">تَعَوُّذ</span></div>
+    <div class="cell"><span class="v">بِسْمِ اللّٰهِ الرْ ـ رَحْمٰنِ الرْ ـ رَحِيْمِ</span></div><div class="cell"><span class="k">تَسْمِيَّه</span></div>
+  </div>
+  <p style="text-align:center">Ta'awwuz is the name of ${ar("اعوذ بالله")} and Tasmiya is the name of ${ar("بسم الله")}.</p>
+  ${lesson(1,"Mufradaat")}
+  ${qa("Today we will study which lesson?","Today we will study lesson #1 “Mufradaat”.")}
+  ${qa("What are Mufradaat?","Individual (single) letters are called Mufradaat.")}
+  ${qa("How many Mufradaat (letters) are there in Arabic?","Arabic Mufradaat are 29.")}
+`));
+
+/* PAGE 2 */
+pages.push(page(2,`
+  ${qa("Is there any other explanation / name for Mufradaat?","Mufradaat are also called Huroof-e-Tahaji and Huroof-e-Hijja.")}
+  ${qa("How many letters are there in English?","There are 26 letters in English.")}
+  ${qa("How many letters are there in Urdu?","There are 36 letters in Urdu.",mk("g",1))}
+  ${qa("How many letters of Arabic have a rounding sound?",`Only in the letter ${ar("و")} are the lips made round, to get a rounding sound.`)}
+  ${qa("In how many letters are the lips joined?","There are nine letters in which the lips are joined:")}
+  <p class="arl" style="color:var(--B)">ا ۔ ب ۔ ج ۔ ف ۔ ق ۔ ك ۔ ل ۔ م ۔ ء</p>
+  <p class="mx">Apart from these, the lips are either joined or rounded at the end of certain letters.</p>
+  ${qa("In how many letters should the sound be abrupt?",`Two letters, ${ar("الف")} and ${ar("همزه")}, have a short, abrupt sound.`)}
+`));
+
+/* PAGE 3 */
+pages.push(page(3,`
+  ${qa(`How many letters should be elongated to one ‘${ar("الف","var(--B)")}’ length?`,`There are 12 letters that should be elongated to one ‘${ar("الف","var(--B)")}’ length:`)}
+  <p class="arl" style="color:var(--R)">با ۔ تا ۔ ثا ۔ حا ۔ خا ۔ را ۔ زا ۔ طا ۔ ظا ۔ فا ۔ ها ۔ یا</p>
+  ${qa(`How many letters should be stretched to a length of 3 to 5 ‘${ar("الف","var(--B)")}’?`,`15 letters should be stretched to a length of 3 to 5 ‘${ar("الف","var(--B)")}’:`)}
+  <p class="arl" style="color:var(--R);line-height:1.9">جیٓم ۔ دآل ۔ ذآل ۔ سیٓن ۔ شیٓن ۔ صآد ۔ ضآد ۔ عیٓن ۔ غیٓن ۔ قآف ۔ کآف ۔ لآم ۔ میٓم ۔ نوٓن ۔ وآو</p>
+  <div class="grid" style="grid-template-columns:repeat(6,1fr);flex:1;margin-top:1mm">
+    ${["alif","ba","ta","tha","jeem"].map(id=>letterCell(id)).join("")}${letterCell("hha",[["g",2],["b",1]])}
+    ${["kha","dal","dhal","ra","zay"].map(id=>letterCell(id)).join("")}${letterCell("seen",[["g",3]])}
+    ${["sheen","sad","dad","tta","zza"].map(id=>letterCell(id)).join("")}${letterCell("ain",[["g",4],["b",2]])}
+    ${["ghain","fa","qaf","kaf","lam"].map(id=>letterCell(id)).join("")}${letterCell("meem",[["g",5]])}
+    ${["noon","waw","ha","hamza"].map(id=>letterCell(id)).join("")}${letterCell("ya",[["g",6],["b",3],["r",1]])}<div class="cell empty"></div>
+  </div>
+`,"mid"));
+
+/* PAGE 4 */
+const mline=(letters,col,text,tail="")=>`<p class="mx" data-x="m:${zoneOf(letters)}"><span class="ar" style="color:${col}">${letters}</span> ${text}${tail}</p>`;
+pages.push(page(4,`
+  <p class="title" style="font-style:italic;margin-bottom:2mm">Exercise according to multiple Makharij</p>
+  ${qa("What are Makharij?","Makharij is the plural of Makhraj. The centre point of any letter’s pronunciation is called its Makhraj. For example:")}
+  ${mline("ء هـ",B,"are pronounced from that part of the throat which is nearest to the chest.")}
+  ${mline("ع ح",R,"are pronounced from the middle of the throat.")}
+  ${mline("غ خ",B,"are pronounced from the part of the throat which is nearest to the mouth.")}
+  ${mline("ق",R,"is pronounced from the root of the tongue and the voice box.")}
+  ${mline("ك",B,"is pronounced slightly away from the Makhraj of Qaaf, towards the mouth.",mk("g",7))}
+  ${mline("ج ش ي",R,"are pronounced from the middle of the tongue when it clicks with the upper inside of the mouth.")}
+  ${mline("ض",B,"is pronounced as the right edge of the tongue touches the upper right side teeth.",mk("b",4)+mk("r",2))}
+`));
+
+/* PAGE 5 */
+const mrow=cells=>cells.map(([t,cols,span])=>`<div class="cell" data-x="m:${zoneOf(t)}"${span?` style="grid-column:span ${span}"`:""}>${t.split(" ").map((c,i)=>`<span style="color:${cols[i]}">${c}</span>`).join("")}</div>`).join("");
+pages.push(page(5,`
+  ${mline("ل ن ر",B,"are pronounced when the tip of the tongue touches the gums of the upper front teeth.")}
+  ${mline("ت د ط",R,"are pronounced when the tip of the tongue touches the root of the upper teeth.")}
+  ${mline("ث ذ ظ",B,"are pronounced when the tip of the tongue touches the end of the upper teeth.")}
+  ${mline("ز س ص",R,"are pronounced when the tip of the tongue touches the back of the teeth.",mk("g",8))}
+  ${mline("ف",B,"is pronounced when the tip of the upper front teeth touches the middle of the lower lip.")}
+  ${mline("ب م",R,"are pronounced by joining the lips together.")}
+  ${mline("و",B,"is pronounced by rounding the lips.")}
+  ${mline("ا",R,"is pronounced from the empty space inside the mouth.")}
+  <div class="mtab" style="grid-template-columns:repeat(6,1fr);margin-top:auto">
+    ${mrow([["ء ه",[P,P],2],["ع ح",[B,B],2],["غ خ",[G,G],2]])}
+    ${mrow([["ق ك",[G,P],2],["ج ش ی",[B,P,B],3],["ض",[G],1]])}
+    ${mrow([["ل ن ر",[P,B,P],3],["ت د ط",[B,P,G],3]])}
+  </div>
+`));
+
+/* PAGE 6 */
+pages.push(page(6,`
+  <div class="mtab" style="grid-template-columns:repeat(2,1fr);margin-bottom:2.4mm">
+    ${mrow([["ث ذ ظ",[B,P,G]],["ز س ص",[B,P,G]]])}
+    <div class="cell" data-x="m:lips"><span style="color:${B}">ب</span><span style="color:${P}">م</span></div>
+    <div class="cell" data-x="m:lipsRound,lipTeeth" style="position:relative">${mks([["g",9],["b",5],["r",3]])}<span style="color:${B}">و</span><span style="color:${P}">ف</span></div>
+  </div>
+  ${qa("How many letters in Arabic are called thick / heavy letters?","Heavy letters are 7. They are the following:")}
+  <p class="arl" style="color:var(--R)">خ ص ض ط ظ غ ق</p>
+  ${qa("Why do we call them thick / heavy letters?","Because they are always pronounced with the mouth full. They are also called Huroof-e-Mustaliya.")}
+  ${qa("How many types of mistakes do people make in pronouncing heavy / thick letters?","Two types of mistakes are made: 1. Turning the lips round. 2. Pronouncing these letters thin / softly.")}
+  ${qa("How many thin / soft letters are there in Arabic?",`Soft / thin letters are 3: ${ar("ث ذ ظ","var(--B)")}`)}
+  ${qa("Why do we call them soft letters?","Because these letters are always pronounced softly.",mk("g",10)+mk("b",6))}
+`));
+
+/* PAGE 7 */
+pages.push(page(7,`
+  ${qa("How many letters have a whistle-like sound?",`They are three: ${ar("ز س ص")}`)}
+  ${qa("Why do we call them whistle letters?","Because they have a whistle-like sound.")}
+  ${qa("How many throat (Halqee) letters are there?",`They are six: ${ar("ء هـ ع ح غ خ","var(--B)")}`)}
+  ${qa("Why do we call them throat (Halqee) letters?","They are called Halqee letters because they are pronounced from the throat. The throat is called Halq in Arabic.",mk("g",11))}
+  ${qa("How many letters have resembling sounds?","They are 15:")}
+  <p class="arl" style="color:var(--R)">ث س ص ، ح هـ ، ذ ز ، ظ ض ، ت ط ، ع ء ، ق ک</p>
+  ${qa("Why do we call them resembling sound letters?","Because their pronunciation sounds the same.",mk("b",7)+mk("r",4))}
+`));
+
+/* PAGE 8 */
+const a8=(t,c)=>ar(t,c||B);
+pages.push(page(8,`
+  <p class="mx"><span class="note-h">Note:</span> If we pronounce ${a8("ث")} with air escaping, it will become ${a8("س")}. If we pronounce ${a8("س")} softly, it will become ${a8("ث")}, and if we pronounce ${a8("س")} with hardness, it will become ${a8("ص")}.</p>
+  <p class="mx">There is a difference between the Makhraj of ${a8("ح",R)} and ${a8("هـ",R)}.${mk("g",12)}</p>
+  <p class="mx">If we pronounce ${a8("ذ")} with hardness, it will become ${a8("ز")}, and if we pronounce ${a8("ز")} softly, it will become ${a8("ذ")}.</p>
+  <p class="mx">There is a difference between the Makhraj of ${a8("ظ",R)} and ${a8("ض",R)}.</p>
+  <p class="mx">If we pronounce ${a8("ت")} with hardness, it will become ${a8("ط")}, and if we pronounce ${a8("ط")} softly, it will become ${a8("ت")}.</p>
+  <p class="mx">There is a difference between the Makhraj of ${a8("ع",R)} and ${a8("ء",R)}.</p>
+  <p class="mx">If we pronounce ${a8("ق",R)} softly, it will become ${a8("ک",R)}, and if we pronounce ${a8("ک",R)} with hardness, it will become ${a8("ق",R)}.</p>
+`));
+
+/* PAGE 9 */
+const lets=(t,cols)=>`<div class="cell lets">${t.split(" ").map((c,i)=>`<span style="color:${cols[i%cols.length]}">${c}</span>`).join("")}</div>`;
+const lab=t=>`<div class="cell label">${t}</div>`;
+pages.push(page(9,`
+  <div class="grid" style="grid-template-columns:repeat(12,1fr);grid-auto-rows:13mm">
+    <div class="cell label" style="grid-column:span 4">Thick / heavy letters</div><div class="cell lets" style="grid-column:span 8">${"خ ص ض ط ظ غ ق".split(" ").map(c=>`<span style="color:${G}">${c}</span>`).join("")}</div>
+    <div class="cell label" style="grid-column:span 3">Soft / thin letters</div><div class="cell lets" style="grid-column:span 3"><span style="color:${P}">ث</span><span style="color:${B}">ذ</span><span style="color:${G}">ظ</span></div>
+    <div class="cell label" style="grid-column:span 3">Whistle letters</div><div class="cell lets" style="grid-column:span 3"><span style="color:${B}">ز</span><span style="color:${P}">س</span><span style="color:${G}">ص</span></div>
+    <div class="cell label" style="grid-column:span 4">Throat (Halqee) letters</div><div class="cell lets" style="grid-column:span 8"><span style="color:${P}">ء</span><span style="color:${P}">ه</span><span style="color:${B}">ع</span><span style="color:${P}">ح</span><span style="color:${G}">غ</span><span style="color:${G}">خ</span></div>
+    <div class="cell label" style="grid-column:span 4">Resembling sound letters</div><div class="cell lets" style="grid-column:span 8"><span style="color:${B}">ث</span><span style="color:${P}">س</span><span style="color:${G}">ص</span></div>
+    <div class="cell lets" style="grid-column:span 12"><span style="color:${P}">ح</span><span style="color:${B}">ه</span><span style="color:${P}">ذ</span><span style="color:${B}">ز</span><span style="color:${G}">ظ</span><span style="color:${G}">ض</span></div>
+    <div class="cell lets" style="grid-column:span 12;position:relative">${mks([["g",13],["b",8],["r",5]])}<span style="color:${P}">ت</span><span style="color:${G}">ط</span><span style="color:${B}">ع</span><span style="color:${P}">ء</span><span style="color:${G}">ق</span><span style="color:${P}">ك</span></div>
+  </div>
+  ${lesson(2,"Compounds")}
+  ${qa("Today we will do which lesson?","Today we will study lesson #2, Compounds.")}
+  ${qa("What are compounds?","Mixed (joined) letters are called compounds.")}
+  ${qa("How many letters are there that have only one shape?",`They are three: ${ar("و ۔ ط ۔ ظ")}. Their shape stays the same even when they are mixed with other letters.`)}
+`));
+
+/* NEW 9A — introduction */
+const ba4=["A","S","M","E"].map(f=>`<div class="sb"><div class="gl">${formHTML("ba",f)}</div><div class="lb b-${f}">${({A:"Alone",S:"Start",M:"Middle",E:"End"})[f]}</div></div>`).join("");
+const blb=analyze("بلب");
+pages.push(page("9A",`
+  <div><span class="new">New exercise</span></div>
+  <p class="exh">One letter — different shapes</p>
+  <p class="exs">Before the compounds, learn how each letter looks at the <b>start</b>, in the <b>middle</b> and at the <b>end</b> of a word.</p>
+  <p style="margin-top:2.4mm">When letters join to make a word, most letters change their shape. Look at ${ar("ب","var(--B)")} (Ba):</p>
+  <div class="g4">${ba4}</div>
+  <p style="font-size:9.8pt">The <b style="color:#A8861A">gold line</b> is the letter’s <b>hand</b> — where it holds hands with the letter next to it.</p>
+  <div class="ew">
+    <div class="wd">${blb.map(p=>`<span style="color:${SC[p.form]}">${ptxt(p)}</span>`).join("")}</div><span class="eq">=</span>
+    <div class="pcs">${blb.map(p=>`<div class="pc"><span class="gl">${formHTML(p.id,p.form)}</span><small class="c-${p.form}">${L[p.id].en} · ${({S:"Start",M:"Middle",E:"End",A:"Alone"})[p.form]}</small></div>`).join("")}</div>
+  </div>
+  <p style="text-align:center;font-size:9.4pt;color:var(--muted);margin-top:.6mm">${ar("بلب","var(--muted)")} from page 10: Ba at the start, Laam in the middle, Ba at the end.</p>
+  <div class="box"><b>6 letters never hold hands with the next letter:</b> ${ar("ا د ذ ر ز و","var(--deep)")}. They have only two shapes (alone and end). The letter after them starts again. Examples from the book:
+    <div class="njrow">${[["با",1],["جد",1],["خذ",1],["جر",1],["خز",1],["فو",1]].map(([w,i])=>`<span class="nj" data-x="w:${w}">${analyze(w).map((p,k)=>`<span style="color:${k===i?SC[p.form]:"#B8B09E"}">${ptxt(p)}</span>`).join("")}</span>`).join("")}</div>
+  </div>
+  <div class="box"><b>Hamza</b> ${ar("ء","var(--deep)")} never joins any letter. Sometimes it sits on a “chair”: ${ar("أ ؤ ئ","var(--deep)")} (page 12).</div>
+  <div class="tip"><b>Teacher:</b> point to each shape and ask, “Where is its hand?” Then the child finds the same letter in the table on the next pages.</div>
+`,"compact"));
+
+/* NEW 9B–9D — the full table */
+const legend=`<div class="legend"><span class="b-A">Alone</span><span class="b-S">Start</span><span class="b-M">Middle</span><span class="b-E">End</span></div>`;
+const groups=[ORDER.slice(0,10),ORDER.slice(10,20),ORDER.slice(20)];
+groups.forEach((ids,gi)=>pages.push(page(["9B","9C","9D"][gi],`
+  <div style="display:flex;align-items:center;gap:2mm"><span class="new">New exercise</span><span style="flex:1"></span><span style="font-size:8.6pt;color:var(--muted);font-weight:700">${gi+1} of 3</span></div>
+  <p class="exh" style="font-size:12.4pt">Every letter: Start · Middle · End</p>
+  ${legend}
+  ${shapeTable(ids)}
+  ${gi===2?`<p style="font-size:8.6pt;color:var(--muted);margin-top:1.4mm">Orange rows: these letters never hold hands with the next letter, so their start shape is the same as alone, and their middle shape is the same as end.</p>`:""}
+`,"compact")));
+
+/* PAGE 10 */
+pages.push(page(10,`
+  ${qa("How many letters have more than one shape in compounds?","There are 15 letters")}
+  <p class="arl" style="color:var(--B);line-height:1.9">ج جـ ، ح حـ ، د د ، ذ ذ ، ر ر ، ز ز ، س سـ ، ش شـ ، ص صـ ، ض ضـ ، ق قـ ، م مـ ، ء ا ، ف فـ</p>
+  <p class="mx ind">that have more than one shape when they merge with other letters (in compound form).</p>
+  ${qa("How many letters have 2 or more shapes?","These are 11 letters:")}
+  <p class="arl" style="color:var(--R)">${mk("g",14)} ا ب ت ث ع غ ك ل ن م هـ ی</p>
+  ${grid([
+    ["ا","ل","لا",{t:"لا",c:B},"ب","ج"],
+    ["لج","بلب",{t:"ک",c:B},{t:"ك",c:B},{t:"ڪ",raw:true,c:P},{t:"ت",c:B}],
+    ["كت","كا","كل","بكت",{t:"ت",c:B},{t:"تكث",mk:[["g",15],["b",9]]}],
+    [{t:"ن",c:B},{t:"ی",c:P},"با","نا","تا","یا"]
+  ],compCell,6,"flex:1;margin-top:1mm")}
+`));
+
+/* PAGE 11 */
+pages.push(page(11,grid([
+  ["ثا",{t:"س",c:B},{t:"ص",c:G},{t:"ض",c:G},{t:"ط",c:G},"بس"],
+  ["یس","نص","تض","ثط","ثج",{t:"ح",c:P}],
+  [{t:"خ",c:G},"تح","نخ","یخ","بج",{t:ZWJ+"م",raw:true,c:P}],
+  [{t:"م",c:B},"یم","بم","نم","تم",{t:"ثم",mk:[["g",16],["r",6]]}],
+  ["بی","یی","تی","ثی","نبل","بنل"],
+  [{t:"تنل",nosmall:true},{t:"یتل",nosmall:true},{t:"یثل",nosmall:true},{t:"بنن",nosmall:true},{t:"ینن",nosmall:true},{t:"تین",nosmall:true}],
+  [{t:"یثن",nosmall:true},{t:"بثن",nosmall:true},{t:"حث",nosmall:true},{t:"خب",nosmall:true},{t:"جت",nosmall:true},{t:"تحت",nosmall:true}],
+  [{t:"یجب",nosmall:true},{t:"بخت",nosmall:true,mk:[["b",10]],pos:"TL"},{t:"ة",c:P},{t:"ه",c:B},{t:"بة",nosmall:true},{t:"یة",nosmall:true}],
+  [{t:"تة",nosmall:true},{t:"نه",nosmall:true},{t:"هـ",raw:true,c:P},{t:"ههه",nosmall:true},{t:"یهب",nosmall:true},{t:"بها",nosmall:true}],
+  [{t:"بهم",nosmall:true,mk:[["g",17]],pos:"TL"},{t:"د",c:P},{t:"ذ",c:B},{t:"جد",nosmall:true},{t:"خذ",nosmall:true},{t:"ر",c:P}],
+  [{t:"ز",c:B},{t:"ر",c:P},{t:"جر",nosmall:true},{t:"خز",nosmall:true},{t:"یر",nosmall:true},{t:"تز",nosmall:true}]
+],compCell,6,"flex:1")));
+
+/* PAGE 12 */
+const ns=t=>({t,nosmall:true});
+pages.push(page(12,`
+  ${grid([
+    [{t:"س",c:B},ns("سل"),ns("شل"),{t:"ط",c:G},ns("ظا"),ns("صب")],
+    [ns("طب"),ns("ضا"),{t:"ع",c:R},{t:"غ",c:G},ns("عج"),ns("غح")],
+    [ns("بع"),ns("یغ"),ns("بعد"),ns("بغذ"),{t:"ف",c:B},{t:"ق",c:G}],
+    [{t:"و",c:B},ns("فو"),ns("قو"),ns("نقر"),ns("یفر"),ns("یف")],
+    [ns("فیه"),ns("منه"),{t:"ء",c:B},{t:"أ",c:P,cap:"ہمزہ بشکل الف"},{t:"ؤ",c:B,cap:"ہمزہ بشکل واو"},{t:"ئ",c:R,cap:"ہمزہ بشکل یا",mk:[["g",18],["b",11],["r",7]]}]
+  ],compCell,6,"height:76mm;grid-auto-rows:1fr")}
+  ${lesson(3,"Normal Sounds")}
+  ${qa("What is our lesson for today?","Today we will study lesson #3, Sounds.")}
+  ${qa("What are Sounds?","Fatha (Zabar), Kasra (Zair) and Zama (Paish) are called normal Sounds.")}
+  ${qa("When reading / pronouncing the normal Sounds, what things should be kept in mind?","1. Do not drag the sound. 2. Do not give a bumpy sound. 3. Do not read with a gap / break in the sound (Majhool).",mk("g",19)+mk("b",12))}
+`));
+
+/* PAGE 13 */
+pages.push(page(13,`
+  ${qa(`When we put Fatha (Zabar), Kasra (Zair) or Zama (Paish) on ${ar("الف","var(--B)")}, what does it become?`,`It becomes ${ar("ء","var(--B)")}.`)}
+  ${qa(`If there is Fatha (Zabar) or Zama (Paish) on ${ar("ر","var(--B)")}, how will it be pronounced?`,"It will be pronounced with a thick / heavy sound.")}
+  ${qa(`If ${ar("ر","var(--B)")} has a Kasra (Zair), how will the sound be?`,"It will have a thin pronunciation / sound.",mk("g",20)+mk("b",13))}
+  <div class="grid" style="grid-template-columns:repeat(6,1fr);flex:1;margin-top:.6mm">
+    ${[hrow("alif","ha"),hrow("ain","hha"),hrow("ghain","kha"),hrow("qaf","kaf"),hrow("jeem","sheen"),hrow("ya","dad")].map((r,ri)=>r.map((c,ci)=>{
+      if(ri===0&&ci===0) return hCell([c[0],c[1],[["g",21]],"R"]);
+      if(ri===2&&ci===5) return hCell([c[0],c[1],[["b",14]]]);
+      if(ri===3&&ci===5) return hCell([c[0],c[1],[["g",22]]]);
+      return hCell(c); }).join("")).join("")}
+  </div>
+`));
+
+/* PAGE 14 */
+pages.push(page(14,`
+  <div class="grid" style="grid-template-columns:repeat(6,1fr);flex:1">
+    ${[hrow("lam","noon"),hrow("ra","ta"),hrow("dal","tta"),hrow("zay","seen"),hrow("sad","tha"),hrow("dhal","zza"),hrow("fa","waw"),hrow("ba","meem")].map((r,ri)=>r.map((c,ci)=>ri===3&&ci===5?hCell([c[0],c[1],[["g",23],["r",8]]]):hCell(c)).join("")).join("")}
+    <div class="cell label" style="grid-column:span 3;font-size:10pt">Resembling sound letters</div>
+    ${[["ta","fatha"],["tta","fatha"],["tha","fatha"]].map(hCell).join("")}
+    ${[["seen","fatha"],["sad","fatha"],["hha","kasra"],["ha","kasra"],["dhal","kasra"],["zay","kasra"]].map(hCell).join("")}
+    ${[["dad","kasra"],["zza","kasra"],["ain","damma"],["hamza","damma"],["qaf","damma"],["kaf","damma"]].map(hCell).join("")}
+  </div>
+`));
+
+/* PAGE 15 */
+const EXW=[["بَصَرَ","بَلَغَ","فَعَلَ","اَخَذَ","عَبَسَ","سَجَدَ"],["اِرَمَ","اِبِلِ","كِبَرَ","اَذِنَ","شَهِدَ","سَفِهَ"],["مُنِعَ","كُتِبَ","ذُكِرَ","خَبُثَ","رُسُلُ","یَعِدُ"]];
+pages.push(page(15,`
+  <p class="title" style="color:var(--R);font-style:italic;margin-bottom:1.6mm">Exercise</p>
+  <div class="grid" style="grid-template-columns:repeat(6,1fr);grid-auto-rows:14.5mm">
+    ${EXW.map((r,ri)=>r.map((w,ci)=>`<div class="cell wc" data-x="e:${w}">${ri===2&&ci===5?mks([["g",24],["r",9]]):""}${w}</div>`).join("")).join("")}
+  </div>
+  <span class="kh">KALIMAH TAYYIBAH</span>
+  <p class="rel" style="font-size:18pt">لَآ اِلٰهَ اِلَّا اللّٰهُ مُحَمَّدٌ رَّسُوْلُ اللّٰهِ</p>
+  <p class="tr">None but Allah is worthy of worship, and Muhammad is the Messenger of Allah.</p>
+  <span class="kh">KALIMAH SHAHADAH</span>
+  <p class="rel">اَشْهَدُ اَنْ لَّآ اِلٰهَ اِلَّا اللّٰهُ وَحْدَهٗ لَا شَرِيْكَ لَهٗ وَاَشْهَدُ اَنَّ مُحَمَّدًا عَبْدُهٗ وَرَسُوْلُهٗ</p>
+  <p class="tr">I bear witness that none but Allah is worthy of worship. He is One; He has no partner. And I bear witness that Muhammad is His servant and Messenger.</p>
+`));
+
+/* PAGE 16 */
+pages.push(page(16,`
+  <span class="kh" style="margin-top:1mm">IMAN MUJMAL</span>
+  <p class="rel">اٰمَنْتُ بِاللّٰهِ كَمَا هُوَ بِاَسْمَآئِهٖ وَصِفَاتِهٖ وَقَبِلْتُ جَمِيْعَ اَحْكَامِهٖ اِقْرَارٌ بِاللِّسَانِ وَتَصْدِيْقٌ بِالْقَلْبِ</p>
+  <p class="tr">I have faith in Allah as He is known by His Names and attributes, and I accept all His commands.</p>
+  <span class="kh">IMAN MUFASSAL</span>
+  <p class="rel">اٰمَنْتُ بِاللّٰهِ وَمَلٰٓئِكَتِهٖ وَكُتُبِهٖ وَرُسُلِهٖ وَالْيَوْمِ الْاٰخِرِ وَالْقَدْرِ خَيْرِهٖ وَشَرِّهٖ مِنَ اللّٰهِ تَعَالٰى وَالْبَعْثِ بَعْدَ الْمَوْتِ</p>
+  <p class="tr">I believe in Allah, in His Angels, His Scriptures, His Messengers, the Day of Judgment, and that everything good and bad (in the world) is pre-destined by Allah the Exalted, and (I believe) in resurrection after death.${mk("g",25)}${mk("b",15)}${mk("r",10)}</p>
+  <p class="orn">✦ ✦ ✦</p>
+`));
+
+document.getElementById("book").innerHTML=pages.join("");
+window.__ready=true;
+
+/* =====================================================================
+   INTERACTIVE LAYER — help buttons and visual explainers (no audio)
+   ===================================================================== */
+/* Optional: a short video for any letter. Put the file in the "videos" folder
+   and add a line here, for example:  ba:"videos/ba.mp4",                       */
+const VIDEOS=new Proxy({},{get:()=>1});   /* every letter has a 3D makharij view (makharij-player.html) */
+
+const DOTS={alif:"No dots — it stands straight",ba:"1 dot below",ta:"2 dots on top",tha:"3 dots on top",jeem:"1 dot in its tummy",hha:"No dot",kha:"1 dot on top",
+ dal:"No dot",dhal:"1 dot on top",ra:"No dot",zay:"1 dot on top",seen:"No dots",sheen:"3 dots on top",sad:"No dot",dad:"1 dot on top",tta:"No dot",zza:"1 dot on top",
+ ain:"No dot",ghain:"1 dot on top",fa:"1 dot on top",qaf:"2 dots on top",kaf:"No dots — a small mark inside",lam:"No dots",meem:"No dots",noon:"1 dot on top",
+ waw:"No dots",ha:"No dots",hamza:"Small — it always sits alone",ya:"No dots alone — 2 dots below when it joins"};
+const DOTLESS={"ب":"ٮ","ت":"ٮ","ث":"ٮ","ن":"ں","ج":"ح","خ":"ح","ذ":"د","ز":"ر","ش":"س","ض":"ص","ظ":"ط","غ":"ع","ف":"ڡ","ق":"ٯ"};
+const VFAM=[["ba","ta","tha","noon"],["jeem","hha","kha"],["dal","dhal"],["ra","zay"],["seen","sheen"],["sad","dad"],["tta","zza"],["ain","ghain"],["fa","qaf"]];
+const VF={}; VFAM.forEach(f=>f.forEach(id=>VF[id]=f));
+const SND={alif:"",ba:"b",ta:"t",tha:"th",jeem:"j",hha:"ḥ",kha:"kh",dal:"d",dhal:"dh",ra:"r",zay:"z",seen:"s",sheen:"sh",sad:"ṣ",dad:"ḍ",tta:"ṭ",zza:"ẓ",
+ ain:"ʿ",ghain:"gh",fa:"f",qaf:"q",kaf:"k",lam:"l",meem:"m",noon:"n",waw:"w",ha:"h",hamza:"",ya:"y"};
+const HEAVYX=new Set(["kha","sad","dad","tta","zza","ghain","qaf"]);
+const FORMN={S:"Start",M:"Middle",E:"End",A:"Alone"};
+const HN={fatha:"Fatha",kasra:"Kasra",damma:"Damma"}, HU={fatha:"Zabar",kasra:"Zair",damma:"Paish"}, HV={fatha:"a",kasra:"i",damma:"u"};
+const HW={fatha:"a small line ON TOP",kasra:"a small line BELOW",damma:"a small curl ON TOP"};
+const EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+/* ---------- makharij: where each letter comes from (book pages 4–5) ---------- */
+const ZONES={
+ throatLow:{x:383,y:440,area:"throat",label:"Throat — the part nearest the chest",book:"pronounced from that part of the throat which is nearest to the chest"},
+ throatMid:{x:381,y:352,area:"throat",label:"Throat — the middle",book:"pronounced from the middle of the throat"},
+ throatUp:{x:379,y:262,area:"throat",label:"Throat — the part nearest the mouth",book:"pronounced from the part of the throat which is nearest to the mouth"},
+ qaf:{x:352,y:206,area:"top",label:"Root (back) of the tongue",book:"pronounced from the root of the tongue and the voice box"},
+ kaf:{x:314,y:191,area:"top",label:"Back of the tongue, a little nearer the mouth than Qaaf",book:"pronounced slightly away from the Makhraj of Qaaf, towards the mouth"},
+ tongueMid:{x:222,y:183,area:"top",label:"Middle of the tongue + roof of the mouth",book:"pronounced from the middle of the tongue when it clicks with the upper inside of the mouth"},
+ tongueEdge:{x:270,y:186,area:"top",label:"Edge of the tongue + upper side teeth",book:"pronounced as the right edge of the tongue touches the upper right side teeth"},
+ tipGums:{x:142,y:190,area:"front",label:"Tip of the tongue + gums of the upper front teeth",book:"pronounced when the tip of the tongue touches the gums of the upper front teeth"},
+ tipRoot:{x:126,y:202,area:"front",label:"Tip of the tongue + root of the upper teeth",book:"pronounced when the tip of the tongue touches the root of the upper teeth"},
+ tipEnd:{x:112,y:235,area:"front",label:"Tip of the tongue + end (edge) of the upper teeth",book:"pronounced when the tip of the tongue touches the end of the upper teeth"},
+ tipBack:{x:124,y:224,area:"front",label:"Tip of the tongue + back of the front teeth (a whistle sound)",book:"pronounced when the tip of the tongue touches the back of the teeth"},
+ lipTeeth:{x:96,y:241,area:"front",label:"Upper front teeth + middle of the lower lip",book:"pronounced when the tip of the upper front teeth touches the middle of the lower lip"},
+ lips:{x:61,y:224,area:"front",label:"Both lips join together",book:"pronounced by joining the lips together"},
+ lipsRound:{x:57,y:224,area:"front",label:"The lips are made round",book:"pronounced by rounding the lips"},
+ mouthSpace:{x:232,y:184,area:"top",label:"The empty space inside the mouth",book:"pronounced from the empty space inside the mouth"}
+};
+const ZONE_LETTERS={};
+for(const id in ZONE_OF){ (ZONE_LETTERS[ZONE_OF[id]]=ZONE_LETTERS[ZONE_OF[id]]||[]).push(id); }
+
+function wrapText(t,n){ const out=[]; let line=""; for(const w of t.split(" ")){ if((line+" "+w).trim().length>n&&line){ out.push(line); line=w; } else line=(line+" "+w).trim(); } if(line) out.push(line); return out; }
+const MOUTH_BASE=`
+ <path d="M200 0 C170 30 110 60 62 92 C40 104 42 124 68 130 C82 134 84 142 78 156 C70 172 52 186 52 204 C52 214 58 218 64 220 L64 228 C56 232 48 244 52 258 C56 272 74 276 80 288 C84 300 70 316 78 336 C88 360 140 372 200 372 C250 372 285 395 300 430 L306 520 L520 520 C548 430 556 250 540 120 C532 70 512 30 486 0 Z" fill="#F8DCC6" stroke="#C99A7E" stroke-width="2.5"/>
+ <path d="M62 222 L104 212 L104 196 C130 186 145 178 160 176 C210 158 270 150 320 152 C360 156 392 178 402 215 L410 520 L350 520 L342 330 C330 320 300 318 260 316 C200 312 150 300 118 282 L106 250 L62 228 Z" fill="#5A2430"/>
+ <path d="M160 176 C210 158 270 150 320 152" fill="none" stroke="#F3C4B4" stroke-width="8" stroke-linecap="round"/>
+ <path d="M320 152 C350 154 372 166 384 188 C390 200 386 214 378 212 C372 210 368 196 352 182 C340 172 330 166 318 166 Z" fill="#EBA6A4"/>
+ ${[182,212,242,272].map(x=>`<rect x="${x}" y="${168-(x-182)*0.06}" width="25" height="15" rx="5" fill="#FFFDF5" stroke="#B9AE9C" stroke-width="1.5" opacity=".9"/>`).join("")}
+ <path d="M124 238 C150 222 196 204 250 199 C300 195 334 202 345 228 C352 255 348 292 340 320 C300 318 230 312 180 304 C150 298 126 280 120 262 C118 252 119 244 124 238 Z" fill="#E8858A" stroke="#B9535C" stroke-width="2.5"/>
+ <path d="M340 318 C350 300 362 296 367 308 C362 312 352 316 344 322 Z" fill="#EBA6A4"/>
+ <path d="M348 428 L372 422 M348 446 L372 452" stroke="#EBA6A4" stroke-width="4" stroke-linecap="round"/>
+ <path d="M100 190 C110 184 124 184 134 190 C128 197 112 199 100 197 Z" fill="#F0A3A1"/>
+ <path d="M104 196 C112 192 120 192 124 196 L122 226 C120 234 114 238 108 236 C104 230 103 214 104 196 Z" fill="#FFFDF5" stroke="#9E9585" stroke-width="1.8"/>
+ <path d="M106 246 C110 240 116 240 120 244 L124 274 C116 278 110 278 106 274 Z" fill="#FFFDF5" stroke="#9E9585" stroke-width="1.8"/>
+ <path d="M103 270 C112 266 122 266 128 272 L124 284 L104 282 Z" fill="#F0A3A1"/>
+ <path d="M56 190 C52 198 52 212 64 220 L102 213 L102 199 C86 199 68 196 56 190 Z" fill="#D9787A"/>
+ <path d="M64 228 C56 232 48 244 52 258 C56 268 70 272 80 270 C92 262 100 252 104 246 L104 236 Z" fill="#D9787A"/>
+ <text x="6" y="228" font-family="Source Sans 3, sans-serif" font-size="14" font-weight="700" fill="#8A8170">Lips</text>
+ <text x="196" y="140" font-family="Source Sans 3, sans-serif" font-size="14" font-weight="700" fill="#A27E68">Roof of the mouth</text>
+ <text x="230" y="268" font-family="Source Sans 3, sans-serif" font-size="16" font-weight="700" fill="#fff">Tongue</text>
+ <text x="378" y="506" text-anchor="middle" font-family="Source Sans 3, sans-serif" font-size="14" font-weight="700" fill="#fff">Throat</text>
+ <text x="140" y="120" font-family="Source Sans 3, sans-serif" font-size="13" font-weight="700" fill="#A27E68">Teeth</text>
+ <path d="M150 124 L118 192" stroke="#C9A99A" stroke-width="1.5"/>`;
+function mouthSVG(zs){
+  const slots={front:0,top:0,throat:0}; let marks="", labels="";
+  zs.forEach((zid,i)=>{
+    const z=ZONES[zid]; if(!z) return;
+    const num=zs.length>1?i+1:"";
+    const k=slots[z.area]++;
+    const w=z.area==="throat"?172:z.area==="top"?262:282;
+    const lines=wrapText((num?num+". ":"")+z.label, z.area==="throat"?19:z.area==="top"?30:32);
+    const h=14+lines.length*19;
+    let bx,by,ax,ay;
+    if(z.area==="front"){ bx=10; by=388+k*(h+8); ax=bx+60; ay=by; }
+    else if(z.area==="top"){ bx=330; by=8+k*(h+8); ax=bx; ay=by+h/2; }
+    else { bx=424; by=z.y-h/2; ax=bx; ay=by+h/2; }
+    labels+=`<line x1="${z.x}" y1="${z.y}" x2="${ax}" y2="${ay}" stroke="#C9A227" stroke-width="2.5" stroke-dasharray="6 4"/>
+      <rect x="${bx}" y="${by}" width="${w}" height="${h}" rx="9" fill="#0B3D2E" stroke="#C9A227" stroke-width="1.5"/>
+      <text font-family="Source Sans 3, sans-serif" font-size="15.5" font-weight="700" fill="#FAF6EE">${lines.map((t,j)=>`<tspan x="${bx+11}" y="${by+21+j*19}">${t}</tspan>`).join("")}</text>`;
+    if(zid==="mouthSpace") marks+=`<path class="zglow" d="M150 196 C200 172 270 166 330 172 C300 186 230 192 150 206 Z"/>`;
+    else marks+=`<circle class="zring" cx="${z.x}" cy="${z.y}" r="15"/><circle cx="${z.x}" cy="${z.y}" r="6.5" fill="#FFD43B" stroke="#0B3D2E" stroke-width="2"/>`;
+  });
+  return `<svg viewBox="0 0 600 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side view of the mouth and throat">${MOUTH_BASE}${labels}${marks}</svg>`;
+}
+
+/* ---------- names ---------- */
+function nameOf(p){
+  if(p.ch==="ة") return "Round Ta"; if(p.ch==="أ") return "Hamza on Alif"; if(p.ch==="ؤ") return "Hamza on Waaw"; if(p.ch==="ئ") return "Hamza on Yaa";
+  return L[p.id].en;
+}
+const isoOf=p=>p.ch==="ي"?"ی":p.ch;
+const sylOf=p=>{ const h=harakaOfX(p); const v=h?HV[h]:""; return (p.id==="alif"||p.id==="hamza")?v:SND[p.id]+v; };
+const harakaOfX=p=>p.m.includes(FATHA)?"fatha":p.m.includes(KASRA)?"kasra":p.m.includes(DAMMA)?"damma":null;
+
+/* ---------- pop-up shell ---------- */
+const X={list:[],i:0,tok:0,timer:null,space:null};
+const xm=document.getElementById("xm"), xBody=document.getElementById("xBody"), xCtl=document.getElementById("xCtl");
+function stopTimers(){ X.tok++; clearTimeout(X.timer); X.timer=null; }
+function openX(el){
+  const pg=el.closest(".page");
+  X.list=[...pg.querySelectorAll("[data-x]")]; X.i=X.list.indexOf(el);
+  xm.hidden=false; document.body.style.overflow="hidden"; showX();
+}
+function closeX(){ stopTimers(); xm.hidden=true; xBody.innerHTML=""; document.body.style.overflow=""; }
+function moveX(d){ const n=X.i+d; if(n<0||n>=X.list.length) return; X.i=n; showX(); }
+function showX(){
+  stopTimers(); X.space=null; xCtl.innerHTML="";
+  const el=X.list[X.i], key=el.dataset.x, k=key.indexOf(":"), type=key.slice(0,k), arg=key.slice(k+1);
+  document.getElementById("xCount").textContent=`Box ${X.i+1} of ${X.list.length}`;
+  document.getElementById("xPrev").disabled=X.i===0; document.getElementById("xNext").disabled=X.i===X.list.length-1;
+  ({l:()=>{ const [id,sc]=arg.split(":"); if(sc) letterX(id,sc); else beginnerX(id); }, s:()=>singleX(arg), w:()=>wordX(arg,false), e:()=>wordX(arg,true), h:()=>{ const [id,h]=arg.split(":"); harakaX(id,h); }, m:()=>makhrajX(arg.split(","))})[type]();
+}
+const setTitle=h=>document.getElementById("xTitle").innerHTML=h;
+function ctlBtn(label,fn,pri){ const b=document.createElement("button"); b.className="xbtn"+(pri?" pri":""); b.innerHTML=label; b.onclick=fn; xCtl.appendChild(b); return b; }
+
+/* ---------- 1. letter mini-lesson (about 12 seconds, plays by itself) ---------- */
+function letterX(id,start,note){
+  const l=L[id], fam=VF[id];
+  setTitle(`<bdi class="xa">${l.ch}</bdi> &nbsp;${l.en}`);
+  const S=[];
+  S.push({t:"Letter",h:`<div class="sc meet"><div class="mL" style="color:${l.c}">${l.ch}</div><div><div class="mEn">${l.en}</div><div class="mUr">${l.ur}</div><div class="mInfo">Letter ${ORDER.indexOf(id)+1} of 29</div></div></div>`});
+  const dl=DOTLESS[l.ch];
+  S.push({t:"Dots",h:`<div class="sc">${dl?`<div class="stack"><span class="sl full">${l.ch}</span><span class="sl skel">${dl}</span></div>`:`<div class="mL" style="color:${l.c};font-size:min(40vh,330px)">${l.ch}</div>`}<p class="cap"><b>${DOTS[id]}</b></p></div>`});
+  if(fam) S.push({t:"Look-alikes",h:`<div class="sc"><div class="famrow">${fam.map(x=>`<div class="fc ${x===id?"on":""}"><span class="fl" style="color:${x===id?L[x].c:"#BDB5A3"}">${L[x].ch}</span><b>${L[x].en}</b><small>${DOTS[x]}</small></div>`).join("")}</div><p class="cap">Same body — <b>only the dots are different.</b></p></div>`});
+  let shp;
+  if(l.j==="U") shp=`<div class="shp"><div class="shc"><div class="g" style="color:#7048E8">${l.ch}</div><div class="lbx cA">Alone</div><div class="sub">always</div></div></div><p class="cap">Hamza <b>never joins</b> any letter. Sometimes it sits on a “chair”: <span class="xar">أ ؤ ئ</span></p>`;
+  else{
+    const nj=l.j==="R";
+    const card=(f,lab,cls,sub,same)=>`<div class="shc${same?" same":""}"><div class="g">${formHTML(id,f,same?(f==="A"?"var(--A)":"var(--E)"):undefined)}</div><div class="lbx c${cls}">${lab}</div><div class="sub">${sub||""}</div></div>`;
+    shp=`<div class="shp">${card("A","Alone","A")}${nj?card("A","Start","S","same as alone",true):card("S","Start","S")}${nj?card("E","Middle","M","same as end",true):card("M","Middle","M")}${card("E","End","E")}</div>`;
+    const ex=example(id);
+    if(ex){ const p=analyze(ex.w)[ex.i]; shp+=`<div class="exl">In the book: <span class="xw2">${analyze(ex.w).map((q,j)=>`<span class="${j===ex.i?"":"dim"}" style="${j===ex.i?`color:${SC[q.form]}`:""}">${ptxt(q)}</span>`).join("")}</span> → ${l.en} is at the <span class="chipx c${p.form}">${FORMN[p.form]}</span></div>`; }
+    if(nj) shp+=`<p class="cap">${l.en} <b>never holds hands with the next letter.</b></p>`;
+    else shp+=`<p class="cap">The <b style="color:#A8861A">gold line</b> is its hand — where it joins the next letter.</p>`;
+  }
+  S.push({t:"Shapes",h:`<div class="sc">${note?`<div class="note">${note}</div>`:""}${shp}</div>`});
+  /* last step: the realistic 3D makhraj (tongue / lips / air) with the explanation underneath */
+  S.push({t:"How it’s said · 3D",video:true,h:`<div class="sc"><iframe class="vframe" src="makharij-player.html?l=${id}&embed=1" title="How ${l.en} is said" allow="autoplay; fullscreen"></iframe></div>`});
+  player(S, Math.max(0,S.findIndex(s=>s.t===start)));
+}
+/* ---------- celebration: party poppers from both corners + a big MashaAllah ---------- */
+function celebrate(host){
+  let cv=document.getElementById("confetti");
+  if(!cv){ cv=document.createElement("canvas"); cv.id="confetti"; document.body.appendChild(cv); }
+  const d=window.devicePixelRatio||1, W=innerWidth, H=innerHeight; cv.width=W*d; cv.height=H*d; const c=cv.getContext("2d"); c.setTransform(d,0,0,d,0,0);
+  const cols=["#C9A227","#F2C94C","#098A46","#2FB36B","#E5484D","#1E6FD9","#7048E8","#E8590C"], P=[];
+  const pop=(x,y,from,to)=>{ for(let i=0;i<120;i++){ const a=(from+Math.random()*(to-from))*Math.PI/180, v=13+Math.random()*13;
+    P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:7+Math.random()*8,r:Math.random()*6,vr:(Math.random()-.5)*.5,c:cols[i%cols.length],k:i%3}); } };
+  pop(0,H,-80,-35); pop(W,H,-145,-100); const t0=performance.now();
+  if(host){ const old=host.querySelector(".yay"); if(old) old.remove(); const b=document.createElement("div"); b.className="yay";
+    b.innerHTML=`<div class="yAr">ما شاء الله</div><div class="yEn">MashaAllah! Great! 🎉</div>`; host.appendChild(b);
+    setTimeout(()=>b.classList.add("out"),2600); setTimeout(()=>b.remove(),3200); }
+  (function loop(){ const t=performance.now()-t0; c.clearRect(0,0,W,H);
+    for(const p of P){ p.vy+=0.38; p.vx*=0.99; p.vy*=0.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      c.save(); c.translate(p.x,p.y); c.rotate(p.r); c.fillStyle=p.c; c.globalAlpha=Math.max(0,1-t/3200);
+      if(p.k===0) c.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); else if(p.k===1){ c.beginPath(); c.arc(0,0,p.s/2.6,0,7); c.fill(); } else { c.beginPath(); c.moveTo(0,-p.s/2); c.lineTo(p.s/2,p.s/2); c.lineTo(-p.s/2,p.s/2); c.fill(); }
+      c.restore(); }
+    if(t<3300) requestAnimationFrame(loop); else c.clearRect(0,0,W,H); })();
+}
+/* ---------- 1b. first meeting with a letter (page 3): Meet it -> Trace it -> Find it ---------- */
+const MEMO={alif:"A straight line standing up, like the number 1.",ba:"A boat with 1 dot under it.",ta:"The same boat with 2 dots on top.",tha:"The same boat with 3 dots on top.",
+ jeem:"A hook with 1 dot inside it.",hha:"The same hook with no dot.",kha:"The same hook with 1 dot on top.",dal:"A small bent arm, like a corner.",dhal:"The same corner with 1 dot on top.",
+ ra:"A little slide going down.",zay:"The same slide with 1 dot on top.",seen:"Three little teeth and a bowl.",sheen:"The same teeth with 3 dots on top.",sad:"A long loop and a bowl.",
+ dad:"The same loop and bowl with 1 dot on top.",tta:"A loop with a tall stick standing on it.",zza:"The same loop and stick with 1 dot.",ain:"An open mouth on top and a bowl below.",
+ ghain:"The same as ع with 1 dot on top.",fa:"A small round head with 1 dot on top.",qaf:"A round head with 2 dots and a deep bowl.",kaf:"A tall bent stick with a little mark inside.",
+ lam:"A tall stick with a hook at the bottom.",meem:"A small round head with a tail going down.",noon:"A bowl with 1 dot inside.",waw:"A round head with a curly tail.",
+ ha:"A round face.",hamza:"A tiny letter like a little c with a tail. It never joins.",ya:"A swan swimming on the water."};
+function pickChoices(id){
+  const others=(VF[id]||[]).filter(x=>x!==id).slice(0,2); const k=ORDER.indexOf(id);
+  for(let j=1;others.length<2&&j<60;j++){ const c=ORDER[(k+j*7)%ORDER.length]; if(c&&c!==id&&!others.includes(c)&&L[c]) others.push(c); }
+  const a=[id,...others]; for(let i=a.length-1;i>0;i--){ const r=Math.floor(Math.random()*(i+1)); [a[i],a[r]]=[a[r],a[i]]; } return a;
+}
+function beginnerX(id){
+  const l=L[id], dl=DOTLESS[l.ch];
+  setTitle(`<bdi class="xa">${l.ch}</bdi> &nbsp;${l.en}`);
+  const STEPS=["Meet it","Trace it","Find it"];
+  xBody.innerHTML=`<div class="tabs">${STEPS.map((t,i)=>`<button class="tab" data-i="${i}"><span class="tn">${i+1}</span>${t}</button>`).join("")}</div><div class="stage" id="stg"></div>`;
+  const tabs=[...xBody.querySelectorAll(".tab")], stg=document.getElementById("stg");
+  let cur=0;
+  const meet=()=>{ stg.innerHTML=`<div class="sc meet bx">
+      ${dl?`<div class="stack"><span class="sl full">${l.ch}</span><span class="sl skel" style="color:${l.c}">${dl}</span></div>`:`<div class="mL" style="color:${l.c}">${l.ch}</div>`}
+      <div class="bxT"><div class="mEn">${l.en}</div><div class="mUr">${l.ur}</div><div class="memo">${MEMO[id]||""}</div><div class="dotsline">${DOTS[id]||""}</div></div></div>`; };
+  const trace=()=>{
+    stg.innerHTML=`<div class="sc trace"><div class="tw"><canvas class="tg"></canvas><canvas class="tc"></canvas></div>
+      <div class="trow"><div class="tprog"><div class="tbar"><i></i></div><b class="tpct">0% done</b></div>
+      <span class="tdots"></span><span class="tmsg">Trace <b>${l.en}</b> with your finger${dl?": the body first, then the dots.":"."}</span>
+      <button class="xbtn tclr">Clear</button></div></div>`;
+    const tw=stg.querySelector(".tw"), g=stg.querySelector(".tg"), cv=stg.querySelector(".tc"), gx=g.getContext("2d"), ctx=cv.getContext("2d");
+    const bar=stg.querySelector(".tbar i"), pctEl=stg.querySelector(".tpct"), msg=stg.querySelector(".tmsg"), dotsEl=stg.querySelector(".tdots");
+    const pen=(()=>{ const sp=document.createElement("span"); sp.style.color=l.c; tw.appendChild(sp); const c=getComputedStyle(sp).color; sp.remove(); return c; })();
+    const CELL=4; let W=0, H=0, cols=0, rows=0, tgt, comp, sizes=[], body=0, dots=[], near, ink, inside, penR=12, nearR=40, done=false, ready=false;
+    const fontAt=f=>`700 ${f}px "Noto Naskh Arabic"`;
+    async function setup(){
+      try{ await document.fonts.load(fontAt(200),l.ch); }catch(e){}
+      const r=tw.getBoundingClientRect(), d=window.devicePixelRatio||1; W=r.width; H=r.height; if(!W||!H) return;
+      for(const c of [g,cv]){ c.width=Math.round(W*d); c.height=Math.round(H*d); c.getContext("2d").setTransform(d,0,0,d,0,0); }
+      /* size the letter so it fills the board, then place it in the middle */
+      let fs=H; gx.font=fontAt(fs); let m=gx.measureText(l.ch);
+      let w=m.actualBoundingBoxLeft+m.actualBoundingBoxRight, h=m.actualBoundingBoxAscent+m.actualBoundingBoxDescent;
+      fs*=Math.min(H*0.78/h,W*0.8/w); gx.font=fontAt(fs); m=gx.measureText(l.ch);
+      w=m.actualBoundingBoxLeft+m.actualBoundingBoxRight; h=m.actualBoundingBoxAscent+m.actualBoundingBoxDescent;
+      const x=(W-w)/2+m.actualBoundingBoxLeft, y=(H-h)/2+m.actualBoundingBoxAscent;
+      gx.clearRect(0,0,W,H); gx.fillStyle="rgba(11,61,46,.07)"; gx.fillText(l.ch,x,y); gx.lineWidth=3; gx.lineJoin="round"; gx.strokeStyle="#D3C8AE"; gx.strokeText(l.ch,x,y);
+      /* the exact letter shape as a grid of small cells */
+      const off=document.createElement("canvas"); off.width=Math.ceil(W); off.height=Math.ceil(H); const ox=off.getContext("2d"); ox.font=fontAt(fs); ox.fillText(l.ch,x,y);
+      const px=ox.getImageData(0,0,off.width,off.height).data;
+      cols=Math.ceil(W/CELL); rows=Math.ceil(H/CELL); const N=cols*rows; tgt=new Uint8Array(N);
+      for(let j=0;j<rows;j++) for(let i=0;i<cols;i++){ const a=Math.min(off.width-1,i*CELL+2), b=Math.min(off.height-1,j*CELL+2); if(px[(b*off.width+a)*4+3]>110) tgt[j*cols+i]=1; }
+      /* separate the body from each dot (connected parts) */
+      comp=new Int16Array(N).fill(-1); sizes=[];
+      for(let s0=0;s0<N;s0++){ if(!tgt[s0]||comp[s0]>=0) continue; const id=sizes.length; let n=0; const st=[s0]; comp[s0]=id;
+        while(st.length){ const q=st.pop(); n++; const qi=q%cols, qj=(q-qi)/cols;
+          for(const [di,dj] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,-1],[1,-1],[-1,1]]){ const ni=qi+di, nj=qj+dj; if(ni<0||nj<0||ni>=cols||nj>=rows) continue; const nq=nj*cols+ni; if(tgt[nq]&&comp[nq]<0){ comp[nq]=id; st.push(nq); } } }
+        sizes.push(n); }
+      body=sizes.indexOf(Math.max(...sizes)); dots=sizes.map((n,k)=>k).filter(k=>k!==body&&sizes[k]>=6);
+      penR=Math.max(9,H*0.026); nearR=penR+fs*0.055;
+      /* "inside" = on the letter or within a pen-width of its edge */
+      inside=new Uint8Array(N); const rIn=Math.ceil((penR+12)/CELL);
+      for(let s0=0;s0<N;s0++){ if(!tgt[s0]) continue; const si=s0%cols, sj=(s0-si)/cols;
+        for(let dj=-rIn;dj<=rIn;dj++) for(let di=-rIn;di<=rIn;di++){ if(di*di+dj*dj>rIn*rIn) continue; const ni=si+di, nj=sj+dj; if(ni>=0&&nj>=0&&ni<cols&&nj<rows) inside[nj*cols+ni]=1; } }
+      ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=pen; ctx.fillStyle=pen; ctx.lineWidth=penR*2;
+      reset(); ready=true; tw.__trace={tgt,comp,cols,rows,CELL,body,dots,sizes};   /* read by the self-test only */
+    }
+    function reset(){ ctx.clearRect(0,0,W,H); near=new Uint8Array(cols*rows); ink=new Uint8Array(cols*rows); done=false; const y=stg.querySelector(".yay"); if(y) y.remove(); update(); }
+    function mark(a,b){
+      const R=nearR, x0=Math.max(0,Math.floor((Math.min(a[0],b[0])-R)/CELL)), x1=Math.min(cols-1,Math.ceil((Math.max(a[0],b[0])+R)/CELL));
+      const y0=Math.max(0,Math.floor((Math.min(a[1],b[1])-R)/CELL)), y1=Math.min(rows-1,Math.ceil((Math.max(a[1],b[1])+R)/CELL));
+      const vx=b[0]-a[0], vy=b[1]-a[1], L2=vx*vx+vy*vy||1;
+      for(let j=y0;j<=y1;j++) for(let i=x0;i<=x1;i++){ const cx=i*CELL+2, cy=j*CELL+2; let t=((cx-a[0])*vx+(cy-a[1])*vy)/L2; t=t<0?0:t>1?1:t;
+        const dx=cx-(a[0]+t*vx), dy=cy-(a[1]+t*vy), dd=dx*dx+dy*dy; if(dd<=R*R){ near[j*cols+i]=1; if(dd<=penR*penR) ink[j*cols+i]=1; } }
+    }
+    function update(){
+      if(!tgt) return;
+      const cov=new Array(sizes.length).fill(0); let inkN=0, outN=0;
+      for(let s0=0;s0<tgt.length;s0++){ if(tgt[s0]&&near[s0]) cov[comp[s0]]++; if(ink[s0]){ inkN++; if(!inside[s0]) outN++; } }
+      const fr=k=>cov[k]/sizes[k], bodyF=fr(body), dotsDone=dots.filter(k=>fr(k)>=0.7).length;
+      const parts=[body,...dots], tot=parts.reduce((a,k)=>a+sizes[k],0), got=parts.reduce((a,k)=>a+cov[k],0);
+      const outside=inkN?outN/inkN:0, ok=bodyF>=0.9&&dotsDone===dots.length&&outside<=0.3;
+      let pct=Math.round(100*got/tot*(outside>0.3?Math.max(0,1-(outside-0.3)*2):1)); if(ok) pct=100; else pct=Math.min(pct,99);
+      bar.style.width=pct+"%"; bar.style.background=ok?"#2FB36B":outside>0.3?"#E8590C":"#C9A227"; pctEl.textContent=pct+"% done";
+      dotsEl.innerHTML=dots.length?`Dots: <b>${dotsDone} / ${dots.length}</b>`:"";
+      if(ok){ msg.innerHTML=`<b style="color:#098A46">MashaAllah! Perfect tracing.</b>`; if(!done){ done=true; celebrate(stg); } }
+      else if(inkN>25&&outside>0.3) msg.innerHTML=`<b style="color:#C2410C">Stay inside the letter 🙂</b> Only the letter counts.`;
+      else if(bodyF>=0.9&&dots.length) msg.innerHTML=`Great! Now the <b>dot${dots.length>1?"s":""}</b>.`;
+      else if(inkN) msg.innerHTML="Keep going…";
+    }
+    let down=false, last=null, tmr=0;
+    const pt=e=>{ const r=cv.getBoundingClientRect(); return [e.clientX-r.left,e.clientY-r.top]; };
+    cv.onpointerdown=e=>{ if(!ready) return; down=true; try{ cv.setPointerCapture(e.pointerId); }catch(_){} last=pt(e); ctx.beginPath(); ctx.arc(last[0],last[1],penR,0,7); ctx.fill(); mark(last,last); update(); };
+    cv.onpointermove=e=>{ if(!down) return; const p=pt(e); ctx.beginPath(); ctx.moveTo(last[0],last[1]); ctx.lineTo(p[0],p[1]); ctx.stroke(); mark(last,p); last=p;
+      if(!tmr) tmr=setTimeout(()=>{ tmr=0; update(); },120); };
+    cv.onpointerup=cv.onpointercancel=()=>{ if(!down) return; down=false; update(); };
+    stg.querySelector(".tclr").onclick=reset;
+    window.onresize=()=>{ if(stg.querySelector(".tw")===tw) setup(); };
+    setTimeout(setup,30);
+  };
+  const find=()=>{
+    const ch=pickChoices(id);
+    stg.innerHTML=`<div class="sc find"><p class="fq">Which one is <b>${l.en}</b> <span class="xar">${l.ur}</span>?</p>
+      <div class="famrow">${ch.map(c=>`<button class="fc fbtn" data-id="${c}"><span class="fl">${L[c].ch}</span></button>`).join("")}</div>
+      <p class="cap fres">&nbsp;</p><button class="xbtn fagain">↻ Again</button></div>`;
+    const res=stg.querySelector(".fres");
+    stg.querySelectorAll(".fbtn").forEach(b=>b.onclick=()=>{ const c=b.dataset.id;
+      stg.querySelectorAll(".fbtn").forEach(x=>x.classList.remove("no"));
+      if(c===id){ b.classList.add("ok"); res.className="cap fres good"; res.innerHTML=`MashaAllah! ⭐ That is <b>${l.en}</b>.`; celebrate(stg); }
+      else { void b.offsetWidth; b.classList.add("no"); res.className="cap fres bad"; res.innerHTML=`Try again. That one is <b>${L[c].en}</b>.`; } });
+    stg.querySelector(".fagain").onclick=find;
+  };
+  const back=ctlBtn("← Back",()=>go(cur-1)), next=ctlBtn("Next step →",()=>go(cur+1),true);
+  const go=i=>{ if(i<0||i>2) return; cur=i; tabs.forEach((t,j)=>t.classList.toggle("on",j===i)); back.disabled=i===0; next.disabled=i===2; [meet,trace,find][i](); };
+  tabs.forEach((t,j)=>t.onclick=()=>go(j));
+  X.space=()=>go(Math.min(2,cur+1));
+  go(0);
+}
+function singleX(t){
+  const ch=[...t].find(c=>CH[c]); const id=CH[ch].id;
+  const NOTE={"ک":"<b>ک</b> is Kaaf written another way (as in Urdu) — it is the same letter.","ڪ":"<b>ڪ</b> is Kaaf in a decorative shape — it is the same letter.","ة":"<b>ة</b> is Round Ta — it only comes at the end of a word.","أ":"Hamza sitting on an Alif “chair”.","ؤ":"Hamza sitting on a Waaw “chair”.","ئ":"Hamza sitting on a Yaa “chair”."};
+  let note=NOTE[ch];
+  if(!note&&t.includes(ZWJ)) note=`Here ${L[id].en} is in its <b>end</b> shape.`;
+  if(!note&&t.includes(TAT)) note=`Here ${L[id].en} is in its <b>start</b> shape.`;
+  letterX(id,"Shapes",note);
+}
+function player(S,start){
+  xBody.innerHTML=`<div class="tabs">${S.map((s,i)=>`<button class="tab" data-i="${i}">${s.t}<span class="pb"></span></button>`).join("")}</div><div class="stage" id="stg"></div>`;
+  const tabs=[...xBody.querySelectorAll(".tab")], stg=document.getElementById("stg");
+  let cur=start, playing=!S[start].video;
+  const DUR=3000;
+  const pbtn=ctlBtn("",()=>{ playing=!playing; if(playing&&cur>=S.length-1) cur=0; go(cur,true); },true);
+  ctlBtn("↻ From the start",()=>{ playing=true; go(0,true); });
+  const go=(i,fresh)=>{
+    stopTimers(); cur=i;
+    tabs.forEach((t,j)=>{ t.classList.toggle("on",j===i); const pb=t.querySelector(".pb"); pb.style.transition="none"; pb.style.width=j<i?"100%":"0"; });
+    if(fresh!==false) stg.innerHTML=S[i].h;
+    pbtn.innerHTML=playing?"❚❚ Pause":"▶ Play";
+    if(playing&&!S[i].video){
+      const pb=tabs[i].querySelector(".pb"); void pb.offsetWidth; pb.style.transition=`width ${DUR}ms linear`; pb.style.width="100%";
+      const my=X.tok; X.timer=setTimeout(()=>{ if(my!==X.tok) return; if(i<S.length-1&&!S[i+1].video) go(i+1); else { playing=false; pbtn.innerHTML="▶ Play"; } },DUR);
+    }
+  };
+  tabs.forEach((t,j)=>t.onclick=()=>{ playing=false; go(j); });
+  X.space=()=>pbtn.click();
+  go(start);
+}
+
+/* ---------- 2. word / compound / exercise word: break into letters ---------- */
+function wordX(w,sounds){
+  const ps=analyze(w);
+  setTitle(`<bdi class="xa">${w}</bdi> &nbsp;${sounds?`${ps.length} sounds`:`${ps.length} letters joined`}`);
+  const col=p=>sounds?(HC[harakaOfX(p)]||"#2B2A26"):SC[p.form];
+  const piece=p=>`<div class="xp"><span class="g" style="color:${col(p)}">${ptxt(p)}</span><div class="lb"><span class="iso">${sounds?p.ch+p.m:isoOf(p)}</span><b>${sounds?sylOf(p):nameOf(p)}</b>${sounds?(harakaOfX(p)?`<span class="chipx" style="background:${HC[harakaOfX(p)]}">${HN[harakaOfX(p)]}</span>`:""):`<span class="chipx c${p.form}">${FORMN[p.form]}</span>`}</div></div>`;
+  let why=[];
+  if(!sounds){
+    ps.forEach((p,i)=>{ const n=ps[i+1]; if(n&&p.j==="R") why.push(`${nameOf(p)} never holds hands with the next letter, so ${nameOf(n)} starts again.`); });
+    if(ps.some(p=>p.id==="hamza")) why.push("Hamza never joins any letter.");
+    if(/لا/.test(w)) why.push("Laam + Alif are written together like this: لا");
+  }
+  const eqA=ps.map(p=>`<span style="color:${col(p)}">${sounds?p.ch+p.m:isoOf(p)}</span>`).join("<i>+</i>")+"<i>=</i>"+`<span>${w}</span>`;
+  const eqE=sounds?`${ps.map(sylOf).join(" + ")} = <span style="color:#098A46">${ps.map(sylOf).join("")}</span> — now read the whole word.`:ps.map(nameOf).join(" + ");
+  xBody.innerHTML=`${sounds?`<div class="lgx"><span class="chipx" style="background:var(--hf)">Fatha</span><span class="chipx" style="background:var(--hk)">Kasra</span><span class="chipx" style="background:var(--hd)">Damma</span></div>`
+     :`<div class="lgx"><span class="chipx cA">Alone</span><span class="chipx cS">Start</span><span class="chipx cM">Middle</span><span class="chipx cE">End</span></div>`}
+    <div class="wx"><div class="xw" id="xw">${ps.map(piece).join("")}</div>
+    <div class="weq" id="weq"><div class="eqA">${eqA}</div><div class="eqE">${eqE}</div>${why.map(t=>`<div class="note">${t}</div>`).join("")}</div></div>`;
+  const xw=document.getElementById("xw"), weq=document.getElementById("weq");
+  let broken=false;
+  const tb=ctlBtn("✂ Break it",()=>set(!broken),true);
+  ctlBtn("↻ Play again",()=>{ set(false); run(); });
+  const set=b=>{ broken=b; xw.classList.toggle("broken",b); weq.classList.toggle("on",b); tb.innerHTML=b?"🔗 Join it":"✂ Break it"; };
+  const run=()=>{ stopTimers(); const my=X.tok; X.timer=setTimeout(()=>{ if(my===X.tok) set(true); },900); };
+  X.space=()=>tb.click();
+  if(ps.length>1) run(); else set(true);
+}
+
+/* ---------- 3. letter with a sign (pages 13–14) ---------- */
+function harakaX(id,h){
+  const base=id==="alif"?"ا":L[id].ch, s=(id==="alif"||id==="hamza"?"":SND[id])+HV[h];
+  setTitle(`<bdi class="xa">${base+HM[h]}</bdi> &nbsp;${L[id].en} + ${HN[h]} (${HU[h]})`);
+  const rules=[];
+  if(id==="alif") rules.push("<b>Alif with a sign is read as Hamza:</b> <span class='xar'>اَ اِ اُ</span> = a · i · u");
+  if(id==="ra") rules.push(h==="kasra"?"<b>Ra with Kasra is thin</b> — read it softly.":"<b>Ra with Fatha or Damma is heavy</b> — read it with a full mouth.");
+  if(HEAVYX.has(id)) rules.push("<b>Heavy letter</b> — always read with the mouth full.");
+  rules.push(`<b>Don’t drag the sound:</b> say «${s}», not «${s}${HV[h].repeat(3)}».`);
+  xBody.innerHTML=`<div class="hx">
+    <div class="hbig"><span class="hg" style="color:${HC[h]}">${base+HM[h]}</span><span class="hg base">${base}</span><div class="htag ${h==="kasra"?"bot":"top"}" style="background:${HC[h]}">${HN[h]} (${HU[h]}) — ${HW[h]}</div></div>
+    <div class="hinfo"><div class="hsnd"><span class="xar" style="font-size:1.4em">${base+HM[h]}</span> = <b>${s}</b></div>
+      <div class="h3">${["fatha","kasra","damma"].map(x=>`<div class="t ${x===h?"on":""}"><span style="color:${HC[x]}">${base+HM[x]}</span><span style="color:#1F1E1B">${base}</span><small>${(id==="alif"||id==="hamza"?"":SND[id])+HV[x]}</small></div>`).join("")}</div>
+      ${rules.map(r=>`<div class="rule">${r}</div>`).join("")}</div></div>`;
+}
+
+/* ---------- 4. makharij (pages 4–6) ---------- */
+function makhrajX(zs){
+  const letters=zs.flatMap(z=>ZONE_LETTERS[z]||[]);
+  setTitle(`<bdi class="xa">${letters.map(id=>L[id].ch).join(" ")}</bdi> &nbsp;Where the sound comes from`);
+  const S=zs.map(z=>({t:`<span class="xar" style="font-size:1.2em">${(ZONE_LETTERS[z]||[]).map(id=>L[id].ch).join(" ")}</span>`,video:true,
+    h:`<div class="sc"><iframe class="vframe" src="makharij-player.html?z=${z}&embed=1" title="Makhraj" allow="autoplay; fullscreen"></iframe></div>`}));
+  player(S,0);
+}
+
+/* ---------- buttons, toolbar, keys ---------- */
+document.querySelectorAll("#book [data-x]").forEach(el=>{
+  const b=document.createElement("button"); b.type="button"; b.className="hs"; b.setAttribute("aria-label","Explain this"); b.innerHTML=EYE;
+  if(el.matches("p.mx")) el.prepend(b); else el.appendChild(b);
+});
+document.getElementById("book").addEventListener("click",e=>{ const el=e.target.closest("[data-x]"); if(el){ e.preventDefault(); openX(el); } });
+document.getElementById("xClose").onclick=closeX;
+document.getElementById("xNext").onclick=()=>moveX(1);
+document.getElementById("xPrev").onclick=()=>moveX(-1);
+xm.addEventListener("click",e=>{ if(e.target===xm) closeX(); });
+
+const PAGES=[...document.querySelectorAll("#book .page")];
+const pSel=document.getElementById("pSel");
+pSel.innerHTML=PAGES.map((p,i)=>{ const no=p.querySelector(".hdr .no"); return `<option value="${i}">${no?"Page "+no.textContent:"Cover"}</option>`; }).join("");
+let fitMode="page";
+const PW=148*96/25.4, PH=210*96/25.4;
+function fit(){
+  const tb=document.querySelector(".tb").offsetHeight;
+  const z=fitMode==="page"?Math.max(.4,(innerHeight-tb-44)/PH):Math.max(.4,Math.min(innerWidth-28,1150)/PW);
+  document.getElementById("book").style.setProperty("--z",z.toFixed(3));
+}
+function goPage(i){ i=Math.max(0,Math.min(PAGES.length-1,i)); const tb=document.querySelector(".tb").offsetHeight; scrollTo({top:PAGES[i].getBoundingClientRect().top+scrollY-tb-12,behavior:"smooth"}); pSel.value=i; }
+function curPage(){ let c=0; PAGES.forEach((p,i)=>{ if(p.getBoundingClientRect().top<innerHeight*.5) c=i; }); return c; }
+addEventListener("scroll",()=>{ pSel.value=curPage(); },{passive:true});
+addEventListener("resize",fit);
+pSel.onchange=()=>goPage(+pSel.value);
+document.getElementById("pPrev").onclick=()=>goPage(curPage()-1);
+document.getElementById("pNext").onclick=()=>goPage(curPage()+1);
+document.getElementById("hsBtn").onclick=e=>{ const off=document.body.classList.toggle("nohs"); e.currentTarget.classList.toggle("on",!off); };
+document.getElementById("fitBtn").onclick=e=>{ fitMode=fitMode==="page"?"width":"page"; e.currentTarget.querySelector("span").textContent=fitMode==="page"?"Fit width":"Fit page"; const c=curPage(); fit(); setTimeout(()=>goPage(c),50); };
+document.getElementById("fsBtn").onclick=()=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(e){} };
+document.getElementById("hsBtn").insertAdjacentHTML("afterbegin",EYE);
+addEventListener("keydown",e=>{
+  if(!xm.hidden){
+    if(e.key==="Escape") closeX();
+    else if(e.key==="ArrowLeft"){ e.preventDefault(); moveX(1); }
+    else if(e.key==="ArrowRight"){ e.preventDefault(); moveX(-1); }
+    else if(e.key===" "&&X.space){ e.preventDefault(); X.space(); }
+    return;
+  }
+  if(e.target.tagName==="SELECT") return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){ e.preventDefault(); goPage(curPage()+1); }
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){ e.preventDefault(); goPage(curPage()-1); }
+});
+fit();
+
+</script>
+<script src="practice.js?v=1111121757"></script>
+<script>
+/* if this page was opened without its folder (for example straight from inside a zip), say so clearly */
+addEventListener("load",function(){ setTimeout(function(){ if(window.EQPractice||window.__SINGLE) return;
+  var d=document.createElement("div"); d.id="eqMissing";
+  d.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(11,61,46,.97);color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Arial,sans-serif";
+  d.innerHTML='<div style="max-width:660px;font-size:20px;line-height:1.5"><div style="font-size:30px;font-weight:800;color:#F2D57A;margin-bottom:10px">&#9888; Some files are missing</div>'+
+   'This page was opened without the rest of its folder, so the videos, pictures and games cannot load. This happens when it is opened from inside the zip file.'+
+   '<ol><li>Close this page.</li><li>Find the zip file. <b>Right-click it, then choose Extract All</b> (on a Mac: double-click it).</li><li>Open the new folder and double-click <b>START HERE</b>.</li></ol>'+
+   'Or use the single file <b>Easy Qaida.html</b>, which needs no unzipping.<br><br>'+
+   '<button onclick="document.getElementById(\'eqMissing\').remove()" style="font:inherit;padding:8px 18px;border-radius:10px;border:0;cursor:pointer">Continue anyway</button></div>';
+  document.body.appendChild(d); },900); });
+</script>
+</body>
+</html>

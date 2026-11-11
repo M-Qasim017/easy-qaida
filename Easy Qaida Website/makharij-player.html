@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Makharij Player</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+:root{--gold:#FFC83D;--air:#FF8A3D;--nose:#4ADE80}
+*{box-sizing:border-box}
+html,body{margin:0;background:#0d1012;color:#fff;font-family:'Source Sans 3',sans-serif}
+.wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px}
+.W{width:min(96vw,calc((100vh - 250px)*16/9))}
+.views{display:flex;gap:8px;justify-content:center}
+.views[hidden]{display:none}
+.views button{font:inherit;font-weight:800;font-size:14px;border:1.5px solid #2c3d35;border-radius:999px;padding:5px 14px;cursor:pointer;background:#14201b;color:#cfe0d6}
+.views button.on{background:#C9A227;border-color:#C9A227;color:#0B3D2E}
+.stage{position:relative;aspect-ratio:16/9;background:#111;border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.cam{position:absolute;inset:0;transition:transform 1.1s cubic-bezier(.45,0,.2,1)}
+.stage video,.stage img.still{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.lbl{font-weight:700;fill:#fff;paint-order:stroke;stroke:rgba(0,0,0,.65)}
+.dot{fill:#fff;stroke:rgba(255,255,255,.35)}
+.lead{stroke:#fff;opacity:.9}
+.lbl.gold{fill:var(--gold)}
+.ring{fill:none;stroke:var(--gold);transform-box:fill-box;transform-origin:center;animation:ring 1.4s ease-out infinite}
+.core{fill:var(--gold);filter:drop-shadow(0 0 6px var(--gold))}
+@keyframes ring{0%{transform:scale(.4);opacity:1}100%{transform:scale(2.6);opacity:0}}
+.glow{fill:rgba(255,200,61,.25);stroke:var(--gold);animation:gl 1.1s ease-in-out infinite alternate}
+@keyframes gl{from{opacity:.45}to{opacity:1}}
+.flow{fill:none;stroke-linecap:round;opacity:.95;animation:dash .9s linear infinite}
+.flow.air{stroke:var(--air);filter:drop-shadow(0 0 5px var(--air))}
+.flow.nose{stroke:var(--nose);filter:drop-shadow(0 0 5px var(--nose))}
+@keyframes dash{to{stroke-dashoffset:-48}}
+.puff{fill:var(--air);opacity:0;transform-box:fill-box;transform-origin:center}
+.on .puff{animation:puff 1.2s ease-out infinite}
+.puffF{fill:var(--air);opacity:0;transform-box:fill-box;transform-origin:center}
+.on .puffF{animation:puffF 1.3s ease-out infinite}
+@keyframes puffF{0%{opacity:.8;transform:scale(.3)}100%{opacity:0;transform:scale(2.2)}}
+.hum{fill:none;stroke:var(--nose);transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 0 5px var(--nose));animation:ring 1.2s ease-out infinite}
+.zone{fill:rgba(255,200,61,.38);stroke:var(--gold);filter:drop-shadow(0 0 7px var(--gold));animation:gl 1s ease-in-out infinite alternate}
+.band{fill:none;stroke:rgba(255,200,61,.6);stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 7px var(--gold));animation:gl 1s ease-in-out infinite alternate}
+svg .ar{font-family:'Noto Naskh Arabic',serif}
+@keyframes puff{0%{opacity:.9;transform:translate(0,0) scale(.5)}100%{opacity:0;transform:translate(-30px,2px) scale(1.6)}}
+.wave{fill:none;stroke:#fff;stroke-linecap:round;opacity:0}
+.on .wave{animation:wave 1s ease-out infinite}
+@keyframes wave{0%{opacity:.9;transform:translate(0,0)}100%{opacity:0;transform:translate(-26px,0)}}
+.arrow{fill:none;stroke:var(--gold);stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 3px var(--gold));animation:nudge 1s ease-in-out infinite}
+@keyframes nudge{0%{opacity:.25;transform:translate(0,0)}60%{opacity:1}100%{opacity:0;transform:translate(var(--nx),var(--ny))}}
+.layer{opacity:0;transition:opacity .45s}
+.layer.on{opacity:1}
+.big{position:absolute;left:3.5%;bottom:5%;text-align:center;pointer-events:none;min-width:14%}
+.big .ar{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(11vh,100px);line-height:1.1;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.85)}
+.big .en{font-family:'Montserrat',sans-serif;font-weight:800;font-size:min(2.8vh,22px);letter-spacing:.06em;color:var(--gold);margin-top:4px}
+.step{position:absolute;left:3%;top:5%;max-width:42%;background:rgba(11,61,46,.92);border:1.5px solid rgba(255,200,61,.6);border-radius:14px;padding:9px 15px;font-size:min(2.4vh,19px);font-weight:700;line-height:1.35;transition:opacity .3s}
+.step b{color:var(--gold)}
+.ar{font-family:'Noto Naskh Arabic',serif;font-style:normal;font-weight:700}
+.ar .ar{font-size:1em!important}
+.step .ar{font-size:1.25em}
+.legend{position:absolute;right:2.5%;top:5%;display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-size:min(1.8vh,14px);font-weight:700}
+.legend span{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.6);padding:4px 10px;border-radius:999px}
+.legend i{width:24px;height:6px;border-radius:3px;display:inline-block}
+.about{background:#14201b;border:1px solid #24382f;border-radius:14px;padding:11px 18px;font-size:16px;line-height:1.5;color:#e6efe9}
+.about h3{margin:0 0 3px;font-family:'Montserrat',sans-serif;font-size:14px;letter-spacing:.05em;color:var(--gold);text-transform:uppercase}
+.about h3 .ar{font-size:1.4em;text-transform:none;letter-spacing:0}
+.about p{margin:0 0 3px}
+.about .ar{font-size:1.25em}
+.about .book{color:#b9cbc1;font-style:italic}
+.about b{color:#fff}
+.ctl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.ctl button{font:inherit;font-weight:700;font-size:15px;border:0;border-radius:12px;padding:8px 16px;cursor:pointer;background:#22303a;color:#fff}
+.ctl button.pri{background:#098A46}
+.ctl button.on{background:#C9A227;color:#0B3D2E}
+body.embed{background:transparent}
+body.embed .wrap{padding:0;gap:6px;min-height:100vh}
+body.embed .W{width:min(100vw,calc((100vh - 215px)*16/9))}
+body.embed .stage{border-radius:14px}
+body.embed .about{padding:6px 12px;font-size:13.5px;line-height:1.35}
+body.embed .about h3{font-size:12px;margin-bottom:1px}
+body.embed .ctl button{padding:6px 12px;font-size:13px}
+body.embed .views button{padding:3px 12px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="views W" id="views" hidden></div>
+  <div class="stage W" id="stage">
+    <div class="cam" id="cam">
+      <img class="still" id="still" alt="">
+      <video id="vid" muted playsinline preload="auto"></video>
+      <svg id="ov" viewBox="0 0 1376 768" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    </div>
+    <div class="step" id="step"></div>
+    <div class="legend" id="legend"></div>
+    <div class="big"><div class="ar" id="bigAr"></div><div class="en" id="bigEn"></div></div>
+  </div>
+  <div class="about W" id="about"></div>
+  <div class="ctl">
+    <button class="pri" id="bPlay">❚❚ Pause</button>
+    <button id="bAgain">↻ Again</button>
+    <button id="bSlow">🐢 Slow</button>
+    <button class="on" id="bOv">Labels &amp; airflow: on</button>
+  </div>
+</div>
+<script>
+"use strict";
+/* ============ letters ============ */
+const LET={alif:["ا","Alif"],ba:["ب","Ba"],ta:["ت","Ta"],tha:["ث","Tha"],jeem:["ج","Jeem"],hha:["ح","Ḥa"],kha:["خ","Kha"],dal:["د","Daal"],dhal:["ذ","Zaal"],
+ ra:["ر","Ra"],zay:["ز","Zaa"],seen:["س","Seen"],sheen:["ش","Sheen"],sad:["ص","Soad"],dad:["ض","Doad"],tta:["ط","Toa"],zza:["ظ","Zoa"],ain:["ع","Ain"],
+ ghain:["غ","Ghain"],fa:["ف","Fa"],qaf:["ق","Qaaf"],kaf:["ك","Kaaf"],lam:["ل","Laam"],meem:["م","Meem"],noon:["ن","Noon"],waw:["و","Waaw"],ha:["ه","Ha"],
+ hamza:["ء","Hamza"],ya:["ی","Yaa"]};
+const POS_OF={hamza:"throatLow",ha:"throatLow",ain:"throatMid",hha:"throatMid",ghain:"throatUp",kha:"throatUp",qaf:"qaf",kaf:"kaf",
+ jeem:"tongueMid",sheen:"tongueMid",ya:"tongueMid",dad:"tongueEdge",lam:"tipGums",noon:"tipGums",ra:"tipGums",ta:"tipRoot",dal:"tipRoot",tta:"tipRoot",
+ tha:"tipEnd",dhal:"tipEnd",zza:"tipEnd",zay:"tipBack",seen:"tipBack",sad:"tipBack",fa:"lipTeeth",ba:"lips",meem:"lips",waw:"lipsRound",alif:"mouthSpace"};
+const GHUNNAH=new Set(["meem","noon"]);
+
+/* ============ makharij (all coordinates in the 1376 × 768 picture frame) ============
+   view: video | still, zoom [cx,cy,scale], point [x,y], labels [[text,x,y,labelX,labelY,gold]], arrow [x0,y0,x1,y1],
+         air (points after the throat), steps (optional, else made from move / touch / airText) */
+const HEAD="img/makharij/head3d_rest.jpeg";
+/* every clip exists as MP4 and WebM: use MP4 where it plays, otherwise WebM (e.g. Windows "N" editions) */
+const MP4OK=(()=>{ try{ return !!document.createElement("video").canPlayType('video/mp4; codecs="avc1.640028"'); }catch(e){ return true; } })();
+const pickSrc=p=>MP4OK||!/\.mp4$/.test(p)?p:p.replace(/\.mp4$/,".webm");
+const SIDE_ANAT=[["Lips",540,372,420,430],["Upper teeth",584,338,560,215],["Tongue",680,360,640,470],["Throat",772,450,900,470]];
+const THROAT=[[806,662],[792,606],[778,566],[786,505],[793,445],[792,400]];
+const NOSE=[[792,400],[800,330],[806,282],[780,258],[720,255],[640,252],[580,256],[520,266],[480,272],[430,281]];
+const LF="img/makharij/lipsfront_src.jpg";
+const OUTR="img/makharij/zaal_out_rest.jpg";
+const OUT_ANAT=[["Upper lip",620,308,500,240],["Lower lip",620,425,500,480],["Upper front teeth",660,352,800,282]];
+const HUM_OUT=`<circle cx="622" cy="132" r="18" class="hum" stroke-width="5"/><circle cx="622" cy="132" r="18" class="hum" stroke-width="5" style="animation-delay:.6s"/>`;
+const OUTSIDE=(o)=>Object.assign({name:"Front view",still:OUTR,anat:OUT_ANAT,legend:()=>LG_AIR+LG_MK},o);
+const LF_ANAT=[["Upper lip",640,300,520,236],["Lower lip",640,400,520,470]];
+const LBAND=[[500,288],[525,232],[578,188],[634,166],[688,160],[742,166],[798,188],[851,232],[876,288]];
+const PUFFS=pts=>pts.map(([x,y],i)=>[0,1,2].map(k=>`<circle cx="${x}" cy="${y}" r="13" class="puffF" style="animation-delay:${(k*.43+i*.15).toFixed(2)}s"/>`).join("")).join("");
+const HUM=[[592,26],[788,26]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="16" class="hum" stroke-width="5"/><circle cx="${x}" cy="${y}" r="16" class="hum" stroke-width="5" style="animation-delay:.6s"/>`).join("");
+const LG_MK='<span><i style="background:var(--gold);height:12px;width:12px;border-radius:50%"></i>Makhraj (where it is said)</span>';
+const LG_AIR='<span><i style="background:var(--air)"></i>Air</span>';
+const LG_NOSE='<span><i style="background:var(--nose)"></i>Hum through the nose (ghunnah)</span>';
+const P={
+ lipTeeth:{book:"ف is pronounced when the tip of the upper front teeth touches the middle of the lower lip.",
+   how:"Rest your upper front teeth gently on the inside of your lower lip and let the air flow out: <b>fff</b>. Don't bite hard and don't close the lips.",
+   views:[{name:"Side view",video:"videos/fa.mp4",zoom:[560,372,2.4],point:[574,360],arrow:[546,432,546,402],
+   labels:[["Upper front tooth",578,342,640,300],["Lower lip",546,392,505,440],["touch here",574,360,640,392,1]],
+   air:[[735,368],[650,366],[588,363],[512,369],[438,370]],
+   move:"The <b>lower lip</b> moves <b>up and back</b>…", touch:"…until the <b>upper front tooth</b> rests <b>on the lower lip</b>.", airText:"Air flows out <b>between the tooth and the lip</b>: fff."},
+   OUTSIDE({video:"videos/outFa.mp4",zoom:[650,370,1.5],point:[650,374],arrow:[620,452,620,408],
+    labels:[["Upper front teeth",640,350,780,282],["Lower lip",620,418,500,472],["teeth rest on the lip",650,374,450,330,1]],
+    extra:{airF:{svg:PUFFS([[600,377],[650,377],[700,373]])}},
+    steps:()=>[[0,"Now look <b>from the outside</b>.",{anat:1}],[1.0,"The <b>lower lip</b> comes up…",{zoom:1,zl:1,up:1}],
+      [2.2,"…until the <b>upper front teeth</b> rest on it. This is the makhraj of <b>ف</b>.",{zoom:1,zl:1,mk:1}],
+      [2.8,"Air flows out between the teeth and the lip: <b>fff</b>.",{zoom:1,zl:1,mk:1,airF:1}],[5.4,"Back to rest.",{}],[6.3,"Your turn: say <b>ف</b>.",{anat:1}]]})]},
+ lips:{book:"ب م are pronounced by joining the lips together.",
+   how:"Close both lips. <b>ب</b>: press them firmly, then open them with a little pop. <b>م</b>: close them gently and let the sound hum through the nose (ghunnah).",
+   views:[{name:"Side view",video:"videos/lips.mp4",zoom:[548,372,2.4],point:[545,368],arrow:[528,430,528,400],
+   labels:[["Upper lip",535,345,480,300],["Lower lip",535,392,480,442],["lips close here",545,368,612,410,1]],
+   air:[[735,352],[650,348],[590,356],[560,366]],stop:1,
+   move:"The <b>lower lip</b> comes up…", touch:"…and <b>both lips close</b> together.", airText:"The air waits behind the closed lips, then the lips open with the sound."},
+   OUTSIDE({video:"videos/outLips.mp4",zoom:[660,370,1.3],point:[650,357],arrow:[650,452,650,400],
+    labels:[["Upper lip",620,315,500,250],["Lower lip",620,415,500,472],["lips close here",650,357,800,300,1]],
+    extra:{nose:{svg:HUM_OUT, labels:[["hums through the nose (م)",640,136,770,170,1]]}}, legend:()=>(LID!=="ba"?LG_NOSE:"")+LG_MK,
+    steps:()=>[[0,"Now look <b>from the outside</b>.",{anat:1}],[1.0,"The <b>lower lip</b> comes up to meet the upper lip…",{zoom:1,zl:1,up:1}],
+      [2.2,`…and <b>both lips close</b> all along. This is the makhraj of <span class="ar">${SAY}</span>.`,{zoom:1,zl:1,mk:1}],
+      [3.2,LID==="ba"?"<b>ب</b>: press firmly, then the lips open with a little pop.":LID==="meem"?"<b>م</b>: the lips stay closed and the sound hums <b>through the nose</b>.":"<b>ب</b>: press, then pop open. <b>م</b>: stay closed and hum <b>through the nose</b>.",{zoom:1,zl:1,mk:1,nose:LID==="ba"?0:1}],
+      [5.4,"Back to rest.",{}],[6.3,`Your turn: say <span class="ar">${SAY}</span>.`,{anat:1}]]})]},
+ lipsRound:{book:"و is pronounced by rounding the lips.",
+   how:"Push your lips forward into a small circle, like blowing out a candle. Do not close them completely.",
+   views:[{name:"Side view",video:"videos/lipsRound.mp4",zoom:[540,370,2.3],point:[516,368],arrow:[560,368,528,368],
+   labels:[["Upper lip",528,348,470,300],["Lower lip",528,390,470,442],["round lips",516,368,600,415,1]],
+   air:[[735,352],[650,350],[590,358],[540,366],[516,368],[438,370]],
+   move:"The lips move <b>forward</b>…", touch:"…and make a <b>small round circle</b> (not closed).", airText:"Air flows out through the round lips."},
+   OUTSIDE({video:"videos/outRound.mp4",zoom:[640,370,1.5],point:[631,374],arrows:[[476,374,514,375],[868,363,826,366]],
+    labels:[["Lips push forward",610,318,480,248],["Corner of the mouth",522,376,440,452],["small round opening",631,374,780,300,1]],
+    extra:{airF:{svg:PUFFS([[631,374]])}},
+    steps:()=>[[0,"Now look <b>from the outside</b>.",{anat:1}],[1.0,"The <b>corners of the mouth</b> come in and the lips push forward…",{zoom:1,zl:1,up:1}],
+      [2.2,"…into a <b>small round circle</b>. This is the makhraj of <b>و</b>.",{zoom:1,zl:1,mk:1}],
+      [2.8,"Air flows out through the round opening.",{zoom:1,zl:1,mk:1,airF:1}],[5.4,"Back to rest.",{}],[6.3,"Your turn: say <b>و</b>.",{anat:1}]]})]},
+ mouthSpace:{book:"ا is pronounced from the empty space inside the mouth.",
+   how:"Open your mouth and let the sound flow out. Nothing touches anything — that is why Alif can be stretched.",
+   views:[{still:HEAD,zoom:[640,345,1.5],point:[650,330],glow:[655,330,95,24],
+   labels:[["the empty space of the mouth",650,330,700,232,1]],
+   air:[[735,348],[660,333],[590,348],[520,369],[438,370]],
+   move:"Look at the <b>empty space</b> inside the mouth…", touch:"Nothing touches — the tongue stays down.", airText:"The sound flows freely out of the mouth."}]},
+ tipEnd:{book:"ث ذ ظ are pronounced when the tip of the tongue touches the end of the upper teeth.",
+   how:"Put the tip of your tongue on the edges of your upper front teeth — it peeks out a little. Blow softly. <b>ظ</b> is said with a full mouth.",
+   views:[{name:"Side view",video:"videos/tipEnd.mp4",zoom:[578,360,2.4],point:[568,361],arrow:[600,380,580,366],
+   labels:[["Edge of the upper front teeth",574,352,615,298],["Tip of the tongue",585,368,640,425],["touch here",568,361,500,322,1]],
+   air:[[760,330],[700,325],[630,338],[592,352],[568,361],[540,366],[510,369],[438,370]],
+   move:"The <b>tip of the tongue</b> comes forward…", touch:"…and touches the <b>edges of the upper front teeth</b>.", airText:"Air flows out softly over the tongue tip."},
+   OUTSIDE({for:["tha","dhal"],video:"videos/outTh.mp4",zoom:[640,380,1.6],point:[560,388],arrow:[478,330,546,378],
+    labels:[["Upper front teeth",650,352,760,282],["Tip of the tongue",590,396,470,462],["between the teeth",560,388,430,320,1]],
+    extra:{airF:{svg:PUFFS([[548,390]])}},
+    steps:()=>[[0,"Now look <b>from the outside</b>.",{anat:1}],[1.0,"The <b>tip of the tongue</b> comes forward…",{zoom:1,zl:1,up:1}],
+      [2.2,"…and comes out a little <b>between the front teeth</b>, touching the edges of the upper teeth.",{zoom:1,zl:1,mk:1}],
+      [2.8,LID==="tha"?"<b>ث</b>: blow softly, <b>no voice</b> (like TH in “think”).":LID==="dhal"?"<b>ذ</b>: the same place, with your <b>voice ON</b> (like TH in “this”).":"<b>ث</b>: no voice (TH in “think”). <b>ذ</b>: voice ON (TH in “this”).",{zoom:1,zl:1,mk:1,airF:1}],
+      [5.4,"Back to rest.",{}],[6.3,`Your turn: say <span class="ar">${SAY}</span>.`,{anat:1}]]}),
+   OUTSIDE({for:["zza"],video:"videos/outThHeavy.mp4",zoom:[640,380,1.6],point:[560,388],arrow:[478,330,546,378],
+    labels:[["Lips round a little",700,312,820,258],["Tip of the tongue",590,396,470,462],["between the teeth",560,388,430,320,1]],
+    extra:{airF:{svg:PUFFS([[548,390]])}},
+    steps:()=>[[0,"Now look <b>from the outside</b>.",{anat:1}],[1.0,"The <b>tip of the tongue</b> comes forward and the lips <b>round a little</b>…",{zoom:1,zl:1,up:1}],
+      [2.2,"…the tip comes out a little <b>between the front teeth</b>. This is the makhraj of <b>ظ</b>.",{zoom:1,zl:1,mk:1}],
+      [2.8,"<b>ظ</b> is heavy: voice ON and a <b>full mouth</b>.",{zoom:1,zl:1,mk:1,airF:1}],[5.4,"Back to rest.",{}],[6.3,"Your turn: say <b>ظ</b>.",{anat:1}]]})]},
+ tipRoot:{book:"ت د ط are pronounced when the tip of the tongue touches the root of the upper teeth.",
+   how:"Touch the place where your upper front teeth meet the gum, then let go. <b>ط</b> is said with a full mouth.",
+   views:[{video:"videos/tipRoot.mp4",zoom:[592,345,2.3],point:[593,329],arrow:[600,375,595,342],
+   labels:[["Root of the upper front teeth",590,322,520,270],["Tip of the tongue",602,345,660,420],["touch here",593,329,660,345,1]],
+   air:[[760,330],[700,308],[640,312],[593,329],[578,352],[555,364],[520,369],[438,370]],
+   move:"The <b>tip of the tongue</b> goes up…", touch:"…and touches the <b>roots of the upper front teeth</b> (where the teeth meet the gum).", airText:"Then it lets go, and the air comes out."}]},
+ tipGums:{book:"ل ن ر are pronounced when the tip of the tongue touches the gums of the upper front teeth.",
+   how:"Lift your tongue tip to the gum just behind your top teeth. <b>ل</b>: the sides of the tongue tip. <b>ن</b>: the tip — and the sound hums through the nose. <b>ر</b>: the tip, a little further back.",
+   views:[{name:"Side view",video:"videos/tipGums.mp4",zoom:[602,338,2.2],point:[605,312],arrow:[612,365,607,328],
+   labels:[["Gum behind the upper teeth",603,306,540,258],["Tip of the tongue",612,335,668,420],["touch here",605,312,672,330,1]],
+   air:[[760,330],[700,302],[645,302],[605,312],[586,345],[560,362],[520,369],[438,370]],
+   move:"The <b>tip of the tongue</b> goes up and back…", touch:"…and touches the <b>gum just behind the upper front teeth</b>.", airText:"The sound comes out around the tongue."},
+   {name:"Roof of the mouth",still:"img/makharij/palate_src.jpg",zoom:[688,230,1.5],
+    anat:[["Front teeth",640,95,520,36],["Gum behind the front teeth",700,172,900,64],["Roof of the mouth",688,410,688,470],["Back teeth",385,470,250,560]],
+    extra:{pN:{svg:'<ellipse cx="688" cy="166" rx="46" ry="14" class="zone" stroke-width="2"/>',labels:[["ن — tip of the tongue",730,166,900,112,1]]},
+           pR:{svg:'<ellipse cx="688" cy="198" rx="46" ry="15" class="zone" stroke-width="2"/>',labels:[["ر — a little further in",730,200,900,292,1]]},
+           pL:{svg:()=>`<path d="${curve(LBAND)}" class="band" stroke-width="20"/>`,labels:[["ل — sides of the tongue",578,188,610,322,1]]}},
+    legend:()=>'<span><i style="background:var(--gold);height:12px;width:12px;border-radius:50%"></i>Where the tongue touches</span>',
+    steps:()=>{ const own={lam:"pL",noon:"pN",ra:"pR"}[LID];
+      return [[0,"Now look <b>up at the roof of the mouth</b>: the front teeth are at the top.",{anat:1}],
+      [1.0,"<b>ن</b>: the <b>tip</b> of the tongue touches the gum just behind the two front teeth.",{zoom:1,pN:1}],
+      [2.6,"<b>ر</b>: the tip (and a little of the top of the tongue) touches a little <b>further in</b>.",{zoom:1,pR:1}],
+      [4.2,"<b>ل</b>: the <b>sides of the front of the tongue</b> press along the gums, from the side teeth on one side round to the other.",{zoom:1,pL:1}],
+      [6.0,own?`Your turn: say <span class="ar">${SAY}</span>.`:"Three neighbours: <b>ن ر ل</b> all touch the gum behind the front teeth, so the book puts them together.",own?{zoom:1,[own]:1}:{zoom:1,pN:1,pR:1,pL:1}]]; }},
+   OUTSIDE({for:["noon"],video:"videos/outNoon.mp4",still:"img/makharij/noon_open.jpg",zoom:[650,365,1.3],point:[650,382],arrow:[712,448,712,398],
+    anat:[["Upper lip",620,308,500,240],["Lower lip",620,452,500,512],["Upper front teeth",660,352,800,282]],
+    labels:[["Underside of the tongue",668,410,790,470],["tip up, behind the upper teeth",650,382,450,330,1]],
+    extra:{nose:{svg:HUM_OUT, labels:[["hums through the nose",640,136,770,170,1]]}}, legend:()=>LG_NOSE+LG_MK,
+    steps:()=>[[0,"Now look <b>from the outside</b>, with the mouth a little open.",{anat:1}],[1.0,"The <b>tongue lifts up</b>…",{zoom:1,zl:1,up:1}],
+      [2.2,"…its <b>tip</b> presses on the <b>gum behind the upper front teeth</b> (hidden behind them). We see the underside of the tongue.",{zoom:1,zl:1,mk:1}],
+      [3.0,"<b>ن</b>: the sound hums <b>through the nose</b> (ghunnah).",{zoom:1,zl:1,mk:1,nose:1}],
+      [5.4,"Back to rest.",{}],[6.3,"Your turn: say <b>ن</b>.",{anat:1}]]})]},
+ tipBack:{book:"ز س ص are pronounced when the tip of the tongue touches the back of the teeth.",
+   how:"Put your tongue tip just behind your lower front teeth and bring it close to the upper ones, leaving a tiny gap. Blow: you hear a whistle (<b>sss</b>). <b>ص</b> is said with a full mouth.",
+   views:[{name:"Side view",video:"videos/tipBack.mp4",zoom:[586,368,2.4],point:[584,364],arrow:[596,392,588,372],
+   labels:[["Upper front teeth",578,352,628,298],["Behind the lower front teeth",584,384,520,440],["tiny gap — air whistles",584,364,640,380,1]],
+   air:[[760,330],[700,325],[630,340],[598,356],[584,364],[562,366],[520,369],[438,370]],whistle:1,
+   move:"The <b>tip of the tongue</b> rests <b>behind the lower front teeth</b>…", touch:"…and comes close to the upper teeth, leaving a <b>tiny gap</b>.", airText:"Air squeezes through the gap and <b>whistles</b>: sss."},
+   OUTSIDE({for:["sad"],video:"videos/outSad.mp4",zoom:[650,370,1.5],point:[650,377],arrow:[650,476,650,420],
+    labels:[["Lips round a little",700,312,820,258],["Upper front teeth",640,352,520,280],["teeth almost together",650,377,800,420,1]],
+    extra:{airF:{svg:PUFFS([[620,378],[680,376]])}},
+    steps:()=>[[0,"Now look <b>from the outside</b>.",{anat:1}],[1.0,"The teeth come <b>almost together</b> and the lips <b>round a little</b>…",{zoom:1,zl:1,up:1}],
+      [2.2,"…the tongue tip stays <b>behind the lower teeth</b> (you can’t see it from outside).",{zoom:1,zl:1,mk:1}],
+      [2.8,"Air whistles through the tiny gap, with a <b>full mouth</b>: <b>ص</b>.",{zoom:1,zl:1,mk:1,airF:1}],[5.4,"Back to rest.",{}],[6.3,"Your turn: say <b>ص</b>.",{anat:1}]]})]},
+ tongueMid:{book:"ج ش ی are pronounced from the middle of the tongue when it clicks with the upper inside of the mouth.",
+   how:"Keep the tip of your tongue down and lift the <b>middle</b> of your tongue to the roof of your mouth. <b>ج</b>: press firmly. <b>ش</b>: leave a little gap and spread the air. <b>ی</b>: come close but don't press.",
+   views:[{video:"videos/tongueMid.mp4",zoom:[655,330,1.9],point:[655,297],arrow:[655,350,655,312],
+   labels:[["Hard roof of the mouth",660,290,720,235],["Middle of the tongue",655,320,720,425],["touch here",655,297,560,262,1]],
+   air:[[765,330],[715,300],[655,297],[612,325],[578,352],[520,369],[438,370]],
+   move:"The tip stays down and the <b>middle of the tongue</b> rises…", touch:"…and touches the <b>hard roof of the mouth</b>.", airText:"Then the air comes out."}]},
+ tongueEdge:{book:"ض is pronounced as the right edge of the tongue touches the upper right side teeth.",
+   how:"Press the <b>side edge</b> of your tongue against your <b>upper back teeth</b> — the right side as in the book; the left side or both sides are also correct. The mouth stays full.",
+   views:[
+   {name:"Side view",video:"videos/tongueEdge.mp4",zoom:[655,340,1.9],point:[660,336],arrow:[660,372,660,345],
+    labels:[["Upper back teeth (molars)",640,336,600,262],["Edge of the tongue",672,348,725,428],["presses here",660,336,745,330,1]],
+    air:[[765,332],[705,325],[660,336],[612,346],[575,358],[520,369],[438,370]],
+    move:"The <b>side of the tongue</b> rises…", touch:"…and presses on the <b>upper back teeth</b>. The front view (next) shows it better.", airText:"The sound comes out with a full mouth."},
+   {name:"Front view",video:"videos/dadFront.mp4",still:"img/makharij/dad_front_src.jpg",zoom:[575,390,1.6],zoom2:[688,384,1],
+    point:[519,362],point2:[854,362],arrow:[548,412,528,378],arrow2:[828,412,848,378],
+    anat:[["Roof of the mouth",686,200,686,120],["Upper back tooth",460,330,330,250],["Lower back tooth",460,450,330,540],["Tongue",686,470,686,600]],
+    labels:[["Upper back tooth",470,345,400,262],["Edge of the tongue",540,400,470,490],["Right side presses here",519,362,598,298,1]],
+    labels2:[["Right side",519,362,450,262,1],["Left side",854,362,926,262,1]],
+    legend:"front",
+    steps:[[0,"Now look <b>from the front</b>, as if you face the child: their <b>right</b> side is on <b>your left</b>.",{anat:1}],
+      [1.0,"The <b>edge of the tongue</b> rises…",{zoom:1,zl:1,up:1}],
+      [2.2,"…and presses on the <b>upper back teeth</b> on the right side. This is the makhraj of <span class=\"ar\">ض</span>.",{zoom:1,zl:1,mk:1}],
+      [3.8,"It can also be the <b>left side</b>, or <b>both sides</b> together.",{zoom2:1,zl2:1,mk:1,mk2:1,up2:1}],
+      [5.6,"Back to rest.",{}],
+      [6.5,"Your turn: say <span class=\"ar\">ض</span> — press the edge of your tongue on your back teeth.",{anat:1}]]}]},
+ kaf:{book:"ك is pronounced slightly away from the Makhraj of Qaaf, towards the mouth.",
+   how:"Raise the back of your tongue to the roof of your mouth, a little in front of where <b>ق</b> is said, and let go with a light puff of air.",
+   views:[{video:"videos/kaf.mp4",zoom:[705,325,1.9],point:[720,292],arrow:[720,345,720,305],
+   labels:[["End of the hard roof",718,286,650,235],["Back of the tongue",720,312,770,425],["touch here",720,292,800,300,1]],
+   air:[[770,335],[745,302],[720,292],[680,302],[620,330],[575,355],[520,369],[438,370]],
+   move:"The <b>back of the tongue</b> rises…", touch:"…and touches the roof of the mouth, <b>a little in front of</b> where ق is said.", airText:"It lets go with a light puff of air."}]},
+ qaf:{book:"ق is pronounced from the root of the tongue and the voice box.",
+   how:"Raise the very back (root) of your tongue to the soft palate and let go. Keep the mouth full — <b>ق</b> is a heavy letter.",
+   views:[{video:"videos/qaf.mp4",zoom:[732,335,1.9],point:[748,306],arrow:[748,355,748,320],
+   labels:[["Soft palate",752,300,800,238],["Root of the tongue",748,325,790,430],["touch here",748,306,660,262,1]],
+   air:[[780,340],[748,306],[705,300],[640,322],[590,350],[520,369],[438,370]],
+   move:"The <b>root of the tongue</b> (the very back) rises…", touch:"…and touches the <b>soft palate</b> above it.", airText:"It lets go with a deep, heavy sound."}]},
+ throatUp:{book:"غ خ are pronounced from the part of the throat which is nearest to the mouth.",
+   how:"Make the sound at the top of your throat: a soft gargle for <b>غ</b>, a scratchy breath for <b>خ</b>. Both are said with a full mouth.",
+   views:[{still:HEAD,zoom:[778,395,1.8],point:[790,380],
+   labels:[["Top of the throat (nearest the mouth)",790,380,850,318,1]],
+   air:[[770,352],[735,350],[650,348],[590,356],[520,369],[438,370]],
+   move:"Look at the <b>top of the throat</b>, behind the back of the tongue…", touch:"The sound is made here — the <b>top of the throat</b>.", airText:"Air comes up from the chest, through this point, and out of the mouth."}]},
+ throatMid:{book:"ع ح are pronounced from the middle of the throat.",
+   how:"Tighten the middle of your throat. <b>ع</b> has voice; <b>ح</b> is a strong breathy sound with no voice.",
+   views:[{still:HEAD,zoom:[780,455,1.8],point:[795,450],
+   labels:[["Middle of the throat",795,450,870,405,1]],
+   air:[[770,352],[735,350],[650,348],[590,356],[520,369],[438,370]],
+   move:"Look at the <b>middle of the throat</b>…", touch:"The sound is made here — the <b>middle of the throat</b>.", airText:"Air comes up from the chest, through this point, and out of the mouth."}]},
+ throatLow:{book:"ء ه are pronounced from that part of the throat which is nearest to the chest.",
+   how:"<b>ء</b> is a quick catch of the voice deep in the throat. <b>ه</b> is a soft breath from the same deep place.",
+   views:[{still:HEAD,zoom:[772,540,1.8],point:[778,566],
+   labels:[["Bottom of the throat (nearest the chest)",778,566,840,615,1]],
+   air:[[770,352],[735,350],[650,348],[590,356],[520,369],[438,370]],
+   move:"Look at the <b>bottom of the throat</b>, at the voice box…", touch:"The sound is made here — the <b>deepest part of the throat</b>.", airText:"Air comes up from the chest, through this point, and out of the mouth."}]},
+};
+
+/* ============ which letter / group ============ */
+const q=new URLSearchParams(location.search);
+if(q.get("embed")) document.body.classList.add("embed");
+const POS=P[q.get("z")]?q.get("z"):POS_OF[LET[q.get("l")]?q.get("l"):"fa"];
+const LID=LET[q.get("l")]&&POS_OF[q.get("l")]===POS?q.get("l"):null;           // one letter, or the whole group
+const GROUP=Object.keys(POS_OF).filter(k=>POS_OF[k]===POS);
+const C=Object.assign({},P[POS]); C.views=C.views.filter(v=>!v.for||v.for.includes(LID||GROUP[0]));
+const GAR=GROUP.map(k=>LET[k][0]).join(" ");
+const SAY=LID?LET[LID][0]:GAR;
+const nasal=LID?GHUNNAH.has(LID):false;
+
+const $=id=>document.getElementById(id);
+const bidi=h=>h.replace(/[\u0600-\u06FF]+(?:[\s:]+[\u0600-\u06FF]+)*/g,m=>`<bdi class="ar">${m}</bdi>`);
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,a,parent)=>{ const e=document.createElementNS(NS,tag); for(const k in a) e.setAttribute(k,a[k]); if(parent) parent.appendChild(e); return e; };
+function curve(pts){ let d=`M${pts[0][0]} ${pts[0][1]}`; for(let i=0;i<pts.length-1;i++){ const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+  d+=` C${(p1[0]+(p2[0]-p0[0])/6).toFixed(1)} ${(p1[1]+(p2[1]-p0[1])/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])/6).toFixed(1)} ${(p2[1]-(p3[1]-p1[1])/6).toFixed(1)} ${p2[0]} ${p2[1]}`; } return d; }
+
+/* ============ text below + the big letter ============ */
+$("bigAr").textContent=SAY; $("bigEn").textContent=LID?LET[LID][1].toUpperCase():"";
+$("about").innerHTML=`<h3>The makhraj of <span class="ar">${GAR}</span>${LID&&GROUP.length>1?` &nbsp;·&nbsp; ${LET[LID][1]} shares it with <span class="ar">${GROUP.filter(k=>k!==LID).map(k=>LET[k][0]).join(" ")}</span>`:""}</h3>
+ <p class="book">From the book: “${bidi(C.book)}”</p>
+ <p>${bidi(C.how)}</p>`;
+
+/* ============ one view = one picture / video + its overlay ============ */
+let V=null, VI=0, STEPS=[];
+function defaultSteps(v){ return [[0,"Watch closely…",{anat:1}],[0.9,v.move,{zoom:1,zl:1,up:1}],
+  [2.2,`${v.touch} This is the makhraj of <span class="ar">${SAY}</span>.`,{zoom:1,zl:1,mk:1}],
+  [2.8,`${v.airText}${nasal?" The sound also hums <b>through the nose</b>.":""}`,{zoom:1,zl:1,mk:1,air:1}],
+  [5.4,"Back to rest.",{}],[6.3,`Your turn: say <span class="ar">${SAY}</span>.`,{anat:1}]]; }
+function drawLabels(g,list,s){ list.forEach(([t,x,y,lx,ly,gold])=>{
+  el("line",{x1:x,y1:y,x2:lx,y2:ly,class:"lead","stroke-width":2.2*s,style:gold?"stroke:#FFC83D":""},g);
+  if(!gold) el("circle",{cx:x,cy:y,r:5.5*s,class:"dot","stroke-width":6*s},g);
+  const right=lx>x+8, left=lx<x-8;
+  const tx=el("text",{x:lx+(right?5*s:left?-5*s:0),y:ly+(ly>y?24*s:-8*s),class:"lbl"+(gold?" gold":""),"text-anchor":right?"start":left?"end":"middle","font-size":24*s,"stroke-width":6*s},g);
+  t.split(/([\u0600-\u06FF]+)/).forEach(part=>{ if(!part) return; const sp=el("tspan",/[\u0600-\u06FF]/.test(part)?{class:"ar"}:{},tx); sp.textContent=part; }); }); }
+function drawPoint(g,[x,y],s){ el("circle",{cx:x,cy:y,r:16*s,class:"ring","stroke-width":8*s},g); el("circle",{cx:x,cy:y,r:16*s,class:"ring","stroke-width":8*s,style:"animation-delay:.7s"},g); el("circle",{cx:x,cy:y,r:7*s,class:"core"},g); }
+function drawArrow(g,[x0,y0,x1,y1],s){ const a=Math.atan2(y1-y0,x1-x0), h=11*s, w=Math.PI/5;
+  const p=el("path",{d:`M${x0} ${y0} L${x1} ${y1} M${x1-h*Math.cos(a-w)} ${y1-h*Math.sin(a-w)} L${x1} ${y1} L${x1-h*Math.cos(a+w)} ${y1-h*Math.sin(a+w)}`,class:"arrow","stroke-width":4*s},g);
+  p.style.setProperty("--nx",`${Math.cos(a)*12*s}px`); p.style.setProperty("--ny",`${Math.sin(a)*12*s}px`); }
+function buildView(i){
+  VI=i; V=C.views[i]; STEPS=typeof V.steps==="function"?V.steps():V.steps||defaultSteps(V); cur=null;
+  const ov=$("ov"); ov.innerHTML=""; const G={};
+  for(const k of ["anat","air","zl","zl2","up","up2","mk","mk2"].concat(Object.keys(V.extra||{}))) G[k]=el("g",{class:"layer","data-k":k},ov);
+  const s1=1/(V.zoom?V.zoom[2]:1), s2=1/(V.zoom2?V.zoom2[2]:1);
+  (V.anat||SIDE_ANAT).forEach(([t,x,y,lx,ly])=>{ el("line",{x1:x,y1:y,x2:lx,y2:ly,class:"lead","stroke-width":1.8},G.anat); el("circle",{cx:x,cy:y,r:6,class:"dot","stroke-width":6},G.anat);
+    el("text",{x:lx,y:ly+(ly>y?24:-9),class:"lbl","text-anchor":"middle","font-size":22,"stroke-width":5},G.anat).textContent=t; });
+  drawLabels(G.zl,V.labels||[],s1); drawLabels(G.zl2,V.labels2||[],s2);
+  for(const k in V.extra||{}){ const e=V.extra[k]; if(e.svg) G[k].innerHTML=typeof e.svg==="function"?e.svg():e.svg; drawLabels(G[k],e.labels||[],s1); }
+  (V.arrows||[]).forEach(a=>drawArrow(G.up,a,s1));
+  if(V.arrow) drawArrow(G.up,V.arrow,s1); if(V.arrow2){ drawArrow(G.up2,V.arrow2,s2); drawArrow(G.up2,V.arrow,s2); }
+  if(V.glow) el("ellipse",{cx:V.glow[0],cy:V.glow[1],rx:V.glow[2],ry:V.glow[3],class:"glow","stroke-width":3*s1},G.mk);
+  if(V.point) drawPoint(G.mk,V.point,V.point2?s2:s1); if(V.point2) drawPoint(G.mk2,V.point2,s2);
+  if(V.air){ const pts=THROAT.concat(V.air), dash=`${28*s1} ${20*s1}`;
+    el("path",{d:curve(pts),class:"flow air","stroke-width":11*s1,"stroke-dasharray":dash},G.air);
+    if(nasal) el("path",{d:curve(NOSE),class:"flow nose","stroke-width":11*s1,"stroke-dasharray":dash},G.air);
+    const e=pts[pts.length-1];
+    if(!V.stop) for(let k=0;k<3;k++) el("circle",{cx:e[0],cy:e[1],r:14*s1,class:"puff",style:`animation-delay:${k*.4}s`},G.air);
+    if(V.whistle) for(let k=0;k<3;k++) el("path",{d:`M${e[0]-6*s1} ${e[1]-12*s1} q ${-5*s1} ${5*s1} 0 ${11*s1} q ${5*s1} ${5*s1} 0 ${11*s1}`,class:"wave","stroke-width":2.4*s1,style:`animation-delay:${k*.33}s`},G.air); }
+  $("legend").innerHTML=typeof V.legend==="function"?V.legend():V.legend==="front"?`<span><i style="background:var(--gold);height:12px;width:12px;border-radius:50%"></i>Makhraj (where the tongue presses)</span>`
+    :`<span><i style="background:var(--air)"></i>Air through the mouth</span>${nasal?'<span><i style="background:var(--nose)"></i>Hum through the nose (ghunnah)</span>':""}<span><i style="background:var(--gold);height:12px;width:12px;border-radius:50%"></i>Makhraj (where it is said)</span>`;
+  [...$("views").children].forEach((b,j)=>b.classList.toggle("on",j===i));
+  // picture / video
+  const still=$("still"), vid=$("vid"); hasVideo=false; still.src=V.still||HEAD; still.style.display="";
+  vid.pause(); vid.removeAttribute("src"); vid.load(); vid.style.display="none";
+  vid.dataset.alt=""; const vm=document.getElementById("vmsg"); if(vm) vm.remove();
+  if(V.video){ vid.src=pickSrc(V.video); vid.playbackRate=slow?.5:1; vid.load(); }
+  t0=performance.now(); paused=false; $("bPlay").textContent="❚❚ Pause";
+}
+/* zoom: scale around the point of interest so it lands in the middle */
+function camTransform(z){ if(!z||z[2]===1) return z?`translate(${(0.5-z[0]/1376)*0}%,0) scale(1)`:"none"; const fx=z[0]/1376, fy=z[1]/768, s=z[2];
+  const tx=Math.max(Math.min((0.5-fx)*s,(s-1)/2),-(s-1)/2)*100/s, ty=Math.max(Math.min((0.5-fy)*s,(s-1)/2),-(s-1)/2)*100/s;
+  return `scale(${s}) translate(${tx}%, ${ty}%)`; }
+
+/* ============ timeline ============ */
+const vid=$("vid"); let ovOn=true, slow=false, t0=performance.now(), hasVideo=false, paused=false, pauseAt=0, cur=null;
+const LEN=7.5;
+function setStep(s){ if(s===cur) return; cur=s; const f=s[2]; $("step").innerHTML=bidi(s[1]);
+  for(const g of $("ov").children) g.classList.toggle("on",ovOn&&!!f[g.dataset.k]);
+  $("cam").style.transform=camTransform(f.zoom?V.zoom:f.zoom2?V.zoom2:null); }
+function clock(){ return paused?pauseAt:((performance.now()-t0)/1000*(slow?.5:1)); }
+function nextView(){ buildView((VI+1)%C.views.length); }
+function tick(){
+  let t;
+  if(hasVideo) t=vid.currentTime;
+  else { t=clock(); if(t>=LEN+0.6){ if(C.views.length>1) nextView(); else t0=performance.now(); t=0; } }
+  let s=STEPS[0]; for(const x of STEPS) if(t>=x[0]) s=x; setStep(s); }
+vid.addEventListener("loadeddata",()=>{ if(!V.video) return; hasVideo=true; vid.style.display=""; $("still").style.display="none"; if(!paused) vid.play().catch(()=>{}); });
+vid.addEventListener("error",()=>{ hasVideo=false; if(!V||!V.video||!vid.getAttribute("src")) return;
+  /* this computer could not play the first format: try the other one once, then say so clearly */
+  if(!vid.dataset.alt&&/\.mp4$/.test(V.video)&&!/^blob:/.test(vid.src)){ vid.dataset.alt="1"; vid.src=/\.webm$/.test(vid.src)?V.video:V.video.replace(/\.mp4$/,".webm"); vid.load(); return; }
+  if(!document.getElementById("vmsg")){ const m=document.createElement("div"); m.id="vmsg";
+    m.style.cssText="position:absolute;left:50%;bottom:4%;transform:translateX(-50%);background:rgba(229,72,77,.92);color:#fff;font-weight:700;font-size:min(2.3vh,18px);padding:8px 16px;border-radius:12px;z-index:5;text-align:center;max-width:90%";
+    m.textContent="This browser could not play the video. Please open it in Google Chrome or Microsoft Edge (updated)."; $("stage").appendChild(m); } });
+vid.addEventListener("ended",()=>{ setTimeout(()=>{ if(C.views.length>1) nextView(); else { vid.currentTime=0; vid.play(); } },900); });
+if(C.views.length>1){ const vb=$("views"); vb.hidden=false; vb.innerHTML=C.views.map((v,i)=>`<button data-i="${i}">${i+1}. ${v.name}</button>`).join(""); vb.onclick=e=>{ const b=e.target.closest("button"); if(b) buildView(+b.dataset.i); }; }
+$("bPlay").onclick=()=>{ if(hasVideo){ if(vid.paused) vid.play(); else vid.pause(); paused=vid.paused; }
+  else if(paused){ t0=performance.now()-pauseAt*1000/(slow?.5:1); paused=false; } else { pauseAt=clock(); paused=true; }
+  $("bPlay").textContent=paused?"▶ Play":"❚❚ Pause"; };
+$("bAgain").onclick=()=>buildView(0);
+$("bSlow").onclick=()=>{ const t=clock(); slow=!slow; if(!paused) t0=performance.now()-t*1000/(slow?.5:1); vid.playbackRate=slow?.5:1; $("bSlow").classList.toggle("on",slow); };
+$("bOv").onclick=()=>{ ovOn=!ovOn; cur=null; $("step").style.opacity=ovOn?1:0; $("bOv").classList.toggle("on",ovOn); $("bOv").innerHTML="Labels &amp; airflow: "+(ovOn?"on":"off"); };
+buildView(0);
+setInterval(tick,50); tick();
+</script>
+</body>
+</html>
