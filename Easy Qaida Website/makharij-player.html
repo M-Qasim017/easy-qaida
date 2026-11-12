@@ -79,6 +79,25 @@ body.embed .about{padding:6px 12px;font-size:13.5px;line-height:1.35}
 body.embed .about h3{font-size:12px;margin-bottom:1px}
 body.embed .ctl button{padding:6px 12px;font-size:13px}
 body.embed .views button{padding:3px 12px;font-size:13px}
+@media (max-width:600px){
+  .step{font-size:11px;padding:5px 8px;max-width:50%;border-radius:10px;border-width:1px}
+  .legend{font-size:9.5px;gap:3px;right:2%;top:4%}
+  .legend span{padding:2px 7px;gap:5px}
+  .legend i{width:14px;height:4px}
+  .big{left:2.5%;bottom:3%}
+  .big .ar{font-size:40px}
+  .big .en{font-size:11px}
+  .about{font-size:14px;padding:8px 12px}
+  .ctl button{padding:7px 12px;font-size:14px}
+}
+@media (max-height:430px){
+  body.embed .about{display:none}
+  body.embed .W{width:min(100vw,calc((100vh - 84px)*16/9))}
+  body.embed .wrap{gap:4px}
+  .step{font-size:11px;padding:4px 8px}
+  .legend{font-size:9.5px}
+  .big .ar{font-size:36px}
+}
 </style>
 </head>
 <body>

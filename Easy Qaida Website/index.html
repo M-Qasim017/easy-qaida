@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Easy Qaida — Interactive</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0C3B2C">
+<title>eQaida — Interactive</title>
 <link href="fonts/fonts.css" rel="stylesheet">
-<link href="practice.css?v=1111121757" rel="stylesheet">
+<link href="practice.css?v=1112110000" rel="stylesheet">
 <style>
 @page{size:148mm 210mm;margin:0}
 :root{
@@ -173,6 +175,8 @@ p.mx>.hs{position:relative;top:-.4mm;right:auto;display:inline-grid;vertical-ali
   .tbb:hover{background:rgba(255,255,255,.2)}
   .tbb.on{background:#C9A227;color:#0B3D2E}
   .tbb svg{width:18px;height:18px}
+  .tbb.eq-snd{font-size:18px;padding:0 9px}
+  .eq-snd.off{opacity:.55}
   #pSel{font:inherit;font-weight:700;height:38px;border-radius:10px;border:0;padding:0 10px;background:#FAF6EE;color:#0B3D2E;cursor:pointer}
   #book{display:flex;flex-direction:column;align-items:center;gap:22px;padding:22px 0 80px;zoom:var(--z,1)}
   .page{box-shadow:0 3px 14px rgba(0,0,0,.18)}
@@ -339,11 +343,156 @@ p.mx>.hs{position:relative;top:-.4mm;right:auto;display:inline-grid;vertical-ali
 @keyframes yayIn{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
 #confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:99999}
 
+/* ================= new look (Nov 2026): calm, modern chrome around the book ================= */
+@media screen{
+  body{background:#E8ECE9}
+  .tb{gap:8px;padding:9px 16px;background:#0C3B2C;box-shadow:0 1px 0 rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.08)}
+  .tbm{width:36px;height:36px;border-radius:11px;background:#12A05C}
+  .tbt{font-family:'Source Sans 3',sans-serif;font-weight:800;font-size:17px;letter-spacing:0}
+  .tbt small{font-weight:600;font-size:12.5px;opacity:.7}
+  .tbb{font-weight:600;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:11px;height:40px;transition:background .15s,border-color .15s}
+  .tbb:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.24)}
+  .tbb.on{background:rgba(242,213,122,.16);border-color:rgba(242,213,122,.5);color:#F6DE92}
+  .tbb svg{width:19px;height:19px}
+  .tbb.eq-snd{padding:0 10px}
+  .eq-snd.off{opacity:.6}
+  #pSel{height:40px;border-radius:11px;background:#fff;color:#14231D;font-weight:700;padding:0 12px}
+  #book{gap:26px}
+  .page{box-shadow:0 1px 2px rgba(16,40,30,.08),0 12px 32px rgba(16,40,30,.12);border-radius:3px}
+}
+.xm{background:rgba(9,22,17,.55);backdrop-filter:blur(3px)}
+.xcard{background:#F3F6F4;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.xhead{background:#fff;color:#14231D;border-bottom:1px solid #E1E7E3;padding:10px 14px 10px 20px}
+.xt{font-family:'Source Sans 3',sans-serif;font-weight:800;color:#14231D}
+.xt .xa{color:#0B6B45}
+.xcount{color:#5F6D67;opacity:1;font-weight:600;background:#EEF2EF;border-radius:999px;padding:4px 12px;font-size:14px}
+.xclose{width:40px;height:40px;border-radius:12px;background:#fff;border:1px solid #E1E7E3;color:#14231D;display:grid;place-items:center;padding:0}
+.xclose:hover{background:#F4F6F5}
+.xclose svg,.xbtn svg{width:19px;height:19px}
+.xfoot{background:#fff;border-top:1px solid #E1E7E3}
+.xbtn{font-weight:700;border:1px solid #E1E7E3;border-radius:12px;color:#14231D;display:inline-flex;align-items:center;gap:7px;box-shadow:0 1px 2px rgba(16,40,30,.05)}
+.xbtn:hover{border-color:#C9D3CD}
+.xbtn.pri{background:#0B6B45;border-color:#0B6B45;color:#fff}
+.xbtn.pri:hover{background:#095A3A}
+.tabs{gap:4px;background:#E6ECE8;border-radius:999px;padding:4px;align-self:center}
+.tab{background:transparent;color:#5F6D67;font-weight:600;padding:7px 15px}
+.tab:hover{color:#14231D}
+.tab.on{background:#fff;color:#0B6B45;box-shadow:0 1px 3px rgba(16,40,30,.15)}
+.tab .pb{background:#C9A227;height:3px}
+.tab .tn{background:#E1E7E3;color:#5F6D67}
+.tab.on .tn{background:#0B6B45;color:#fff}
+.fc,.shc,.h3 .t,.hbig,.zi{border-width:1px;border-color:#E1E7E3;box-shadow:0 1px 2px rgba(16,40,30,.05),0 8px 22px rgba(16,40,30,.06)}
+.mEn,.fc b,.lb b,.weq .eqA i,.hsnd b,.tpct,.zi .n{font-family:'Source Sans 3',sans-serif}
+.shc .lbx{font-family:'Source Sans 3',sans-serif;letter-spacing:.06em}
+.yay{border:0;border-radius:28px;box-shadow:0 30px 80px rgba(11,61,46,.3)}
+.yEn{font-family:'Source Sans 3',sans-serif;color:#B48A12}
+.memo{background:#FFF8E3;border:1px solid #F0E0A8}
+.note{border-radius:14px}
+
+/* ================= phones and small tablets ================= */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button{touch-action:manipulation}
+@media screen and (max-width:1000px){
+  .tbt{display:none}
+  .tbb.wide:not(#pzOpen) span{display:none}
+  .tbb.wide:not(#pzOpen){padding:0 10px}
+}
+@media screen and (max-width:700px){
+  .tb{gap:6px;padding:8px 10px}
+  .tbm{width:34px;height:34px}
+  .tbb{height:38px;min-width:38px;padding:0 9px}
+  #pSel{height:38px;padding:0 6px;max-width:112px}
+  #fitBtn,#fsBtn{display:none}
+  #pzOpen{white-space:nowrap;position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;height:52px;padding:0 22px;border-radius:999px;font-size:16.5px;font-weight:700;gap:9px;box-shadow:0 10px 26px rgba(11,61,46,.35)}
+  #pzOpen span{display:inline}
+  #book{gap:14px;padding:10px 0 96px}
+  /* help boxes become full screen */
+  .xm{padding:0}
+  .xcard{width:100vw;height:100vh;height:100dvh;border-radius:0}
+  .xhead{padding:8px 8px 8px 14px;gap:8px}
+  .xt{font-size:19px}
+  .xcount{font-size:12.5px;padding:3px 9px}
+  .xbody{padding:10px 10px 6px}
+  .xfoot{padding:8px;gap:6px}
+  .xctl{gap:6px}
+  .xbtn{padding:9px 11px;font-size:15px}
+  #xNext span,#xPrev span{display:none}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;max-width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none;white-space:nowrap;padding:7px 12px;font-size:14px}
+  .sc{gap:1.4vh}
+  .meet{flex-direction:column;gap:1.5vh;text-align:center}
+  .mL{font-size:min(40vw,34vh)}
+  .mEn{font-size:min(12vw,7vh)}
+  .mUr{font-size:min(9vw,5vh)}
+  .mInfo{font-size:16px}
+  .stack{font-size:min(46vw,36vh)}
+  .famrow{gap:2.5vw}
+  .fc{min-width:0;padding:0 3vw 1vh;border-radius:16px}
+  .fc .fl{font-size:min(20vw,15vh)}
+  .fc small{max-width:28vw;font-size:12px}
+  .shp{display:grid;grid-template-columns:1fr 1fr;gap:10px;direction:rtl;width:100%}
+  .shc{min-width:0}
+  .shc .g{font-size:min(19vw,12vh)}
+  .shc .lbx{font-size:12px}
+  .shc .sub{font-size:11px}
+  .exl{flex-wrap:wrap;justify-content:center;gap:6px 10px;font-size:15px;text-align:center}
+  .exl .xw2{font-size:min(14vw,8vh)}
+  .cap{font-size:clamp(15px,4.4vw,19px)}
+  .note{font-size:14px}
+  .where{flex-direction:column;gap:1.5vh}
+  .where .dg{width:100%;height:auto;max-height:44vh}
+  .where .wt{max-width:none;align-items:center;text-align:center}
+  .where .wl{font-size:min(20vw,9vh)}
+  .zlist{max-width:none;gap:1vh}
+  .xw{font-size:min(17vw,13vh);padding-bottom:min(18vh,140px)}
+  .lb .iso{font-size:min(9vw,5vh)}
+  .lb b{font-size:13px}
+  .hx{flex-direction:column;gap:2vh}
+  .hbig{width:min(58vw,34vh);height:min(70vw,40vh)}
+  .hbig .hg{font-size:min(42vw,24vh)}
+  .hinfo{max-width:none;align-items:center;text-align:center;gap:1.4vh}
+  .hsnd{font-size:clamp(18px,5.5vw,26px)}
+  .h3 .t{width:min(17vw,11vh);height:min(20vw,13vh)}
+  .h3 .t span{font-size:min(10vw,6vh)}
+  .rule{font-size:14px}
+  .tw{width:94vw;height:min(52vh,96vw)}
+  .tbar{width:34vw}
+  .tmsg{min-width:0;text-align:center}
+  .memo{font-size:clamp(16px,4.8vw,22px);padding:10px 14px}
+  .bx .bxT{max-width:none}
+  .fq{font-size:clamp(19px,5.6vw,26px)}
+  .yay{padding:10px 22px 14px;max-width:92vw}
+  .yAr{font-size:min(15vw,9vh)}
+  .yEn{font-size:min(7vw,5vh)}
+}
+@media screen and (max-width:420px){
+  .xctl .xbtn:not(.pri) span{display:none}
+}
+/* phones held sideways: very little height */
+@media screen and (max-height:500px){
+  .tb{padding:5px 10px}
+  .tbb,#pSel{height:34px}
+  .xm{padding:0}
+  .xcard{width:100vw;height:100vh;height:100dvh;border-radius:0}
+  .xhead{padding:4px 8px 4px 14px}
+  .xclose{width:34px;height:34px}
+  .xbody{padding:6px 14px 4px}
+  .xfoot{padding:5px 10px}
+  .xbtn{padding:6px 11px;font-size:14px}
+  .tabs{padding:3px}
+  .tab{padding:4px 11px;font-size:13.5px}
+  #pzOpen{height:44px}
+}
+@media (hover:none){
+  .fbtn:hover{transform:none}
+}
+
 </style>
 </head>
 <body>
 <div class="tb">
-  <span class="tbm">ب</span><b class="tbt">Easy Qaida<small>Interactive · Takhti 1–3</small></b>
+  <span class="tbm">ب</span><b class="tbt">eQaida<small>Interactive · Takhti 1–3</small></b>
   <div class="tbsp"></div>
   <button class="tbb" id="pPrev" aria-label="Previous page">‹</button>
   <select id="pSel" aria-label="Go to page"></select>
@@ -351,6 +500,7 @@ p.mx>.hs{position:relative;top:-.4mm;right:auto;display:inline-grid;vertical-ali
   <div class="tbsp"></div>
   <button class="tbb wide on" id="hsBtn" title="Show or hide the help buttons"><span>Help buttons</span></button>
   <button class="tbb wide" id="fitBtn" title="Change the zoom"><span>Fit width</span></button>
+  <button class="tbb eq-snd" id="sndBtn" aria-label="Sound effects on or off" title="Sound effects">🔊</button>
   <button class="tbb" id="fsBtn" aria-label="Full screen" title="Full screen">⛶</button>
 </div>
 <div id="book"></div>
@@ -413,7 +563,7 @@ const qa=(q,a,tail="")=>`<div class="qa"><p class="q"><span class="l">Q</span><s
 const lesson=(n,t)=>`<div class="lesson"><span class="lw">Lesson</span><span class="ln">${n}</span><span class="lt">${t}</span></div>`;
 function page(no,inner,cls=""){
   return `<section class="page"><div class="frame"></div>
-    <div class="hdr"><div class="pill">quranmasteronline.com</div><div class="no">${no}</div><div class="pill">Easy Qaida</div></div>
+    <div class="hdr"><div class="pill">quranmasteronline.com</div><div class="no">${no}</div><div class="pill">eQaida</div></div>
     <div class="body ${cls}">${inner}</div></section>`;
 }
 
@@ -491,7 +641,7 @@ pages.push(`<section class="page cover">
     <img class="logo" src="img/qmo-logo.png" alt="Quran Master Online">
     <div class="arbig">ا ب ت ث</div>
     <div class="k">Takhti 1 – 3 · Redesigned edition</div>
-    <h1>Easy<br>Qaida</h1>
+    <h1>eQaida</h1>
     <div class="t">Part 1</div>
     <div class="s">Alphabet recognition with correct pronunciation — now with a new exercise showing how every letter looks at the start, middle and end of a word.</div>
   </div>
@@ -505,7 +655,7 @@ pages.push(`<section class="page cover">
       <div><b>Kalimahs and Iman</b><span>pages 15 – 16</span></div>
     </div>
   </div>
-  <div class="foot"><span>quranmasteronline.com</span><span>Easy Qaida · Takhti 1 – 3</span></div>
+  <div class="foot"><span>quranmasteronline.com</span><span>eQaida · Takhti 1 – 3</span></div>
 </section>`);
 
 /* PAGE 1 */
@@ -794,6 +944,11 @@ const HEAVYX=new Set(["kha","sad","dad","tta","zza","ghain","qaf"]);
 const FORMN={S:"Start",M:"Middle",E:"End",A:"Alone"};
 const HN={fatha:"Fatha",kasra:"Kasra",damma:"Damma"}, HU={fatha:"Zabar",kasra:"Zair",damma:"Paish"}, HV={fatha:"a",kasra:"i",damma:"u"};
 const HW={fatha:"a small line ON TOP",kasra:"a small line BELOW",damma:"a small curl ON TOP"};
+const XI=(()=>{ const sv=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+  return {left:sv('<path d="M15 5l-7 7 7 7"/>'),right:sv('<path d="M9 5l7 7-7 7"/>'),back:sv('<path d="M19 12H5M11 6l-6 6 6 6"/>'),fwd:sv('<path d="M5 12h14M13 6l6 6-6 6"/>'),
+    play:sv('<path d="M8 5v14l11-7z"/>'),pause:sv('<path d="M8 5v14M16 5v14"/>'),again:sv('<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4v4.5H15"/>'),
+    cut:sv('<circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8 8.5L20 17M8 15.5L20 7"/>'),join:sv('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+    x:sv('<path d="M6 6l12 12M18 6L6 18"/>'),fitw:sv('<path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/>'),full:sv('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>')}; })();
 const EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 
 /* ---------- makharij: where each letter comes from (book pages 4–5) ---------- */
@@ -875,6 +1030,7 @@ const X={list:[],i:0,tok:0,timer:null,space:null};
 const xm=document.getElementById("xm"), xBody=document.getElementById("xBody"), xCtl=document.getElementById("xCtl");
 function stopTimers(){ X.tok++; clearTimeout(X.timer); X.timer=null; }
 function openX(el){
+  if(window.EQSfx) EQSfx.open();
   const pg=el.closest(".page");
   X.list=[...pg.querySelectorAll("[data-x]")]; X.i=X.list.indexOf(el);
   xm.hidden=false; document.body.style.overflow="hidden"; showX();
@@ -917,7 +1073,8 @@ function letterX(id,start,note){
   player(S, Math.max(0,S.findIndex(s=>s.t===start)));
 }
 /* ---------- celebration: party poppers from both corners + a big MashaAllah ---------- */
-function celebrate(host){
+function celebrate(host,stars){
+  if(window.EQSfx) EQSfx.win(stars||3);
   let cv=document.getElementById("confetti");
   if(!cv){ cv=document.createElement("canvas"); cv.id="confetti"; document.body.appendChild(cv); }
   const d=window.devicePixelRatio||1, W=innerWidth, H=innerHeight; cv.width=W*d; cv.height=H*d; const c=cv.getContext("2d"); c.setTransform(d,0,0,d,0,0);
@@ -1041,10 +1198,10 @@ function beginnerX(id){
     stg.querySelectorAll(".fbtn").forEach(b=>b.onclick=()=>{ const c=b.dataset.id;
       stg.querySelectorAll(".fbtn").forEach(x=>x.classList.remove("no"));
       if(c===id){ b.classList.add("ok"); res.className="cap fres good"; res.innerHTML=`MashaAllah! ⭐ That is <b>${l.en}</b>.`; celebrate(stg); }
-      else { void b.offsetWidth; b.classList.add("no"); res.className="cap fres bad"; res.innerHTML=`Try again. That one is <b>${L[c].en}</b>.`; } });
+      else { void b.offsetWidth; b.classList.add("no"); if(window.EQSfx) EQSfx.no(); res.className="cap fres bad"; res.innerHTML=`Try again. That one is <b>${L[c].en}</b>.`; } });
     stg.querySelector(".fagain").onclick=find;
   };
-  const back=ctlBtn("← Back",()=>go(cur-1)), next=ctlBtn("Next step →",()=>go(cur+1),true);
+  const back=ctlBtn(XI.back+"Back",()=>go(cur-1)), next=ctlBtn("Next step"+XI.fwd,()=>go(cur+1),true);
   const go=i=>{ if(i<0||i>2) return; cur=i; tabs.forEach((t,j)=>t.classList.toggle("on",j===i)); back.disabled=i===0; next.disabled=i===2; [meet,trace,find][i](); };
   tabs.forEach((t,j)=>t.onclick=()=>go(j));
   X.space=()=>go(Math.min(2,cur+1));
@@ -1064,15 +1221,15 @@ function player(S,start){
   let cur=start, playing=!S[start].video;
   const DUR=3000;
   const pbtn=ctlBtn("",()=>{ playing=!playing; if(playing&&cur>=S.length-1) cur=0; go(cur,true); },true);
-  ctlBtn("↻ From the start",()=>{ playing=true; go(0,true); });
+  ctlBtn(XI.again+"<span>From the start</span>",()=>{ playing=true; go(0,true); });
   const go=(i,fresh)=>{
     stopTimers(); cur=i;
     tabs.forEach((t,j)=>{ t.classList.toggle("on",j===i); const pb=t.querySelector(".pb"); pb.style.transition="none"; pb.style.width=j<i?"100%":"0"; });
     if(fresh!==false) stg.innerHTML=S[i].h;
-    pbtn.innerHTML=playing?"❚❚ Pause":"▶ Play";
+    pbtn.innerHTML=playing?XI.pause+"Pause":XI.play+"Play";
     if(playing&&!S[i].video){
       const pb=tabs[i].querySelector(".pb"); void pb.offsetWidth; pb.style.transition=`width ${DUR}ms linear`; pb.style.width="100%";
-      const my=X.tok; X.timer=setTimeout(()=>{ if(my!==X.tok) return; if(i<S.length-1&&!S[i+1].video) go(i+1); else { playing=false; pbtn.innerHTML="▶ Play"; } },DUR);
+      const my=X.tok; X.timer=setTimeout(()=>{ if(my!==X.tok) return; if(i<S.length-1&&!S[i+1].video) go(i+1); else { playing=false; pbtn.innerHTML=XI.play+"Play"; } },DUR);
     }
   };
   tabs.forEach((t,j)=>t.onclick=()=>{ playing=false; go(j); });
@@ -1100,9 +1257,9 @@ function wordX(w,sounds){
     <div class="weq" id="weq"><div class="eqA">${eqA}</div><div class="eqE">${eqE}</div>${why.map(t=>`<div class="note">${t}</div>`).join("")}</div></div>`;
   const xw=document.getElementById("xw"), weq=document.getElementById("weq");
   let broken=false;
-  const tb=ctlBtn("✂ Break it",()=>set(!broken),true);
-  ctlBtn("↻ Play again",()=>{ set(false); run(); });
-  const set=b=>{ broken=b; xw.classList.toggle("broken",b); weq.classList.toggle("on",b); tb.innerHTML=b?"🔗 Join it":"✂ Break it"; };
+  const tb=ctlBtn(XI.cut+"Break it",()=>set(!broken),true);
+  ctlBtn(XI.again+"<span>Play again</span>",()=>{ set(false); run(); });
+  const set=b=>{ broken=b; xw.classList.toggle("broken",b); weq.classList.toggle("on",b); tb.innerHTML=b?XI.join+"Join it":XI.cut+"Break it"; };
   const run=()=>{ stopTimers(); const my=X.tok; X.timer=setTimeout(()=>{ if(my===X.tok) set(true); },900); };
   X.space=()=>tb.click();
   if(ps.length>1) run(); else set(true);
@@ -1151,10 +1308,12 @@ let fitMode="page";
 const PW=148*96/25.4, PH=210*96/25.4;
 function fit(){
   const tb=document.querySelector(".tb").offsetHeight;
-  const z=fitMode==="page"?Math.max(.4,(innerHeight-tb-44)/PH):Math.max(.4,Math.min(innerWidth-28,1150)/PW);
+  const vw=document.documentElement.clientWidth||innerWidth, vh=document.documentElement.clientHeight||innerHeight;
+  const wFit=Math.min(vw-(vw<700?12:28),1150)/PW;
+  const z=fitMode==="page"?Math.max(.3,Math.min((vh-tb-44)/PH,wFit)):Math.max(.3,wFit);
   document.getElementById("book").style.setProperty("--z",z.toFixed(3));
 }
-function goPage(i){ i=Math.max(0,Math.min(PAGES.length-1,i)); const tb=document.querySelector(".tb").offsetHeight; scrollTo({top:PAGES[i].getBoundingClientRect().top+scrollY-tb-12,behavior:"smooth"}); pSel.value=i; }
+function goPage(i){ i=Math.max(0,Math.min(PAGES.length-1,i)); if(i!==curPage()&&window.EQSfx) EQSfx.page(); const tb=document.querySelector(".tb").offsetHeight; scrollTo({top:PAGES[i].getBoundingClientRect().top+scrollY-tb-12,behavior:"smooth"}); pSel.value=i; }
 function curPage(){ let c=0; PAGES.forEach((p,i)=>{ if(p.getBoundingClientRect().top<innerHeight*.5) c=i; }); return c; }
 addEventListener("scroll",()=>{ pSel.value=curPage(); },{passive:true});
 addEventListener("resize",fit);
@@ -1163,8 +1322,13 @@ document.getElementById("pPrev").onclick=()=>goPage(curPage()-1);
 document.getElementById("pNext").onclick=()=>goPage(curPage()+1);
 document.getElementById("hsBtn").onclick=e=>{ const off=document.body.classList.toggle("nohs"); e.currentTarget.classList.toggle("on",!off); };
 document.getElementById("fitBtn").onclick=e=>{ fitMode=fitMode==="page"?"width":"page"; e.currentTarget.querySelector("span").textContent=fitMode==="page"?"Fit width":"Fit page"; const c=curPage(); fit(); setTimeout(()=>goPage(c),50); };
+document.getElementById("sndBtn").onclick=()=>{ if(!window.EQSfx) return; EQSfx.on=!EQSfx.on; if(EQSfx.on) EQSfx.yay(); };
+document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b||!window.EQSfx||b.closest(".pz")||b.matches("#pPrev,#pNext,#sndBtn,#pzOpen,.fbtn")) return; EQSfx.tap(); },true);
 document.getElementById("fsBtn").onclick=()=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(e){} };
 document.getElementById("hsBtn").insertAdjacentHTML("afterbegin",EYE);
+document.getElementById("fitBtn").insertAdjacentHTML("afterbegin",XI.fitw);
+document.getElementById("pPrev").innerHTML=XI.left; document.getElementById("pNext").innerHTML=XI.right; document.getElementById("fsBtn").innerHTML=XI.full;
+document.getElementById("xClose").innerHTML=XI.x; document.getElementById("xNext").innerHTML=XI.back+"<span>Next box</span>"; document.getElementById("xPrev").innerHTML="<span>Previous box</span>"+XI.fwd;
 addEventListener("keydown",e=>{
   if(!xm.hidden){
     if(e.key==="Escape") closeX();
@@ -1180,7 +1344,8 @@ addEventListener("keydown",e=>{
 fit();
 
 </script>
-<script src="practice.js?v=1111121757"></script>
+<script src="sounds.js?v=1112110000"></script>
+<script src="practice.js?v=1112110000"></script>
 <script>
 /* if this page was opened without its folder (for example straight from inside a zip), say so clearly */
 addEventListener("load",function(){ setTimeout(function(){ if(window.EQPractice||window.__SINGLE) return;
@@ -1189,7 +1354,7 @@ addEventListener("load",function(){ setTimeout(function(){ if(window.EQPractice|
   d.innerHTML='<div style="max-width:660px;font-size:20px;line-height:1.5"><div style="font-size:30px;font-weight:800;color:#F2D57A;margin-bottom:10px">&#9888; Some files are missing</div>'+
    'This page was opened without the rest of its folder, so the videos, pictures and games cannot load. This happens when it is opened from inside the zip file.'+
    '<ol><li>Close this page.</li><li>Find the zip file. <b>Right-click it, then choose Extract All</b> (on a Mac: double-click it).</li><li>Open the new folder and double-click <b>START HERE</b>.</li></ol>'+
-   'Or use the single file <b>Easy Qaida.html</b>, which needs no unzipping.<br><br>'+
+   'Or use the single file <b>eQaida.html</b>, which needs no unzipping.<br><br>'+
    '<button onclick="document.getElementById(\'eqMissing\').remove()" style="font:inherit;padding:8px 18px;border-radius:10px;border:0;cursor:pointer">Continue anyway</button></div>';
   document.body.appendChild(d); },900); });
 </script>
