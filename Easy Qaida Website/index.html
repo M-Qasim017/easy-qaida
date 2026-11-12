@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0C3B2C">
 <title>eQaida — Interactive</title>
 <link href="fonts/fonts.css" rel="stylesheet">
-<link href="practice.css?v=1112110000" rel="stylesheet">
+<link href="practice.css?v=1112130000" rel="stylesheet">
 <style>
 @page{size:148mm 210mm;margin:0}
 :root{
@@ -19,7 +19,7 @@
 html,body{margin:0;padding:0}
 body{font-family:'Source Sans 3',Arial,sans-serif;color:var(--ink);font-size:10.6pt;line-height:1.36;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{width:148mm;height:210mm;position:relative;overflow:hidden;background:var(--cream);page-break-after:always;break-after:page}
-.page:last-child{page-break-after:auto;break-after:auto}
+#book>.pgw:last-child>.page,#book>.page:last-child{page-break-after:auto;break-after:auto}
 .frame{position:absolute;inset:4.5mm;border:.8mm solid var(--deep);border-radius:3mm;pointer-events:none}
 .frame::after{content:"";position:absolute;inset:1mm;border:.3mm solid var(--gold);border-radius:2mm}
 .hdr{position:absolute;top:7.6mm;left:9mm;right:9mm;height:7mm;display:flex;align-items:center;gap:2mm}
@@ -178,13 +178,18 @@ p.mx>.hs{position:relative;top:-.4mm;right:auto;display:inline-grid;vertical-ali
   .tbb.eq-snd{font-size:18px;padding:0 9px}
   .eq-snd.off{opacity:.55}
   #pSel{font:inherit;font-weight:700;height:38px;border-radius:10px;border:0;padding:0 10px;background:#FAF6EE;color:#0B3D2E;cursor:pointer}
-  #book{display:flex;flex-direction:column;align-items:center;gap:22px;padding:22px 0 80px;zoom:var(--z,1)}
+  #book{display:flex;flex-direction:column;align-items:center;gap:22px;padding:22px 0 80px}
+  /* pages are shrunk with transform (not zoom): iPhones shrank the boxes but kept the text big, so letters piled up */
+  .pgw{width:calc(148mm * var(--z,1));height:calc(210mm * var(--z,1));flex:none;position:relative}
+  .pgw>.page{position:absolute;left:0;top:0;transform:scale(var(--z,1));transform-origin:0 0}
   .page{box-shadow:0 3px 14px rgba(0,0,0,.18)}
 }
 @media screen and (max-width:700px){ .tbt{display:none} .tbb.wide span{display:none} }
 @media print{
   .tb,.hs,.xm{display:none!important}
   #book{zoom:1!important;display:block;padding:0}
+  .pgw{width:auto!important;height:auto!important}
+  .pgw>.page{position:relative!important;transform:none!important}
   .page{box-shadow:none}
 }
 
@@ -391,6 +396,7 @@ p.mx>.hs{position:relative;top:-.4mm;right:auto;display:inline-grid;vertical-ali
 
 /* ================= phones and small tablets ================= */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.page,.page *{-webkit-text-size-adjust:none;text-size-adjust:none}
 button{touch-action:manipulation}
 @media screen and (max-width:1000px){
   .tbt{display:none}
@@ -1302,6 +1308,7 @@ document.getElementById("xPrev").onclick=()=>moveX(-1);
 xm.addEventListener("click",e=>{ if(e.target===xm) closeX(); });
 
 const PAGES=[...document.querySelectorAll("#book .page")];
+PAGES.forEach(p=>{ const w=document.createElement("div"); w.className="pgw"; p.parentNode.insertBefore(w,p); w.appendChild(p); });
 const pSel=document.getElementById("pSel");
 pSel.innerHTML=PAGES.map((p,i)=>{ const no=p.querySelector(".hdr .no"); return `<option value="${i}">${no?"Page "+no.textContent:"Cover"}</option>`; }).join("");
 let fitMode="page";
@@ -1344,8 +1351,8 @@ addEventListener("keydown",e=>{
 fit();
 
 </script>
-<script src="sounds.js?v=1112110000"></script>
-<script src="practice.js?v=1112110000"></script>
+<script src="sounds.js?v=1112130000"></script>
+<script src="practice.js?v=1112130000"></script>
 <script>
 /* if this page was opened without its folder (for example straight from inside a zip), say so clearly */
 addEventListener("load",function(){ setTimeout(function(){ if(window.EQPractice||window.__SINGLE) return;
