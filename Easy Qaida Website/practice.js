@@ -38,18 +38,22 @@ const ICO={
   turn:'<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4v4.5H15"/>',
   flame:'<path d="M12 21c3.9 0 6.5-2.6 6.5-6.2 0-3.4-2.3-5.6-4-7.8-.4 2-1.4 3.2-2.6 3.8.3-2.9-.7-5.6-3-7.8.2 3.4-3.4 5.8-3.4 10.3C5.5 17.6 8.1 21 12 21z"/>',
   gauge:'<path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/>',
-  plus:'<path d="M12 5v14M5 12h14"/>'
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 5.5H5V7a3.5 3.5 0 0 0 3.5 3.5M16 5.5h3V7a3.5 3.5 0 0 1-3.5 3.5"/><path d="M12 13v4M8.5 20h7M9.5 17h5v3h-5z"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/>',
+  cal:'<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'
 };
 const IC=n=>`<svg class="pz-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[n]||""}</svg>`;
 const STAR=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.2L12 17.1 6.4 20l1.1-6.2L2.9 9.4l6.3-.9z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
 
 /* ================= students, stars, points and memory strength (saved on this device) ================= */
 const KEY="easyqaida.practice.v1";   /* old name kept on purpose, so students keep their progress */
-const blank=()=>({m:{},stars:0,pts:0,sel:{},little:false});
+const blank=()=>({m:{},stars:0,pts:0,sel:{},little:false,days:{},path:{}});
 let store=null; try{ store=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){}
 if(!store||!store.students||!Object.keys(store.students).length) store={cur:"Student 1",students:{"Student 1":blank()}};
 if(!store.students[store.cur]) store.cur=Object.keys(store.students)[0];
-{ const q=(new URLSearchParams(location.search).get("student")||"").trim().slice(0,30); if(q){ if(!store.students[q]) store.students[q]=blank(); store.cur=q; } }
+{ const U=new URLSearchParams(location.search), q=(U.get("student")||"").trim().slice(0,30), sid=(U.get("sid")||"").trim().slice(0,60);
+  if(q){ if(!store.students[q]) store.students[q]=blank(); store.cur=q; if(sid) store.students[q].sid=sid; } }
 const save=()=>{ try{ localStorage.setItem(KEY,JSON.stringify(store)); }catch(e){} };
 const stu=()=>store.students[store.cur];
 const little=()=>!!stu().little;
@@ -65,6 +69,21 @@ function lvOf(p){ p=p||0; let i=0; while(i+1<LVS.length&&p>=LVS[i+1]) i++;
   if(i===LVS.length-1){ const x=Math.floor((p-LVS[i])/2000); return {n:i+1+x,lo:LVS[i]+x*2000,hi:LVS[i]+(x+1)*2000}; }
   return {n:i+1,lo:LVS[i],hi:LVS[i+1]}; }
 const pts=()=>stu().pts||0;
+/* scoring by day: today, this week (Monday to Sunday), days in a row, daily goal */
+const GOAL=100;
+const dayKey=d=>{ d=d||new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const weekDays=()=>{ const d=new Date(), wd=(d.getDay()+6)%7, out=[]; for(let i=0;i<=wd;i++){ const x=new Date(d); x.setDate(d.getDate()-i); out.push(dayKey(x)); } return out; };
+const ptsOf=(s,keys)=>keys.reduce((a,k)=>a+((s.days||{})[k]||0),0);
+const todayPts=s=>ptsOf(s,[dayKey()]), weekPts=s=>ptsOf(s,weekDays());
+function dayStreak(s){ const days=s.days||{}, d=new Date(); let n=0; if(!days[dayKey(d)]) d.setDate(d.getDate()-1); while(days[dayKey(d)]){ n++; d.setDate(d.getDate()-1); } return n; }
+/* eQuran: every change of score is sent out, and the leaderboard is read back (see README) */
+const CFG=Object.assign({api:""},window.EQAIDA_CONFIG||{}), API=String(CFG.api||"").replace(/\/+$/,"");
+function scoreData(){ const s=stu(); return {source:"eqaida",type:"score",book:"part1",sid:s.sid||"",name:store.cur,points:s.pts||0,weekPoints:weekPts(s),todayPoints:todayPts(s),
+  stars:s.stars||0,level:lvOf(s.pts).n,streakDays:dayStreak(s),stepsDone:Object.keys(s.path||{}).length,weekStart:weekDays().slice(-1)[0],updated:new Date().toISOString()}; }
+let syncT=0;
+function sync(){ const p=scoreData(); try{ if(window.parent&&window.parent!==window) window.parent.postMessage(p,"*"); }catch(e){}
+  if(API){ try{ fetch(API+"/score",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p),keepalive:true}).catch(()=>{}); }catch(e){} } }
+const queueSync=()=>{ clearTimeout(syncT); syncT=setTimeout(sync,1500); };
 const narrow=()=>(document.documentElement.clientWidth||innerWidth)<600;   /* phone held upright */
 const short_=()=>(document.documentElement.clientHeight||innerHeight)<500;   /* phone held sideways */
 
@@ -79,7 +98,7 @@ function FI(id,f){ const key=`f:${id}:${f}`; return cache[key]||(cache[key]={key
   answer:`<b>${L[id].en}</b> ${A(L[id].ch)}<br><small>${FORMN[f]} shape</small>`}); }
 function HI(id,h){ const key=`h:${id}:${h}`; if(cache[key]) return cache[key]; const base=id==="alif"?"ا":L[id].ch, syl=((id==="alif"||id==="hamza")?"":SND[id])+HV[h];
   return cache[key]={key,kind:"har",id,h,html:`<span class="pz-a pz-hg"><span style="color:${HC[h]}">${base+HM[h]}</span><span class="b">${base}</span></span>`,name:syl,k:.9,len:1,
-    answer:`<b>${syl}</b><br><small>${L[id].en} + ${HN[h]} (${HU[h]})</small>`}; }
+    answer:`<b>${syl}</b><br><small>${L[id].en} + ${HN[h]}</small>`}; }
 function WI(w){ const key="w:"+w; if(cache[key]) return cache[key]; const ps=analyze(w), n=ps.length;
   return cache[key]={key,kind:"comp",w,ps,html:A(w),name:ps.map(nameOf).join(" + "),k:n<=2?.8:n===3?.64:.5,len:n,
     answer:`${A(ps.map(isoOf).join(" + "))}<br><small>${ps.map(nameOf).join(" + ")}</small>`}; }
@@ -119,9 +138,12 @@ PZ.innerHTML=`<div class="pz-card" role="dialog" aria-modal="true" aria-label="P
     <button class="pz-chip" id="pzStu" title="Change student"></button>
     <span class="pz-pts" id="pzPts" title="Points"><span class="c">${IC("coin")}</span><b id="pzPtsN">0</b><small id="pzLvS">Level 1</small></span>
     <button class="pz-ic eq-snd" id="pzSnd" title="Sound effects on / off"></button><button class="pz-ic" id="pzX" aria-label="Close">${IC("x")}</button></div>
+  <div class="pz-nav" id="pzNav"><button data-nav="hub">${IC("grid")}<span>Games</span></button><button data-nav="path">${IC("list")}<span>Lessons</span></button><button data-nav="prog">${IC("map")}<span>Progress</span></button><button data-nav="board">${IC("trophy")}<span>Leaderboard</span></button></div>
   <div class="pz-body" id="pzB"></div></div>`;
 document.body.appendChild(PZ);
-const B=$("#pzB",PZ), CARD=$(".pz-card",PZ);
+const B=$("#pzB",PZ), CARD=$(".pz-card",PZ), NAV=$("#pzNav",PZ);
+function navSync(){ NAV.hidden=!["hub","path","prog","board"].includes(S.view); $$("button",NAV).forEach(b=>b.classList.toggle("on",b.dataset.nav===S.view)); }
+NAV.addEventListener("click",e=>{ const b=e.target.closest("[data-nav]"); if(b) ({hub,path:pathView,prog:progress,board})[b.dataset.nav](); });
 const selUnits=()=>S.info.units.filter(u=>S.sel.has(u.id));
 const selItems=()=>selUnits().flatMap(u=>u.items);
 function saveSel(){ stu().sel=stu().sel||{}; stu().sel[S.info.key]=[...S.sel]; save(); }
@@ -136,7 +158,10 @@ function floatAt(el,text,cls){ if(!el||!el.getBoundingClientRect) return; const 
   f.style.left=(r.left-cr.left+r.width/2)+"px"; f.style.top=(r.top-cr.top+Math.min(r.height*.35,70))+"px"; CARD.appendChild(f); setTimeout(()=>f.remove(),1150); }
 /* points: every right answer adds to the student's total */
 function award(n,el,cls,label){
-  if(!n) return; stu().pts=pts()+n; S.gp+=n; save();
+  if(!n) return; const s=stu(), dk=dayKey(); s.days=s.days||{}; const before=s.days[dk]||0; s.days[dk]=before+n;
+  { const ks=Object.keys(s.days).sort(); while(ks.length>70) delete s.days[ks.shift()]; }
+  s.pts=pts()+n; S.gp+=n; save(); queueSync();
+  if(before<GOAL&&before+n>=GOAL) setTimeout(()=>{ toast("Daily goal reached! +20 points"); award(20,null,"bonus"); },900);
   $("#pzPtsN",PZ).textContent=fmtN(pts()); $("#pzLvS",PZ).textContent="Level "+lvOf(pts()).n;
   const P=$("#pzPts",PZ); P.classList.remove("bump"); void P.offsetWidth; P.classList.add("bump");
   const g=$("#pzGp b",B); if(g) g.textContent=fmtN(S.gp);
@@ -151,13 +176,18 @@ const unitChip=u=>`<button class="pz-u ${S.sel.has(u.id)?"on":""} lv-${level(u.i
 function count(){ const n=selUnits().length, m=S.info.mode, el=$("#pzN",B); if(!el) return;
   el.textContent=n+" "+(m==="word"?(n===1?"word":"words"):m==="comp"?(n===1?"box":"boxes"):(n===1?"letter":"letters"))+" chosen"; }
 const tint=a=>`--t:${ACTS[a].t};--tc:${ACTS[a].tc}`;
+function statsHTML(){ const s=stu(), t=todayPts(s), st=dayStreak(s);
+  return `<div class="pz-stats"><div><span class="i" style="--t:#FBF3D8;--tc:#8A6A0C">${IC("coin")}</span><b>${fmtN(t)} <small>/ ${GOAL}</small></b><em>Today’s points</em><span class="bar"><i style="width:${Math.min(100,Math.round(100*t/GOAL))}%"></i></span></div>
+    <div><span class="i" style="--t:#E8F0FB;--tc:#2F5FA7">${IC("cal")}</span><b>${fmtN(weekPts(s))}</b><em>This week</em></div>
+    <div><span class="i" style="--t:#FFF1E4;--tc:#B4540A">${IC("flame")}</span><b>${st} ${st===1?"day":"days"}</b><em>Practised in a row</em></div>
+    <div><span class="i" style="--t:#E5F4EB;--tc:#0B6B45">${IC("check")}</span><b>${Object.keys(s.path||{}).length} <small>/ ${PATH.length}</small></b><em>Lesson steps done</em></div></div>`; }
 function hub(){
-  runCleanup(); S.view="hub"; const inf=S.info;
+  runCleanup(); S.view="hub"; navSync(); const inf=S.info;
   const pre=inf.rows6?[["r1","Row 1"],["r2","Rows 1–2"],["r3","Rows 1–3"],["r4","Rows 1–4"],["all","All 29"]]:[["all","All"],["none","None"]];
   const acts=Object.keys(ACTS).filter(a=>!ACTS[a].ok||ACTS[a].ok(inf));
   B.innerHTML=`<div class="pz-hub">${inf.note?`<p class="pz-hint">${inf.note}</p>`:""}
     <section class="pz-sec"><div class="pz-sh"><h3>What to practise</h3><span class="n" id="pzN"></span></div>
-      <div class="pz-pres">${pre.map(([k,t])=>`<button class="pz-pre" data-pre="${k}">${t}</button>`).join("")}<button class="pz-pre" data-pre="weak">Needs practice</button><button class="pz-pre" data-view="prog">${IC("map")}Progress</button></div>
+      <div class="pz-pres">${pre.map(([k,t])=>`<button class="pz-pre" data-pre="${k}">${t}</button>`).join("")}<button class="pz-pre" data-pre="weak">Needs practice</button></div>
       <div class="pz-units ${inf.rows6?"rows6":""} ${inf.mode==="comp"||inf.mode==="word"?"wide":""}" id="pzU">${inf.units.map(unitChip).join("")}</div>${LEG}</section>
     <section class="pz-sec"><div class="pz-sh"><h3>Pick a game</h3><div class="pz-sp"></div>
         <div class="pz-tg"><label class="pz-lit"><input type="checkbox" id="pzOn" ${online()?"checked":""}>Online class</label><label class="pz-lit"><input type="checkbox" id="pzLit" ${little()?"checked":""}>Age 3–5</label></div></div>
@@ -167,7 +197,9 @@ function hub(){
   count();
 }
 B.addEventListener("click",e=>{
-  const t=e.target.closest("[data-u],[data-pre],[data-act],[data-quick],[data-view],[data-go],[data-stu]"); if(!t) return;
+  const t=e.target.closest("[data-u],[data-pre],[data-act],[data-quick],[data-view],[data-go],[data-stu],[data-step],[data-period]"); if(!t) return;
+  if(t.dataset.step!==undefined) return startStep(PATH[+t.dataset.step]);
+  if(t.dataset.period){ boardPeriod=t.dataset.period; return board(); }
   if(t.dataset.u!==undefined){ const id=t.dataset.u; if(S.sel.has(id)) S.sel.delete(id); else S.sel.add(id); t.classList.toggle("on"); saveSel(); count(); return; }
   if(t.dataset.pre){ const ids=S.info.units.map(u=>u.id), p=t.dataset.pre; let pick;
     if(p==="all") pick=ids; else if(p==="none") pick=[]; else if(p[0]==="r") pick=ids.slice(0,6*+p[1]);
@@ -189,7 +221,7 @@ function start(name,opt){
   if(name==="build"&&!opt.items&&S.info.mode==="shapes"){ let ws=S.info.words.filter(w=>w.ps.some(p=>S.sel.has(p.id))); if(!ws.length) ws=S.info.words; opt.items=ws; }
   const items=opt.items||selItems();
   if(!items.length){ toast("Choose at least one first."); return; }
-  runCleanup(); S.view="act"; S.gp=0; S.lv0=lvOf(pts()).n; const act=ACTS[name], ch=opt.chain;
+  runCleanup(); S.view="act"; navSync(); S.gp=0; S.lv0=lvOf(pts()).n; const act=ACTS[name], ch=opt.chain;
   B.innerHTML=`<div class="pz-actw"><div class="pz-acth"><button class="pz-btn sm" id="pzBack">${IC("left")}Games</button><div class="gt" style="${tint(name)}"><span class="t">${IC(act.ic)}</span>${act.title}</div>${ch?`<span class="pz-chainp">Step ${ch.i+1} of ${ch.steps.length}</span>`:""}<div class="pz-sp"></div><span id="pzSk"></span><span class="pz-gp" id="pzGp" title="Points in this game">${IC("coin")}<b>0</b></span><span class="pz-prog" id="pzP"></span></div><div class="pz-stage" id="pzS"></div></div>`;
   $("#pzBack",B).onclick=hub;
   const stage=$("#pzS",B), P=$("#pzP",B), game={streak:0};
@@ -216,20 +248,25 @@ function finish(name,r,opt,stage){
   stu().stars=(stu().stars||0)+stars; save();
   award(stars===3?20:stars===2?10:5,null);
   const ch=opt.chain, last=!ch||ch.i>=ch.steps.length-1; if(ch) ch.stars=(ch.stars||0)+stars;
+  let stepSt=0, stepNext=null; const stepOf=ch&&last&&ch.step?PATH.find(x=>x.id===ch.step):null;
+  if(stepOf){ stepSt=Math.max(1,Math.min(3,Math.round(ch.stars/ch.steps.length))); const P_=stu().path=stu().path||{}, firstTime=!P_[stepOf.id];
+    P_[stepOf.id]=Math.max(P_[stepOf.id]||0,stepSt); save(); if(firstTime) award(30,null); stepNext=PATH[PATH.indexOf(stepOf)+1]||null; }
   const missed=(r.missed||[]).slice(0,10), nxt=ch&&!last?ACTS[ch.steps[ch.i+1]]:null, P=$("#pzP",B); if(P) P.textContent="";
   const lv=lvOf(pts()), up=lv.n>S.lv0, pct=Math.round(100*(pts()-lv.lo)/(lv.hi-lv.lo));
   stage.innerHTML=`<div class="pz-res"><div class="pz-st">${[1,2,3].map(i=>`<span class="${i<=stars?"on":""}" style="animation-delay:${i*0.18}s">${STAR}</span>`).join("")}</div>
     <h2>${stars===3?"MashaAllah! Excellent!":stars===2?"MashaAllah! Well done!":"Good try! Keep going!"}</h2>
     <p class="pz-rs">${r.text||`${r.right} of ${r.total} right the first time`}</p>
     <div class="pz-earn"><span class="c">${IC("coin")}</span><div class="grow"><div><span class="e">+${fmtN(S.gp)}</span> <span class="pz-el">points · ${fmtN(pts())} in all</span> ${up?`<span class="pz-lvup">Level up! Level ${lv.n}</span>`:""}</div>
-      <div class="bar"><i style="width:${up?0:Math.max(0,pct-8)}%"></i></div><div class="pz-el">Level ${lv.n} · ${fmtN(lv.hi-pts())} more points to level ${lv.n+1}</div></div></div>
+      <div class="bar"><i style="width:${up?0:Math.max(0,pct-8)}%"></i></div><div class="pz-el">Level ${lv.n} · ${fmtN(lv.hi-pts())} more points to level ${lv.n+1} · Today: ${fmtN(todayPts(stu()))}</div></div></div>
     ${missed.length?`<div class="pz-miss"><span>Practise these again:</span>${missed.map(m=>`<i style="--k:${m.k}">${m.html}</i>`).join("")}</div>`:""}
-    ${ch&&last?`<p class="pz-rs"><b>Quick practice finished · ${ch.stars} stars today</b></p>`:""}
-    <div class="pz-rb">${nxt?`<button class="pz-btn pri" id="pzNext">Next: ${nxt.title}${IC("right")}</button>`:`<button class="pz-btn pri" id="pzAgain">${IC("turn")}Play again</button>`}
+    ${stepOf?`<p class="pz-rs"><b>Step finished: ${stepOf.title} · ${stepSt} of 3 stars</b></p>`:ch&&last?`<p class="pz-rs"><b>Quick practice finished · ${ch.stars} stars today</b></p>`:""}
+    <div class="pz-rb">${nxt?`<button class="pz-btn pri" id="pzNext">Next: ${nxt.title}${IC("right")}</button>`:stepOf?(stepNext?`<button class="pz-btn pri" id="pzStepNext">Next step${IC("right")}</button>`:"")+`<button class="pz-btn${stepNext?"":" pri"}" id="pzPath">${IC("list")}Lessons</button>`:`<button class="pz-btn pri" id="pzAgain">${IC("turn")}Play again</button>`}
       ${missed.length&&!nxt?`<button class="pz-btn" id="pzMiss">${IC("cards")}Flash cards for the missed ones</button>`:""}<button class="pz-btn" id="pzHub">${nxt?"Stop here":"All games"}</button></div></div>`;
   setTimeout(()=>{ const bar=$(".pz-earn .bar i",stage); if(bar) bar.style.width=pct+"%"; },60);
   const q=id=>$("#"+id,stage);
-  if(q("pzNext")) q("pzNext").onclick=()=>start(ch.steps[ch.i+1],{chain:{steps:ch.steps,i:ch.i+1,stars:ch.stars,sets:ch.sets},items:ch.sets[ch.i+1]});
+  if(q("pzNext")) q("pzNext").onclick=()=>start(ch.steps[ch.i+1],{chain:{...ch,i:ch.i+1},items:ch.sets[ch.i+1]});
+  if(q("pzStepNext")) q("pzStepNext").onclick=()=>startStep(stepNext);
+  if(q("pzPath")) q("pzPath").onclick=pathView;
   if(q("pzAgain")) q("pzAgain").onclick=()=>start(name,{items:opt.items});
   if(q("pzMiss")) q("pzMiss").onclick=()=>start("flash",{items:r.missed});
   q("pzHub").onclick=hub;
@@ -252,7 +289,7 @@ function distract(t,n){
 function promptOf(t){
   if(t.kind==="letter") return `Find <b>${t.name}</b> ${A(t.ur,"sm")}`;
   if(t.kind==="form") return `Find <b>${t.name}</b><small>in its ${FORMN[t.f].toLowerCase()} shape</small>`;
-  if(t.kind==="har") return `Find <b>${t.name}</b><small>${L[t.id].en} with ${HN[t.h]} (${HU[t.h]})</small>`;
+  if(t.kind==="har") return `Find <b>${t.name}</b><small>${L[t.id].en} with ${HN[t.h]}</small>`;
   if(t.kind==="comp") return `Find ${A(t.ps.map(isoOf).join(" + "))}<small>joined together</small>`;
   return `Find <b>${t.name}</b>`;
 }
@@ -584,14 +621,15 @@ const ACTS={
 
 /* ================= progress: level, points and the letter journey ================= */
 function progress(){
-  runCleanup(); S.view="prog"; const inf=S.info, lvs=ORDER.map(id=>level([LI(id)])), cnt=k=>lvs.filter(x=>x===k).length, lv=lvOf(pts());
+  runCleanup(); S.view="prog"; navSync(); const inf=S.info, lvs=ORDER.map(id=>level([LI(id)])), cnt=k=>lvs.filter(x=>x===k).length, lv=lvOf(pts());
   const per=narrow()?4:6, RH=narrow()?96:120, here=ORDER.findIndex((id,i)=>lvs[i]!=="good"), rows=Math.ceil(ORDER.length/per), H=rows*RH+30;
   const pos=i=>{ const r=Math.floor(i/per), j=i%per, x0=narrow()?13:8; return {x:x0+(r%2===0?per-1-j:j)*((100-2*x0)/(per-1)), y:(narrow()?58:70)+r*RH}; };
   let d=""; ORDER.forEach((_,i)=>{ const p=pos(i); if(!i){ d+=`M${p.x} ${p.y}`; return; } const q=pos(i-1);
     d+= Math.floor(i/per)===Math.floor((i-1)/per)?` L${p.x} ${p.y}`:` C${q.x+(q.x>50?7:-7)} ${q.y} ${p.x+(p.x>50?7:-7)} ${p.y} ${p.x} ${p.y}`; });
-  B.innerHTML=`<div class="pz-pv"><div class="pz-acth"><button class="pz-btn sm" data-view="hub">${IC("left")}Back</button><div class="gt"><span class="t">${IC("map")}</span>Progress · ${esc(store.cur)}</div></div>
+  B.innerHTML=`<div class="pz-pv"><div class="pz-acth"><div class="gt"><span class="t">${IC("map")}</span>Progress · ${esc(store.cur)}</div></div>
     <div class="pz-lvcard"><div class="lv"><small>Level</small><b>${lv.n}</b></div><div class="grow"><div class="t">${fmtN(pts())} points · ${stu().stars||0} stars</div><div class="s">${fmtN(lv.hi-pts())} more points to level ${lv.n+1}</div><div class="bar"><i style="width:${Math.round(100*(pts()-lv.lo)/(lv.hi-lv.lo))}%"></i></div></div>
       <div class="pz-cnt"><span class="lv-good">Knows it: ${cnt("good")}</span><span class="lv-learn">Learning: ${cnt("learn")}</span><span class="lv-weak">Needs practice: ${cnt("weak")}</span><span>New: ${cnt("new")}</span></div></div>
+    ${statsHTML()}
     <h3>Letter journey</h3>
     <div class="pz-jm" style="height:${H}px"><svg class="path" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="#D8E0DB" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/><path d="${d}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
       ${ORDER.map((id,i)=>{ const p=pos(i); return `<div class="pz-jn lv-${lvs[i]}${i===here?" here":""}" style="left:${p.x}%;top:${p.y}px">${A(L[id].ch)}<small>${L[id].en}</small>${lvs[i]==="good"?`<span class="pz-jst">${IC("star")}</span>`:""}${i===here?`<span class="flag">Next</span>`:""}</div>`; }).join("")}</div>
@@ -599,8 +637,60 @@ function progress(){
     ${LEG}<p class="pz-hint" style="text-align:left">A letter turns green when it has been answered right three times more than wrong. Every game counts.</p>
     <div class="pz-rb" style="justify-content:flex-start"><button class="pz-btn pri" data-go="weak">${IC("cards")}Practise the letters that need work</button></div></div>`;
 }
+/* ================= lesson path: the whole of Part 1 as short practice steps ================= */
+const PATH=(()=>{
+  const out=[], pageIdx=no=>PAGES.findIndex(p=>{ const n=p.querySelector(".hdr .no"); return n&&n.textContent.trim()===no; });
+  const add=(group,no,id,title,pick)=>{ const i=pageIdx(no); if(i<0) return; const us=pageInfo(i).units, units=pick?pick(us):us; if(!units.length) return;
+    out.push({id,group,page:i,title,ids:units.map(u=>u.id),prev:units.slice(0,6).map(u=>u.label)}); };
+  const part=(k,n)=>a=>a.slice(Math.floor(a.length*k/n),Math.floor(a.length*(k+1)/n));
+  const G1="Lesson 1 · Letters", G2="New exercise · Letter shapes", G3="Lesson 2 · Joined letters", G4="Lesson 3 · Fatha, Kasra, Damma";
+  for(let r=0;r<5;r++) add(G1,"3","3/r"+(r+1),"Letters · row "+(r+1),a=>a.slice(r*6,r*6+6));
+  add(G1,"3","3/all","All 29 letters");
+  add(G1,"4","4","Letters by Makhraj · 1"); add(G1,"6","6","Letters by Makhraj · 2");
+  add(G2,"9B","9B","Start, middle, end · 1"); add(G2,"9C","9C","Start, middle, end · 2"); add(G2,"9D","9D","Start, middle, end · 3");
+  add(G3,"10","10","Joined letters · 1");
+  for(let k=0;k<3;k++) add(G3,"11","11/"+(k+1),"Joined letters · "+(k+2),part(k,3));
+  add(G3,"12","12","Joined letters · 5");
+  add(G4,"13","13","Sounds · 1"); add(G4,"14","14/1","Sounds · 2",part(0,2)); add(G4,"14","14/2","Sounds · 3",part(1,2));
+  add(G4,"15","15","Words with sounds");
+  return out;
+})();
+function startStep(st){
+  if(!st) return; S.info=pageInfo(st.page); S.sel=new Set(st.ids); header(); const items=selItems(); if(!items.length) return toast("Nothing to practise in this step.");
+  const chain={steps:["flash","find",["train","balloon","peek"][PATH.indexOf(st)%3]],i:0,stars:0,step:st.id,sets:[order(items).slice(0,little()?6:10),items,items]};
+  start("flash",{chain,items:chain.sets[0]});
+}
+function pathView(){
+  runCleanup(); S.view="path"; navSync(); const done=stu().path||{}, nextI=PATH.findIndex(s=>!done[s.id]), n=PATH.filter(s=>done[s.id]).length; let g="";
+  B.innerHTML=`<div class="pz-pv"><div class="pz-lvcard"><div class="lv"><small>Steps</small><b>${n}</b></div><div class="grow"><div class="t">${n} of ${PATH.length} steps done</div><div class="s">Each step is a short practice: Flash cards, Find it, then a game.</div><div class="bar"><i style="width:${Math.round(100*n/PATH.length)}%"></i></div></div>
+      ${nextI>=0?`<button class="pz-btn pri" data-step="${nextI}">${n?"Continue":"Start"}${IC("right")}</button>`:`<span class="pz-lvup">All steps done</span>`}</div>
+    <div class="pz-path">${PATH.map((s,i)=>(s.group!==g?(g=s.group,`<h3>${s.group}</h3>`):"")+`<button class="pz-step${done[s.id]?" done":""}${i===nextI?" next":""}" data-step="${i}"><span class="pz-sno">${done[s.id]?IC("check"):i+1}</span><span class="pz-stt"><b>${s.title}</b><span class="pz-spv" dir="rtl">${s.prev.map(t=>A(t)).join("")}</span></span><span class="pz-sst">${[1,2,3].map(k=>`<i class="${k<=(done[s.id]||0)?"on":""}">${STAR}</i>`).join("")}</span><span class="pz-sgo">${i===nextI?"Start":done[s.id]?"Again":"Play"}</span></button>`).join("")}</div></div>`;
+  const nx=$(".pz-step.next",B); if(nx&&n) nx.scrollIntoView({block:"center"});
+}
+
+/* ================= leaderboard: this week / all time; all students once connected to eQuran ================= */
+let boardPeriod="week", boardTok=0;
+async function boardRows(period){
+  if(API){ try{ const r=await fetch(API+"/leaderboard?book=part1&period="+period,{cache:"no-store"});
+      if(r.ok){ const d=await r.json(), list=Array.isArray(d)?d:(d.rows||[]);
+        return {live:true,rows:list.map(x=>({name:String(x.name||"Student"),sid:String(x.sid||""),pts:+x.points||0,level:+x.level||1}))}; } }catch(e){} }
+  return {live:false,rows:Object.keys(store.students).map(n=>{ const s=store.students[n]; return {name:n,sid:s.sid||"",pts:period==="week"?weekPts(s):(s.pts||0),level:lvOf(s.pts).n}; })};
+}
+async function board(){
+  runCleanup(); S.view="board"; navSync(); const tok=++boardTok, RULES=[["Right the first time","+10"],["Right on the second try","+5"],["3 right in a row","+5"],["Finishing a game","+5 to +20"],["Finishing a lesson step","+30"],["Daily goal ("+GOAL+" points)","+20"]];
+  B.innerHTML=`<div class="pz-pv"><div class="pz-acth"><div class="gt"><span class="t" style="--t:#FBF3D8;--tc:#8A6A0C">${IC("trophy")}</span>Leaderboard</div><div class="pz-sp"></div>
+      <div class="pz-seg"><button data-period="week" class="${boardPeriod==="week"?"on":""}">This week</button><button data-period="all" class="${boardPeriod==="all"?"on":""}">All time</button></div></div>
+    <div class="pz-lb" id="pzLb"><p class="pz-hint">Loading…</p></div><p class="pz-hint" id="pzLbN" style="text-align:left"></p>
+    <h3>How points work</h3><div class="pz-rules">${RULES.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join("")}</div></div>`;
+  const {rows,live}=await boardRows(boardPeriod); if(tok!==boardTok||S.view!=="board") return;
+  const me=stu().sid, isMe=r=>me&&r.sid?r.sid===me:r.name===store.cur;
+  rows.sort((a,b)=>b.pts-a.pts||a.name.localeCompare(b.name)); const mine=rows.findIndex(isMe), top=rows.slice(0,10);
+  const row=(r,i)=>`<div class="pz-lr${i<3&&r.pts>0?" top"+(i+1):""}${isMe(r)?" me":""}"><span class="pz-rk">${i+1}</span><span class="pz-ln">${esc(r.name)}${isMe(r)?`<em>You</em>`:""}</span><span class="pz-ll">Level ${r.level}</span><span class="pz-lp">${IC("coin")}<b>${fmtN(r.pts)}</b></span></div>`;
+  $("#pzLb",B).innerHTML=(rows.some(r=>r.pts>0)?"":`<p class="pz-hint">No points yet ${boardPeriod==="week"?"this week":""}. Play a game to get on the board.</p>`)+top.map(row).join("")+(mine>=10?`<div class="pz-lgap">…</div>`+row(rows[mine],mine):"");
+  $("#pzLbN",B).textContent=(boardPeriod==="week"?"The weekly board starts fresh every Monday. ":"")+(live?"Live from eQuran.":"Showing the students on this device. Once eQaida is connected to eQuran, all your students appear here.");
+}
 function students(){
-  runCleanup(); S.view="stu"; const names=Object.keys(store.students);
+  runCleanup(); S.view="stu"; navSync(); const names=Object.keys(store.students);
   B.innerHTML=`<div class="pz-pv"><div class="pz-acth"><button class="pz-btn sm" data-view="hub">${IC("left")}Back</button><div class="gt"><span class="t">${IC("user")}</span>Who is practising?</div></div>
     <p class="pz-hint" style="text-align:left">Each student keeps their own stars, points and progress on this device. No login is needed.</p>
     <div class="pz-stu">${names.map(n=>`<button data-stu="${esc(n)}" class="${n===store.cur?"on":""}">${IC("user")}${esc(n)}<small>Level ${lvOf(store.students[n].pts).n} · ${fmtN(store.students[n].pts||0)} pts</small></button>`).join("")}</div>
@@ -628,5 +718,5 @@ const hs=document.getElementById("hsBtn");
 if(hs){ const ob=document.createElement("button"); ob.className="tbb wide pz-open"; ob.id="pzOpen"; ob.title="Practice and games for this page"; ob.innerHTML=IC("target")+"<span>Practice this page</span>";
   hs.parentNode.insertBefore(ob,hs); ob.onclick=()=>open(curPage()); }
 { const pr=new URLSearchParams(location.search).get("practice"); if(pr!==null){ const want=pr.trim().toLowerCase(), idx=PAGES.findIndex(p=>{ const no=p.querySelector(".hdr .no"); return no&&no.textContent.trim().toLowerCase()===want; }); setTimeout(()=>open(idx>=0?idx:3),300); } }
-window.EQPractice={open,close,start,pageInfo,store:()=>store};
+window.EQPractice={open,close,start,pageInfo,store:()=>store,path:PATH,startStep,pathView,board,progress,scoreData,sync};
 })();

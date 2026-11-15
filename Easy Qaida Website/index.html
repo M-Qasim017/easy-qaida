@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0C3B2C">
 <title>eQaida — Interactive</title>
 <link href="fonts/fonts.css" rel="stylesheet">
-<link href="practice.css?v=1112130000" rel="stylesheet">
+<link href="practice.css?v=1113100000" rel="stylesheet">
 <style>
 @page{size:148mm 210mm;margin:0}
 :root{
@@ -676,7 +676,7 @@ pages.push(page(1,`
   </div>
   <p style="text-align:center">Ta'awwuz is the name of ${ar("اعوذ بالله")} and Tasmiya is the name of ${ar("بسم الله")}.</p>
   ${lesson(1,"Mufradaat")}
-  ${qa("Today we will study which lesson?","Today we will study lesson #1 “Mufradaat”.")}
+  ${qa("Which lesson will we study today?","Today we will study lesson #1 “Mufradaat”.")}
   ${qa("What are Mufradaat?","Individual (single) letters are called Mufradaat.")}
   ${qa("How many Mufradaat (letters) are there in Arabic?","Arabic Mufradaat are 29.")}
 `));
@@ -792,7 +792,7 @@ pages.push(page(9,`
     <div class="cell lets" style="grid-column:span 12;position:relative">${mks([["g",13],["b",8],["r",5]])}<span style="color:${P}">ت</span><span style="color:${G}">ط</span><span style="color:${B}">ع</span><span style="color:${P}">ء</span><span style="color:${G}">ق</span><span style="color:${P}">ك</span></div>
   </div>
   ${lesson(2,"Compounds")}
-  ${qa("Today we will do which lesson?","Today we will study lesson #2, Compounds.")}
+  ${qa("Which lesson will we study today?","Today we will study lesson #2, Compounds.")}
   ${qa("What are compounds?","Mixed (joined) letters are called compounds.")}
   ${qa("How many letters are there that have only one shape?",`They are three: ${ar("و ۔ ط ۔ ظ")}. Their shape stays the same even when they are mixed with other letters.`)}
 `));
@@ -872,15 +872,15 @@ pages.push(page(12,`
   ],compCell,6,"height:76mm;grid-auto-rows:1fr")}
   ${lesson(3,"Normal Sounds")}
   ${qa("What is our lesson for today?","Today we will study lesson #3, Sounds.")}
-  ${qa("What are Sounds?","Fatha (Zabar), Kasra (Zair) and Zama (Paish) are called normal Sounds.")}
+  ${qa("What are Sounds?","Fatha, Kasra and Damma are called normal Sounds.")}
   ${qa("When reading / pronouncing the normal Sounds, what things should be kept in mind?","1. Do not drag the sound. 2. Do not give a bumpy sound. 3. Do not read with a gap / break in the sound (Majhool).",mk("g",19)+mk("b",12))}
 `));
 
 /* PAGE 13 */
 pages.push(page(13,`
-  ${qa(`When we put Fatha (Zabar), Kasra (Zair) or Zama (Paish) on ${ar("الف","var(--B)")}, what does it become?`,`It becomes ${ar("ء","var(--B)")}.`)}
-  ${qa(`If there is Fatha (Zabar) or Zama (Paish) on ${ar("ر","var(--B)")}, how will it be pronounced?`,"It will be pronounced with a thick / heavy sound.")}
-  ${qa(`If ${ar("ر","var(--B)")} has a Kasra (Zair), how will the sound be?`,"It will have a thin pronunciation / sound.",mk("g",20)+mk("b",13))}
+  ${qa(`When we put Fatha, Kasra or Damma on ${ar("الف","var(--B)")}, what does it become?`,`It becomes ${ar("ء","var(--B)")}.`)}
+  ${qa(`If there is Fatha or Damma on ${ar("ر","var(--B)")}, how will it be pronounced?`,"It will be pronounced with a thick / heavy sound.")}
+  ${qa(`If ${ar("ر","var(--B)")} has a Kasra, how will the sound be?`,"It will have a thin pronunciation / sound.",mk("g",20)+mk("b",13))}
   <div class="grid" style="grid-template-columns:repeat(6,1fr);flex:1;margin-top:.6mm">
     ${[hrow("alif","ha"),hrow("ain","hha"),hrow("ghain","kha"),hrow("qaf","kaf"),hrow("jeem","sheen"),hrow("ya","dad")].map((r,ri)=>r.map((c,ci)=>{
       if(ri===0&&ci===0) return hCell([c[0],c[1],[["g",21]],"R"]);
@@ -1274,14 +1274,14 @@ function wordX(w,sounds){
 /* ---------- 3. letter with a sign (pages 13–14) ---------- */
 function harakaX(id,h){
   const base=id==="alif"?"ا":L[id].ch, s=(id==="alif"||id==="hamza"?"":SND[id])+HV[h];
-  setTitle(`<bdi class="xa">${base+HM[h]}</bdi> &nbsp;${L[id].en} + ${HN[h]} (${HU[h]})`);
+  setTitle(`<bdi class="xa">${base+HM[h]}</bdi> &nbsp;${L[id].en} + ${HN[h]}`);
   const rules=[];
   if(id==="alif") rules.push("<b>Alif with a sign is read as Hamza:</b> <span class='xar'>اَ اِ اُ</span> = a · i · u");
   if(id==="ra") rules.push(h==="kasra"?"<b>Ra with Kasra is thin</b> — read it softly.":"<b>Ra with Fatha or Damma is heavy</b> — read it with a full mouth.");
   if(HEAVYX.has(id)) rules.push("<b>Heavy letter</b> — always read with the mouth full.");
   rules.push(`<b>Don’t drag the sound:</b> say «${s}», not «${s}${HV[h].repeat(3)}».`);
   xBody.innerHTML=`<div class="hx">
-    <div class="hbig"><span class="hg" style="color:${HC[h]}">${base+HM[h]}</span><span class="hg base">${base}</span><div class="htag ${h==="kasra"?"bot":"top"}" style="background:${HC[h]}">${HN[h]} (${HU[h]}) — ${HW[h]}</div></div>
+    <div class="hbig"><span class="hg" style="color:${HC[h]}">${base+HM[h]}</span><span class="hg base">${base}</span><div class="htag ${h==="kasra"?"bot":"top"}" style="background:${HC[h]}">${HN[h]} — ${HW[h]}</div></div>
     <div class="hinfo"><div class="hsnd"><span class="xar" style="font-size:1.4em">${base+HM[h]}</span> = <b>${s}</b></div>
       <div class="h3">${["fatha","kasra","damma"].map(x=>`<div class="t ${x===h?"on":""}"><span style="color:${HC[x]}">${base+HM[x]}</span><span style="color:#1F1E1B">${base}</span><small>${(id==="alif"||id==="hamza"?"":SND[id])+HV[x]}</small></div>`).join("")}</div>
       ${rules.map(r=>`<div class="rule">${r}</div>`).join("")}</div></div>`;
@@ -1351,8 +1351,12 @@ addEventListener("keydown",e=>{
 fit();
 
 </script>
-<script src="sounds.js?v=1112130000"></script>
-<script src="practice.js?v=1112130000"></script>
+<script>
+/* eQuran connection. Leave api empty to keep scores on this device only. See README, "Connecting to eQuran". */
+window.EQAIDA_CONFIG={api:""};
+</script>
+<script src="sounds.js?v=1113100000"></script>
+<script src="practice.js?v=1113100000"></script>
 <script>
 /* if this page was opened without its folder (for example straight from inside a zip), say so clearly */
 addEventListener("load",function(){ setTimeout(function(){ if(window.EQPractice||window.__SINGLE) return;
