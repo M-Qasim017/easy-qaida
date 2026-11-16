@@ -1,0 +1,1884 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0C3B2C">
+<title>eQaida Part 2 — Interactive</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<link href="practice.css?v=1116220000" rel="stylesheet">
+<style>
+@page{size:148mm 210mm;margin:0}
+:root{
+  --green:#098A46;--deep:#0B3D2E;--gold:#C9A227;--cream:#FAF6EE;--ink:#2B2A26;--muted:#6E6A60;--rule:#2F2D28;--paper:#FFFDF7;
+  --P:#D2186E;--B:#1A84C6;--G:#2A9443;--R:#CF3A2C;
+  --S:#1C6FD1;--M:#0E8A43;--E:#D6336C;--A:#7048E8;
+  --hf:#E03131;--hk:#1971C2;--hd:#2F9E44;--hs:#7048E8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:'Source Sans 3',Arial,sans-serif;color:var(--ink);font-size:10.6pt;line-height:1.36;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:148mm;height:210mm;position:relative;overflow:hidden;background:var(--cream);page-break-after:always;break-after:page}
+#book>.pgw:last-child>.page,#book>.page:last-child{page-break-after:auto;break-after:auto}
+.frame{position:absolute;inset:4.5mm;border:.8mm solid var(--deep);border-radius:3mm;pointer-events:none}
+.frame::after{content:"";position:absolute;inset:1mm;border:.3mm solid var(--gold);border-radius:2mm}
+.hdr{position:absolute;top:7.6mm;left:9mm;right:9mm;height:7mm;display:flex;align-items:center;gap:2mm}
+.hdr .pill{flex:1;background:var(--deep);color:#FAF6EE;font-family:'Montserrat',sans-serif;font-weight:700;font-size:7pt;letter-spacing:.05em;text-align:center;border-radius:1.5mm;padding:1.25mm 0}
+.hdr .no{min-width:10mm;height:10mm;padding:0 1.5mm;border-radius:5mm;background:var(--cream);border:.5mm solid var(--gold);display:grid;place-items:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:10.5pt;color:var(--deep)}
+.body{position:absolute;top:18.5mm;left:10mm;right:10mm;bottom:9.5mm;display:flex;flex-direction:column;font-size:12.6pt;line-height:1.38}
+.body.compact{font-size:10.6pt;line-height:1.36}
+.body.mid{font-size:11.4pt}
+p{margin:0}
+
+/* text */
+.qa{margin:0 0 2.2mm}
+.q,.a{display:flex;align-items:baseline}
+.q{font-weight:700;color:var(--deep)}
+.q>span:last-child,.a>span:last-child{flex:1;min-width:0}
+.l{flex:none;width:5.2mm;font-family:'Montserrat',sans-serif;font-weight:800;color:var(--green)}
+.a .l{color:var(--gold)}
+.a{margin-top:.3mm}
+.ind{padding-left:5.2mm}
+.ar{font-family:'Noto Naskh Arabic',serif;font-weight:700;direction:rtl;unicode-bidi:isolate;font-size:1.38em;line-height:1}
+.arl{font-family:'Noto Naskh Arabic',serif;font-weight:700;direction:rtl;font-size:16pt;line-height:1.75;text-align:right;margin:0 0 1.4mm;word-spacing:.6mm}
+.mx{margin:0 0 2.4mm}
+.title{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--deep);text-align:center;font-size:14pt;line-height:1.2}
+.subt{font-style:italic;text-align:center;color:var(--deep);font-size:10.5pt;margin-top:.6mm}
+.note-h{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--green)}
+.rel{font-family:'Amiri',serif;font-weight:700;direction:rtl;text-align:center;color:var(--deep);font-size:19.5pt;line-height:2.15}
+.tr{font-size:12pt;text-align:left;margin:.5mm 0 3mm}
+.kh{display:block;margin:2.6mm auto 0;width:max-content;background:var(--deep);color:var(--gold);font-family:'Montserrat',sans-serif;font-weight:800;letter-spacing:.08em;font-size:9.6pt;padding:1.3mm 5mm;border-radius:2mm}
+.orn{text-align:center;color:var(--gold);font-size:13pt;letter-spacing:2mm;margin-top:3mm}
+
+/* lesson banner */
+.lesson{display:flex;align-items:center;justify-content:center;margin:2.4mm 0 2.2mm}
+.lw{background:var(--deep);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:9.6pt;padding:1.3mm 5mm 1.3mm 4mm;border-radius:2mm 0 0 2mm;letter-spacing:.07em;text-transform:uppercase}
+.ln{width:9.5mm;height:9.5mm;border-radius:50%;background:var(--gold);color:var(--deep);font-family:'Montserrat',sans-serif;font-weight:800;font-size:13pt;display:grid;place-items:center;margin:0 -1.6mm;position:relative;z-index:1;border:.7mm solid var(--cream)}
+.lt{background:var(--green);color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:9.6pt;padding:1.3mm 4mm 1.3mm 5mm;border-radius:0 2mm 2mm 0}
+
+/* progress markers (as in the book) */
+.mk{display:inline-grid;place-items:center;font-family:'Montserrat',sans-serif;font-weight:800;color:#fff;font-size:5.6pt;line-height:1;vertical-align:middle;margin-left:.8mm}
+.mk.g{width:4.3mm;height:4.3mm;border-radius:50%;background:#2E8B3E}
+.mk.b{width:5mm;height:4.4mm;background:#2F7FD1;clip-path:polygon(50% 0,100% 100%,0 100%);padding-top:1.3mm}
+.mk.r{width:4mm;height:4mm;background:#D63939}
+.mks{position:absolute;display:flex;flex-direction:column;align-items:center;gap:.4mm;z-index:3;line-height:1}
+.mks .mk{margin:0}
+.mks.L{left:-2.6mm;top:50%;transform:translateY(-50%)}
+.mks.R{right:-2.6mm;top:50%;transform:translateY(-50%)}
+.mks.TL{left:-1.6mm;top:-1.8mm;flex-direction:row}
+.mks.TR{right:-1.6mm;top:-1.8mm;flex-direction:row}
+
+/* grids */
+.grid{display:grid;direction:rtl;gap:.4mm;background:var(--rule);border:.4mm solid var(--rule);grid-auto-rows:1fr}
+.cell{background:var(--paper);position:relative;min-width:0}
+.cell.empty{background:var(--cream)}
+.lc .un{position:absolute;top:.4mm;left:1.3mm;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:8.6pt;line-height:1.5}
+.lc .bg{position:absolute;right:2mm;top:46%;transform:translateY(-50%);font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:29pt;line-height:1}
+.lc .en{position:absolute;left:1.3mm;bottom:.5mm;font-weight:700;font-size:8.2pt;color:var(--ink)}
+.cc{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cc .w{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:20pt;line-height:1.3;display:flex;direction:rtl}
+.cc .w span{white-space:pre}
+.cc .sm{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:7.6pt;line-height:1.1;direction:rtl;word-spacing:1.2mm;margin-top:-.6mm}
+.cc .cap{font-family:'Noto Naskh Arabic',serif;font-weight:600;font-size:6.6pt;color:var(--R);direction:rtl;line-height:1.2}
+.hc .hg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:23pt;line-height:1}
+.hc .hg.base{color:#1F1E1B}
+.wc{display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:18.5pt;line-height:1;color:#1F1E1B}
+.label{background:var(--deep);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:8pt;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 1.5mm;line-height:1.2}
+.lets{display:flex;align-items:center;justify-content:space-evenly;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:19pt;line-height:1;direction:rtl}
+.mtab{display:grid;direction:rtl;gap:.4mm;background:var(--rule);border:.4mm solid var(--rule)}
+.mtab .cell{display:flex;align-items:center;justify-content:space-evenly;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:19pt;line-height:1.55;direction:rtl}
+.t1{display:grid;grid-template-columns:1fr 22mm;direction:rtl;gap:.4mm;background:var(--rule);border:.4mm solid var(--rule);margin:2.4mm 0 1.6mm}
+.t1 .cell{display:flex;align-items:center;justify-content:center;padding:0 1.5mm}
+.t1 .k{font-family:'Noto Naskh Arabic',serif;font-weight:700;color:var(--R);font-size:13pt;line-height:1.9}
+.t1 .v{font-family:'Amiri',serif;font-weight:700;color:var(--B);font-size:13.4pt;line-height:2;direction:rtl}
+
+/* new exercise pages */
+.new{display:inline-block;background:var(--gold);color:var(--deep);font-family:'Montserrat',sans-serif;font-weight:800;font-size:7.4pt;letter-spacing:.1em;padding:.8mm 2.4mm;border-radius:1.2mm;text-transform:uppercase}
+.exh{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--deep);font-size:13.6pt;line-height:1.15;margin-top:1.4mm}
+.exs{color:var(--muted);font-size:9.8pt;margin-top:.6mm}
+.hand{color:var(--gold)}
+.g4{display:flex;direction:rtl;gap:2mm;margin:2.4mm 0 1.2mm}
+.sb{flex:1;background:#fff;border:.35mm solid #D9D1BC;border-radius:2.4mm;overflow:hidden;text-align:center;direction:ltr}
+.sb .gl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:27pt;line-height:1.55;display:flex;justify-content:center;direction:rtl}
+.sb .lb{color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:7.6pt;padding:.9mm 0;letter-spacing:.05em;text-transform:uppercase}
+.c-S{color:var(--S)}.c-M{color:var(--M)}.c-E{color:var(--E)}.c-A{color:var(--A)}
+.b-S{background:var(--S)}.b-M{background:var(--M)}.b-E{background:var(--E)}.b-A{background:var(--A)}
+.box{background:#fff;border:.35mm solid #D9D1BC;border-left:1.2mm solid var(--gold);border-radius:2mm;padding:2mm 2.6mm;margin-top:2mm}
+.box b{color:var(--deep)}
+.tip{background:#FFF6DB;border:.3mm solid #F0DFA6;border-radius:2mm;padding:1.6mm 2.4mm;margin-top:2mm;font-size:9.6pt}
+.tip b{color:#8A6A0C}
+.ew{display:flex;align-items:center;justify-content:center;gap:3mm;direction:rtl;margin-top:1.6mm}
+.ew .wd{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:30pt;line-height:1.4;display:flex;direction:rtl}
+.ew .eq{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--gold);font-size:14pt}
+.ew .pcs{display:flex;gap:2.4mm;direction:rtl}
+.ew .pc{display:flex;flex-direction:column;align-items:center;background:#fff;border:.35mm solid #D9D1BC;border-radius:2mm;padding:0 2mm .8mm}
+.ew .pc .gl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:22pt;line-height:1.45;display:flex;direction:rtl}
+.ew .pc small{font-size:7.4pt;font-weight:700;line-height:1.1}
+.njrow{display:flex;direction:rtl;gap:1.6mm;margin-top:1.4mm;flex-wrap:wrap;justify-content:center}
+.nj{background:var(--paper);border:.3mm solid #D9D1BC;border-radius:1.6mm;padding:0 2mm;text-align:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:17pt;line-height:1.5;display:flex;gap:1.5mm;align-items:center;direction:rtl}
+.nj .d{color:#B8B09E}
+.legend{display:flex;direction:rtl;gap:1.6mm;flex-wrap:wrap;justify-content:center;margin-top:1.4mm}
+.legend span{color:#fff;font-weight:700;font-size:7.6pt;padding:.5mm 2.2mm;border-radius:99px}
+.st{display:grid;grid-template-columns:23mm repeat(4,1fr) 24mm;direction:rtl;gap:.35mm;background:#CFC6B2;border:.35mm solid #CFC6B2;margin-top:2mm;flex:1;grid-auto-rows:auto}
+.st .th{background:var(--deep);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:7pt;text-align:center;padding:1.2mm .5mm;letter-spacing:.04em;text-transform:uppercase;direction:ltr}
+.st .th.S{background:var(--S)}.st .th.M{background:var(--M)}.st .th.E{background:var(--E)}.st .th.A{background:var(--A)}
+.st .td{background:#fff;display:flex;align-items:center;justify-content:center;min-height:0}
+.st .nm{flex-direction:column;direction:ltr;gap:0}
+.st .nm .ar{font-size:15pt;line-height:1.25}
+.st .nm b{font-size:8.2pt;color:var(--deep);line-height:1.1}
+.st .gl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:20pt;line-height:1.5;display:flex;direction:rtl}
+.st .same{flex-direction:column;gap:0}
+.st .same small{font-size:6.4pt;color:var(--muted);font-weight:700;line-height:1;margin-top:-1mm}
+.st .na{color:#B8B09E;font-size:9pt}
+.st .exw{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:16pt;line-height:1.5;display:flex;direction:rtl}
+.st .exw .dim{color:#BDB5A3}
+.st .td.ex{flex-direction:column}
+.st .td.ex small{font-size:6.2pt;color:var(--muted);font-weight:600;line-height:1;margin-top:-.8mm}
+.st .td.nj6{background:#FFF4E6}
+
+/* cover */
+.cover{background:var(--cream)}
+.cover .band{position:absolute;left:0;right:0;top:0;height:112mm;background:var(--deep)}
+.cover .band .k{position:absolute;left:12mm;top:44mm;font-family:'Montserrat',sans-serif;font-weight:800;font-size:8.4pt;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.cover .band h1{position:absolute;left:12mm;top:50mm;margin:0;font-family:'Montserrat',sans-serif;font-weight:800;font-size:34pt;line-height:1.02;color:#FAF6EE}
+.cover .band .t{position:absolute;left:12mm;top:83mm;font-family:'Montserrat',sans-serif;font-weight:800;font-size:15pt;color:var(--gold)}
+.cover .band .s{position:absolute;left:12mm;right:12mm;top:93mm;font-size:10.6pt;color:#D6E4DC;line-height:1.35}
+.cover .band .arbig{position:absolute;right:12mm;top:10mm;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:40pt;line-height:1.6;direction:rtl;color:#1E5A47}
+.cover .logo{position:absolute;left:12mm;top:12mm;height:13mm}
+.cover .lower{position:absolute;left:12mm;right:12mm;top:120mm}
+.cover .letters{display:flex;direction:rtl;justify-content:space-between;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:30pt;line-height:1.5}
+.cover .toc{margin-top:3mm;border-top:.4mm solid var(--gold)}
+.cover .toc div{display:flex;justify-content:space-between;padding:1.5mm 0;border-bottom:.3mm solid #E6DFCD;font-size:9.6pt}
+.cover .toc b{color:var(--deep)}
+.cover .toc .nw b{color:#8A6A0C}
+.cover .foot{position:absolute;left:12mm;right:12mm;bottom:9mm;display:flex;justify-content:space-between;font-size:8.4pt;color:var(--muted)}
+
+/* ================= INTERACTIVE LAYER (screen only) ================= */
+.st .td{position:relative}
+.nj{position:relative}
+.hs{position:absolute;top:.7mm;right:.7mm;width:4.4mm;height:4.4mm;border-radius:50%;border:0;background:#C9A227;color:#fff;display:grid;place-items:center;cursor:pointer;z-index:6;padding:0;box-shadow:0 .3mm .9mm rgba(0,0,0,.28)}
+.hs svg{width:3.1mm;height:3.1mm}
+p.mx>.hs{position:relative;top:-.4mm;right:auto;display:inline-grid;vertical-align:middle;margin-right:1.6mm}
+.nj>.hs{top:-1.6mm;right:-1.6mm;width:3.8mm;height:3.8mm}
+@media screen{
+  body{background:#E5E0D3;min-height:100vh}
+  [data-x]{cursor:pointer;transition:box-shadow .15s}
+  [data-x]:hover{box-shadow:inset 0 0 0 .6mm rgba(201,162,39,.75)}
+  p.mx[data-x]:hover{box-shadow:none;background:rgba(201,162,39,.12);border-radius:1.5mm}
+  body.nohs .hs{display:none}
+  .tb{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:8px;padding:8px 14px;background:#0B3D2E;color:#fff;font-family:'Source Sans 3',sans-serif;font-size:15px}
+  .tbm{width:34px;height:34px;border-radius:10px;background:#098A46;display:grid;place-items:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:21px;padding-top:2px}
+  .tbt{font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;letter-spacing:.03em;line-height:1.1}
+  .tbt small{display:block;font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:12px;letter-spacing:0;opacity:.75}
+  .tbsp{flex:1}
+  .tbb{font:inherit;font-weight:700;border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:10px;height:38px;min-width:38px;padding:0 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:15px}
+  .tbb:hover{background:rgba(255,255,255,.2)}
+  .tbb.on{background:#C9A227;color:#0B3D2E}
+  .tbb svg{width:18px;height:18px}
+  .tbb.eq-snd{font-size:18px;padding:0 9px}
+  .eq-snd.off{opacity:.55}
+  #pSel{font:inherit;font-weight:700;height:38px;border-radius:10px;border:0;padding:0 10px;background:#FAF6EE;color:#0B3D2E;cursor:pointer}
+  #book{display:flex;flex-direction:column;align-items:center;gap:22px;padding:22px 0 80px}
+  /* pages are shrunk with transform (not zoom): iPhones shrank the boxes but kept the text big, so letters piled up */
+  .pgw{width:calc(148mm * var(--z,1));height:calc(210mm * var(--z,1));flex:none;position:relative}
+  .pgw>.page{position:absolute;left:0;top:0;transform:scale(var(--z,1));transform-origin:0 0}
+  .page{box-shadow:0 3px 14px rgba(0,0,0,.18)}
+}
+@media screen and (max-width:700px){ .tbt{display:none} .tbb.wide span{display:none} }
+@media print{
+  .tb,.hs,.xm{display:none!important}
+  #book{zoom:1!important;display:block;padding:0}
+  .pgw{width:auto!important;height:auto!important}
+  .pgw>.page{position:relative!important;transform:none!important}
+  .page{box-shadow:none}
+}
+
+/* ---------- explainer pop-up ---------- */
+.xm{position:fixed;inset:0;z-index:100;background:rgba(10,24,18,.66);display:flex;align-items:center;justify-content:center;padding:2vh 2vw;font-family:'Source Sans 3',sans-serif;color:#2B2A26}
+.xm[hidden]{display:none}
+.xcard{width:min(1200px,96vw);height:min(840px,95vh);background:#FAF6EE;border-radius:22px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);animation:xIn .25s ease}
+@keyframes xIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.xhead{display:flex;align-items:center;gap:12px;padding:10px 16px 10px 22px;background:#0B3D2E;color:#fff}
+.xt{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(17px,2.1vw,25px);line-height:1.2}
+.xt .xa{unicode-bidi:isolate;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:1.35em;color:#F2D57A}
+.xsp{flex:1}
+.xcount{font-weight:700;opacity:.75;font-size:15px;white-space:nowrap}
+.xclose{width:42px;height:42px;border-radius:12px;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:22px;cursor:pointer}
+.xclose:hover{background:rgba(255,255,255,.22)}
+.xbody{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;padding:14px 26px 10px}
+.xfoot{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid #E6DFCD;background:#fff}
+.xctl{flex:1;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.xbtn{font:inherit;font-weight:700;font-size:16px;border:2px solid #E6DFCD;background:#fff;color:#0B3D2E;border-radius:12px;padding:9px 16px;cursor:pointer;white-space:nowrap}
+.xbtn:hover{border-color:#cfc5ad}
+.xbtn.pri{background:#098A46;border-color:#098A46;color:#fff}
+.xbtn[disabled]{opacity:.35;pointer-events:none}
+.xar{font-family:'Noto Naskh Arabic',serif;font-weight:700;direction:rtl;unicode-bidi:isolate}
+.cap{font-size:clamp(17px,2.2vh,24px);text-align:center;color:#0B3D2E;line-height:1.4;margin:0}
+.cap b{color:#0B3D2E}
+.note{background:#FFF6DB;border:1px solid #F0DFA6;border-radius:12px;padding:8px 14px;font-size:clamp(15px,1.9vh,19px);color:#5E4A0E;text-align:center;align-self:center;max-width:900px}
+.chipx{display:inline-block;color:#fff;font-weight:700;font-size:clamp(12px,1.6vh,15px);padding:2px 11px;border-radius:999px;font-family:'Source Sans 3',sans-serif}
+.cS{background:#1C6FD1}.cM{background:#0E8A43}.cE{background:#D6336C}.cA{background:#7048E8}
+.lgx{display:flex;direction:rtl;gap:6px;justify-content:center}
+
+/* player (mini-lesson) */
+.tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.tab{font:inherit;border:0;background:#EFE8D8;border-radius:999px;padding:7px 15px;font-weight:700;font-size:15px;color:#6E6A60;cursor:pointer;position:relative;overflow:hidden}
+.tab.on{background:#0B3D2E;color:#fff}
+.tab .pb{position:absolute;left:0;bottom:0;height:4px;background:#C9A227;width:0}
+.stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
+.sc{animation:scIn .45s ease both;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6vh}
+@keyframes scIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.meet{flex-direction:row;gap:5vw}
+.mL{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(46vh,380px);line-height:1.3;animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.mEn{font-family:'Montserrat',sans-serif;font-weight:800;font-size:min(10vh,84px);color:#0B3D2E;line-height:1}
+.mUr{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(7vh,58px);color:#6E6A60;direction:rtl;margin-top:1vh}
+.mInfo{font-size:clamp(17px,2.4vh,24px);color:#0B3D2E;margin-top:1.4vh;font-weight:600}
+.stack{position:relative;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(44vh,360px);line-height:1.4;width:1.3em;height:1.4em}
+.stack .sl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.stack .full{color:#C9A227;animation:dotFlash .7s ease-in-out infinite alternate}
+.stack .skel{color:#0B3D2E}
+@keyframes dotFlash{from{color:#C9A227}to{color:#E8590C}}
+.famrow{display:flex;direction:rtl;gap:2.4vw;justify-content:center;flex-wrap:wrap}
+.fc{direction:ltr;display:flex;flex-direction:column;align-items:center;background:#fff;border:3px solid #E6DFCD;border-radius:20px;padding:0 2vw 1.4vh;min-width:min(17vw,170px)}
+.fc.on{border-color:#C9A227;box-shadow:0 0 0 5px rgba(201,162,39,.25);transform:translateY(-6px)}
+.fc .fl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(20vh,170px);line-height:1.45}
+.fc b{font-family:'Montserrat',sans-serif;font-size:clamp(16px,2.2vh,22px);color:#0B3D2E}
+.fc small{font-size:clamp(13px,1.7vh,16px);color:#6E6A60;font-weight:600;text-align:center;max-width:180px}
+.shp{display:flex;direction:rtl;gap:1.6vw;justify-content:center}
+.shc{background:#fff;border:2px solid #E6DFCD;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;align-items:center;min-width:min(19vw,200px);direction:ltr}
+.shc .g{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(19vh,160px);line-height:1.55;display:flex;direction:rtl}
+.shc .lbx{width:100%;text-align:center;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(13px,1.9vh,18px);padding:.6vh 0;letter-spacing:.05em;text-transform:uppercase}
+.shc .sub{font-size:clamp(12px,1.6vh,15px);color:#6E6A60;font-weight:700;padding:.4vh 0 .8vh;min-height:1.4em}
+.shc.same{background:#FFF4E6}
+.exl{display:flex;align-items:center;gap:14px;font-size:clamp(16px,2.2vh,22px);color:#0B3D2E}
+.exl .xw2{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(9vh,76px);line-height:1.5;display:flex;direction:rtl}
+.exl .dim{color:#C7BFAE}
+.where{flex-direction:row;gap:3vw;align-items:center}
+.where .dg{height:min(62vh,560px);aspect-ratio:600/520}
+.where .dg svg{width:100%;height:100%}
+.where .wt{max-width:380px;display:flex;flex-direction:column;gap:1.4vh}
+.where .wl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(16vh,130px);line-height:1.4;direction:rtl}
+.where .wt p{margin:0;font-size:clamp(17px,2.4vh,24px);line-height:1.4}
+.where .wt small{color:#6E6A60;font-weight:600}
+.zring{fill:rgba(201,162,39,.35);stroke:#C9A227;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:zr 1.3s ease-out infinite}
+@keyframes zr{0%{transform:scale(.45);opacity:1}100%{transform:scale(1.8);opacity:0}}
+.zglow{fill:rgba(255,214,102,.55);stroke:#C9A227;stroke-width:2.5;animation:zg 1.1s ease-in-out infinite alternate}
+@keyframes zg{from{opacity:.35}to{opacity:1}}
+.zlist{display:flex;flex-direction:column;gap:1.6vh;max-width:430px}
+.zi{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #E6DFCD;border-radius:14px;padding:10px 14px}
+.zi .n{flex:none;width:30px;height:30px;border-radius:50%;background:#C9A227;color:#fff;font-weight:800;display:grid;place-items:center;font-family:'Montserrat',sans-serif}
+.zi .zl{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(7vh,54px);line-height:1.35;direction:rtl}
+.zi p{margin:0;font-size:clamp(15px,2vh,20px);line-height:1.35}
+
+/* word break-apart */
+.wx{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vh}
+.xw{display:flex;direction:rtl;justify-content:center;align-items:flex-start;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(24vh,200px);line-height:1.55;padding-bottom:min(21vh,190px)}
+.xp{position:relative;display:flex;flex-direction:column;align-items:center;border-radius:22px;margin:0;padding:0;background:rgba(255,255,255,0);transition:margin .65s cubic-bezier(.2,.9,.3,1.25),padding .65s,background-color .45s,box-shadow .45s}
+.xp .g{white-space:pre;display:block}
+.xp .lb{position:absolute;top:100%;left:50%;transform:translate(-50%,-10px);opacity:0;transition:opacity .4s,transform .5s;display:flex;flex-direction:column;align-items:center;gap:3px;direction:ltr;white-space:nowrap;font-family:'Source Sans 3',sans-serif}
+.xw.broken .xp{margin:0 min(1.6vw,20px);padding:0 .1em;background:#fff;box-shadow:0 4px 18px rgba(11,61,46,.13)}
+.xw.broken .xp .lb{opacity:1;transform:translate(-50%,10px)}
+.lb .iso{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(7vh,56px);line-height:1.25;color:#0B3D2E}
+.lb b{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(15px,2.3vh,23px);color:#0B3D2E}
+.weq{opacity:0;transition:opacity .5s;text-align:center;display:flex;flex-direction:column;gap:.6vh;align-items:center}
+.weq.on{opacity:1}
+.xp.stp .g{text-shadow:0 0 0 transparent}
+.xp.stp.bump{animation:xbump .6s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes xbump{40%{transform:scale(1.12)}}
+.note.stopn{background:#F1ECFF;border-color:#D6CBFA;color:#3B2A80}
+.xbtn.stopon{background:#C92A2A!important;border-color:#C92A2A!important;color:#fff!important}
+.weq .eqA{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(6.5vh,52px);direction:rtl;line-height:1.4}
+.weq .eqA i{font-style:normal;color:#C9A227;font-family:'Montserrat',sans-serif;font-weight:800;margin:0 .25em;font-size:.7em}
+.weq .eqE{font-size:clamp(17px,2.4vh,24px);font-weight:700;color:#0B3D2E}
+
+/* sign (harakat) */
+.hx{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:4vw}
+.hbig{position:relative;width:min(48vh,400px);height:min(58vh,470px);background:#fff;border:2px solid #E6DFCD;border-radius:28px}
+.hbig .hg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(34vh,280px);line-height:1}
+.hbig .hg.base{color:#1F1E1B}
+.htag{position:absolute;left:50%;transform:translateX(-50%);color:#fff;font-weight:700;font-size:clamp(14px,1.9vh,18px);padding:5px 14px;border-radius:999px;white-space:nowrap;animation:tagIn .6s .3s cubic-bezier(.2,1.4,.4,1) both}
+.htag.top{top:-18px}.htag.bot{bottom:-18px}
+@keyframes tagIn{from{opacity:0;transform:translateX(-50%) scale(.6)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+.hinfo{display:flex;flex-direction:column;gap:2vh;max-width:460px}
+.hsnd{font-size:clamp(22px,4vh,40px);color:#0B3D2E;font-weight:700}
+.hsnd b{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.5em;color:#098A46}
+.h3{display:flex;direction:rtl;gap:12px}
+.h3 .t{position:relative;width:min(13vh,110px);height:min(15vh,128px);background:#fff;border:3px solid #E6DFCD;border-radius:16px}
+.h3 .t.on{border-color:#C9A227;box-shadow:0 0 0 4px rgba(201,162,39,.25)}
+.h3 .t span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(8vh,66px)}
+.h3 .t small{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-weight:700;color:#6E6A60;font-size:13px}
+.rule{background:#fff;border:1px solid #E6DFCD;border-left:5px solid #C9A227;border-radius:10px;padding:8px 12px;font-size:clamp(15px,2vh,19px);line-height:1.35}
+.vid{max-width:100%;max-height:100%;border-radius:16px;background:#000}
+
+.vframe{width:100%;height:100%;border:0;border-radius:14px;background:#0d1012}
+
+/* beginner letter card (page 3) */
+.tab .tn{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.1);font-size:13px;margin-right:7px}
+.tab.on .tn{background:#C9A227;color:#0B3D2E}
+.bx .bxT{max-width:620px}
+.memo{margin-top:2.4vh;font-size:clamp(20px,3vh,32px);font-weight:700;color:#0B3D2E;background:#FFF7DE;border:2px solid #EBD9A0;border-radius:18px;padding:12px 20px;line-height:1.3}
+.dotsline{margin-top:1.4vh;font-size:clamp(16px,2.2vh,22px);color:#6E6A60;font-weight:600}
+.trace{gap:1.4vh}
+.tw{position:relative;width:min(80vw,1000px);height:min(58vh,560px);background:#fff;border:3px dashed #E0D6BE;border-radius:24px;touch-action:none;overflow:hidden}
+.tGhost-old{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(44vh,430px);line-height:1.4;color:rgba(11,61,46,.06);-webkit-text-stroke:3px #D3C8AE;pointer-events:none;user-select:none}
+.tc{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;touch-action:none}
+.trow{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap}
+.find{gap:2.4vh}
+.fq{font-size:clamp(22px,3.4vh,36px);font-weight:700;color:#0B3D2E;margin:0;text-align:center}
+.fq b{color:#098A46}
+.fbtn{cursor:pointer;font:inherit;position:relative;transition:transform .15s}
+.fbtn:hover{transform:translateY(-4px)}
+.fbtn .fl{color:#0B3D2E}
+.fbtn.ok{border-color:#2FB36B;box-shadow:0 0 0 6px rgba(47,179,107,.25)}
+.fbtn.ok::after{content:"✓";position:absolute;top:-16px;right:-16px;width:44px;height:44px;border-radius:50%;background:#2FB36B;color:#fff;font:800 26px/44px 'Montserrat',sans-serif}
+.fbtn.no{border-color:#E5484D;animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.fres{min-height:1.5em;font-weight:700}
+.fres.good{color:#098A46}
+.fres.bad{color:#C2410C}
+
+.tg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.tprog{display:flex;align-items:center;gap:10px}
+.tbar{width:min(26vw,260px);height:16px;border-radius:999px;background:#EFE8D8;overflow:hidden}
+.tbar i{display:block;height:100%;width:0;background:#C9A227;border-radius:999px;transition:width .25s,background .25s}
+.tpct{font-family:'Montserrat',sans-serif;font-size:clamp(16px,2.2vh,22px);color:#0B3D2E;min-width:5.5em}
+.tdots{font-size:clamp(15px,2vh,20px);color:#6E6A60;font-weight:600}
+.tdots b{color:#0B3D2E}
+.tmsg{font-size:clamp(15px,2vh,20px);color:#0B3D2E;min-width:16em}
+.yay{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:5;text-align:center;background:rgba(255,255,255,.95);border:5px solid #C9A227;border-radius:30px;padding:16px 50px 22px;box-shadow:0 24px 70px rgba(0,0,0,.25);animation:yayIn .55s cubic-bezier(.2,1.5,.4,1) both;pointer-events:none}
+.yay.out{opacity:0;transition:opacity .5s}
+.yAr{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(11vh,100px);color:#098A46;line-height:1.35;direction:rtl}
+.yEn{font-family:'Montserrat',sans-serif;font-weight:800;font-size:min(6vh,54px);color:#C9A227}
+@keyframes yayIn{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+#confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:99999}
+
+/* ================= new look (Nov 2026): calm, modern chrome around the book ================= */
+@media screen{
+  body{background:#E8ECE9}
+  .tb{gap:8px;padding:9px 16px;background:#0C3B2C;box-shadow:0 1px 0 rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.08)}
+  .tbm{width:36px;height:36px;border-radius:11px;background:#12A05C}
+  .tbt{font-family:'Source Sans 3',sans-serif;font-weight:800;font-size:17px;letter-spacing:0}
+  .tbt small{font-weight:600;font-size:12.5px;opacity:.7}
+  .tbb{font-weight:600;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:11px;height:40px;transition:background .15s,border-color .15s}
+  .tbb:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.24)}
+  .tbb.on{background:rgba(242,213,122,.16);border-color:rgba(242,213,122,.5);color:#F6DE92}
+  .tbb svg{width:19px;height:19px}
+  .tbb.eq-snd{padding:0 10px}
+  .eq-snd.off{opacity:.6}
+  #pSel{height:40px;border-radius:11px;background:#fff;color:#14231D;font-weight:700;padding:0 12px}
+  #book{gap:26px}
+  .page{box-shadow:0 1px 2px rgba(16,40,30,.08),0 12px 32px rgba(16,40,30,.12);border-radius:3px}
+}
+.xm{background:rgba(9,22,17,.55);backdrop-filter:blur(3px)}
+.xcard{background:#F3F6F4;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.xhead{background:#fff;color:#14231D;border-bottom:1px solid #E1E7E3;padding:10px 14px 10px 20px}
+.xt{font-family:'Source Sans 3',sans-serif;font-weight:800;color:#14231D}
+.xt .xa{color:#0B6B45}
+.xcount{color:#5F6D67;opacity:1;font-weight:600;background:#EEF2EF;border-radius:999px;padding:4px 12px;font-size:14px}
+.xclose{width:40px;height:40px;border-radius:12px;background:#fff;border:1px solid #E1E7E3;color:#14231D;display:grid;place-items:center;padding:0}
+.xclose:hover{background:#F4F6F5}
+.xclose svg,.xbtn svg{width:19px;height:19px}
+.xfoot{background:#fff;border-top:1px solid #E1E7E3}
+.xbtn{font-weight:700;border:1px solid #E1E7E3;border-radius:12px;color:#14231D;display:inline-flex;align-items:center;gap:7px;box-shadow:0 1px 2px rgba(16,40,30,.05)}
+.xbtn:hover{border-color:#C9D3CD}
+.xbtn.pri{background:#0B6B45;border-color:#0B6B45;color:#fff}
+.xbtn.pri:hover{background:#095A3A}
+.tabs{gap:4px;background:#E6ECE8;border-radius:999px;padding:4px;align-self:center}
+.tab{background:transparent;color:#5F6D67;font-weight:600;padding:7px 15px}
+.tab:hover{color:#14231D}
+.tab.on{background:#fff;color:#0B6B45;box-shadow:0 1px 3px rgba(16,40,30,.15)}
+.tab .pb{background:#C9A227;height:3px}
+.tab .tn{background:#E1E7E3;color:#5F6D67}
+.tab.on .tn{background:#0B6B45;color:#fff}
+.fc,.shc,.h3 .t,.hbig,.zi{border-width:1px;border-color:#E1E7E3;box-shadow:0 1px 2px rgba(16,40,30,.05),0 8px 22px rgba(16,40,30,.06)}
+.mEn,.fc b,.lb b,.weq .eqA i,.hsnd b,.tpct,.zi .n{font-family:'Source Sans 3',sans-serif}
+.shc .lbx{font-family:'Source Sans 3',sans-serif;letter-spacing:.06em}
+.yay{border:0;border-radius:28px;box-shadow:0 30px 80px rgba(11,61,46,.3)}
+.yEn{font-family:'Source Sans 3',sans-serif;color:#B48A12}
+.memo{background:#FFF8E3;border:1px solid #F0E0A8}
+.note{border-radius:14px}
+
+/* ================= phones and small tablets ================= */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.page,.page *{-webkit-text-size-adjust:none;text-size-adjust:none}
+button{touch-action:manipulation}
+@media screen and (max-width:1000px){
+  .tbt{display:none}
+  .tbb.wide:not(#pzOpen) span{display:none}
+  .tbb.wide:not(#pzOpen){padding:0 10px}
+}
+@media screen and (max-width:700px){
+  .tb{gap:6px;padding:8px 10px}
+  .tbm{width:34px;height:34px}
+  .tbb{height:38px;min-width:38px;padding:0 9px}
+  #pSel{height:38px;padding:0 6px;max-width:112px}
+  #fitBtn,#fsBtn{display:none}
+  #pzOpen{white-space:nowrap;position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;height:52px;padding:0 22px;border-radius:999px;font-size:16.5px;font-weight:700;gap:9px;box-shadow:0 10px 26px rgba(11,61,46,.35)}
+  #pzOpen span{display:inline}
+  #book{gap:14px;padding:10px 0 96px}
+  /* help boxes become full screen */
+  .xm{padding:0}
+  .xcard{width:100vw;height:100vh;height:100dvh;border-radius:0}
+  .xhead{padding:8px 8px 8px 14px;gap:8px}
+  .xt{font-size:19px}
+  .xcount{font-size:12.5px;padding:3px 9px}
+  .xbody{padding:10px 10px 6px}
+  .xfoot{padding:8px;gap:6px}
+  .xctl{gap:6px}
+  .xbtn{padding:9px 11px;font-size:15px}
+  #xNext span,#xPrev span{display:none}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;max-width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none;white-space:nowrap;padding:7px 12px;font-size:14px}
+  .sc{gap:1.4vh}
+  .meet{flex-direction:column;gap:1.5vh;text-align:center}
+  .mL{font-size:min(40vw,34vh)}
+  .mEn{font-size:min(12vw,7vh)}
+  .mUr{font-size:min(9vw,5vh)}
+  .mInfo{font-size:16px}
+  .stack{font-size:min(46vw,36vh)}
+  .famrow{gap:2.5vw}
+  .fc{min-width:0;padding:0 3vw 1vh;border-radius:16px}
+  .fc .fl{font-size:min(20vw,15vh)}
+  .fc small{max-width:28vw;font-size:12px}
+  .shp{display:grid;grid-template-columns:1fr 1fr;gap:10px;direction:rtl;width:100%}
+  .shc{min-width:0}
+  .shc .g{font-size:min(19vw,12vh)}
+  .shc .lbx{font-size:12px}
+  .shc .sub{font-size:11px}
+  .exl{flex-wrap:wrap;justify-content:center;gap:6px 10px;font-size:15px;text-align:center}
+  .exl .xw2{font-size:min(14vw,8vh)}
+  .cap{font-size:clamp(15px,4.4vw,19px)}
+  .note{font-size:14px}
+  .where{flex-direction:column;gap:1.5vh}
+  .where .dg{width:100%;height:auto;max-height:44vh}
+  .where .wt{max-width:none;align-items:center;text-align:center}
+  .where .wl{font-size:min(20vw,9vh)}
+  .zlist{max-width:none;gap:1vh}
+  .xw{font-size:min(17vw,13vh);padding-bottom:min(18vh,140px)}
+  .lb .iso{font-size:min(9vw,5vh)}
+  .lb b{font-size:13px}
+  .hx{flex-direction:column;gap:2vh}
+  .hbig{width:min(58vw,34vh);height:min(70vw,40vh)}
+  .hbig .hg{font-size:min(42vw,24vh)}
+  .hinfo{max-width:none;align-items:center;text-align:center;gap:1.4vh}
+  .hsnd{font-size:clamp(18px,5.5vw,26px)}
+  .h3 .t{width:min(17vw,11vh);height:min(20vw,13vh)}
+  .h3 .t span{font-size:min(10vw,6vh)}
+  .rule{font-size:14px}
+  .tw{width:94vw;height:min(52vh,96vw)}
+  .tbar{width:34vw}
+  .tmsg{min-width:0;text-align:center}
+  .memo{font-size:clamp(16px,4.8vw,22px);padding:10px 14px}
+  .bx .bxT{max-width:none}
+  .fq{font-size:clamp(19px,5.6vw,26px)}
+  .yay{padding:10px 22px 14px;max-width:92vw}
+  .yAr{font-size:min(15vw,9vh)}
+  .yEn{font-size:min(7vw,5vh)}
+}
+@media screen and (max-width:420px){
+  .xctl .xbtn:not(.pri) span{display:none}
+}
+/* phones held sideways: very little height */
+@media screen and (max-height:500px){
+  .tb{padding:5px 10px}
+  .tbb,#pSel{height:34px}
+  .xm{padding:0}
+  .xcard{width:100vw;height:100vh;height:100dvh;border-radius:0}
+  .xhead{padding:4px 8px 4px 14px}
+  .xclose{width:34px;height:34px}
+  .xbody{padding:6px 14px 4px}
+  .xfoot{padding:5px 10px}
+  .xbtn{padding:6px 11px;font-size:14px}
+  .tabs{padding:3px}
+  .tab{padding:4px 11px;font-size:13.5px}
+  #pzOpen{height:44px}
+}
+@media (hover:none){
+  .fbtn:hover{transform:none}
+}
+
+/* eQaida Part 2: extra styles for the sign tables, stopping strips, bridge pages and help boxes */
+.ytab{display:flex;flex-direction:column;align-items:center}
+.ygrid{width:100%}
+.ytab>.ygrid+.ygrid{border-top:0}
+.yc{display:grid;place-items:center}
+.yp{display:inline-grid;position:relative;direction:rtl;white-space:nowrap;vertical-align:middle}
+.yp>.yg{grid-area:1/1}
+.yp>.yg.base{color:#1F1E1B}
+.yp .ysk{color:#C3BBAA}
+.yc>.yp{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:21pt;line-height:1}
+.yc.sm>.yp{font-size:15pt}
+.yj{position:absolute;left:4%;right:4%;top:100%;height:.42em;overflow:visible;pointer-events:none}
+.yj path{fill:none;stroke:#7048E8;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.yjoin{display:inline-flex;align-items:center;gap:1.4mm;direction:rtl;margin-inline-start:1.4mm;vertical-align:middle}
+.yjoin i{font-style:normal;color:var(--gold);font-weight:800}
+.yjoin b{direction:ltr}
+.yjoin .yp .yj{top:calc(100% - .05em)}
+.yorn{display:grid;place-items:center;color:var(--gold);font-size:13pt}
+.ytip{font-size:9pt;line-height:1.3;color:var(--muted);background:#F3EEE1;border-radius:1.6mm;padding:1.1mm 2.2mm;margin:0 0 2mm}
+.yline{text-align:center;color:var(--deep);font-size:10.2pt;font-weight:600;margin:1.4mm 0}
+.yh{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--deep);text-align:center;font-size:12.5pt;margin:2.4mm 0 1.4mm}
+.ystop{border:.35mm solid #E7BDB8;background:#FFF8F6;border-radius:2.4mm;padding:1.4mm 2.2mm 1.8mm;margin:2mm 0 0}
+.ysh{display:flex;align-items:center;gap:2mm}
+.ysi{background:#D64545;color:#fff;font:800 6.2pt 'Montserrat',sans-serif;padding:.5mm 1.3mm;border-radius:1mm;letter-spacing:.06em}
+.ysh b{font-family:'Montserrat',sans-serif;font-size:9.4pt;color:var(--deep)}
+.ysr{font-size:8.6pt;line-height:1.28;margin:.5mm 0;color:var(--ink)}
+.ysg{display:grid;grid-template-columns:repeat(3,1fr);gap:1mm 1.6mm;margin-top:1mm}
+.ysp{display:flex;align-items:center;justify-content:center;gap:1mm;direction:rtl;background:#fff;border:.25mm solid #EED8D4;border-radius:1.4mm;padding:0 1mm;position:relative;min-width:0;cursor:pointer}
+.ysn{direction:ltr;font:800 6.2pt 'Montserrat',sans-serif;color:#fff;background:var(--deep);border-radius:50%;width:3.7mm;height:3.7mm;display:grid;place-items:center;flex:none;position:absolute;top:.5mm;left:.6mm}
+.ysw{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:12pt;line-height:1.75;white-space:nowrap}
+.ysw.yst{color:#B42318}
+.ysa{color:#B42318;font-weight:800;font-size:9pt}
+.ytag{font:800 5.4pt 'Montserrat',sans-serif;color:#fff;background:#7048E8;border-radius:99px;padding:.3mm 1.1mm;text-transform:uppercase;direction:ltr;letter-spacing:.04em}
+.ytag.bounce{background:#C2410C}.ytag.hold{background:#0E8A43}.ytag.nose{background:#1C6FD1}
+.ysp{flex-wrap:wrap;padding:0 4.6mm}
+.ysp .ybr{flex-basis:100%;height:0}
+.ysp .ytag{margin:-1.4mm 0 .7mm}
+.ymq{display:flex;align-items:center;justify-content:center;gap:3mm;font-size:9.4pt;color:var(--muted);margin:1.2mm 0 .6mm}
+.ysigns{display:grid;grid-template-columns:repeat(5,1fr);gap:1mm;margin:1mm 0 1.4mm}
+.ysigns div{background:#fff;border:.3mm solid #D9D1BC;border-radius:1.6mm;text-align:center;padding:.4mm .6mm 1mm;position:relative}
+.ysigns .n{position:absolute;top:.5mm;left:.8mm;font:800 6pt 'Montserrat',sans-serif;color:var(--muted)}
+.ysigns .ar{font-size:1.25em;line-height:1.5;color:var(--deep);display:block}
+.ysigns small{display:block;font-size:6.6pt;line-height:1.15;color:var(--ink)}
+.ybism{font-family:'Amiri',serif;font-weight:700;direction:rtl;text-align:center;color:var(--deep);font-size:13.5pt;line-height:1.7;margin-top:1mm}
+.ysl{display:flex;align-items:center;gap:2mm;direction:rtl;background:var(--paper);border:.3mm solid #D9D1BC;border-radius:1.6mm;padding:0 2.4mm;margin:.8mm 0;position:relative;cursor:pointer}
+.ysln{direction:ltr;font:800 7pt 'Montserrat',sans-serif;color:#fff;background:var(--green);border-radius:50%;width:4.6mm;height:4.6mm;display:grid;place-items:center;flex:none}
+.yslt{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:15pt;line-height:1.8}
+.aye{color:var(--gold);font-family:'Amiri',serif}
+.yfat{font-size:14.5pt;line-height:2}
+/* help boxes */
+.yhx{display:flex;flex-direction:column;gap:2vh;min-height:100%;justify-content:center;align-items:center;padding:1vh 0}
+.yhbig{display:flex;align-items:center;gap:3vw;flex-wrap:wrap;justify-content:center}
+.yhbig>.xar{font-size:min(15vh,130px);line-height:1.5;color:#14231D}
+.yhbig>b{font-size:clamp(26px,6vh,54px);color:#0B6B45;font-family:'Source Sans 3',sans-serif}
+.ytags{display:flex;gap:6px}
+.ytags .ytag{font-size:12px;padding:3px 10px}
+.yhstop{display:flex;align-items:center;gap:12px;background:#FFF1EF;border:1px solid #F3C4BE;border-radius:14px;padding:4px 14px}
+.yhstop .xar{font-size:min(8vh,64px);line-height:1.5;color:#B42318}
+.yhstop b{font-size:clamp(20px,4vh,32px);color:#B42318}
+.yhstop .ysi{font-size:11px;padding:3px 7px}
+.yhinfo{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:1040px}
+.yhk{background:#fff;border:1px solid #E1E7E3;border-radius:14px;padding:10px 14px;max-width:440px;flex:1 1 280px}
+.yhk h4{margin:0 0 4px;font-size:16px;color:#0B6B45}
+.yhk p{margin:3px 0;font-size:15px;line-height:1.4;color:#14231D}
+.yhk .xar{font-size:1.3em}
+.ybd{display:flex;direction:rtl;gap:8px;flex-wrap:wrap;justify-content:center}
+.ybp,.ybw{display:flex;flex-direction:column;align-items:center;background:#fff;border:1px solid #E1E7E3;border-radius:12px;padding:0 10px 6px;min-width:60px}
+.ybp .xar{font-size:min(6vh,44px);line-height:1.55}
+.ybp b,.ybw b{direction:ltr;font-size:16px;color:#0B6B45}
+.ybp small{font-size:12px;color:#6E6A60;font-weight:700}
+.ybp.sil{opacity:.45}
+.ybgap{width:12px}
+.ybw .xar{font-size:min(5vh,34px);line-height:1.6}
+@media screen and (max-width:700px){ .yhbig>.xar{font-size:min(11vh,84px)} .yhk{flex-basis:100%} .ybp{min-width:48px;padding:0 6px 4px} }
+/* the Part 1 / Part 2 switch in the toolbar */
+#bookSw{text-decoration:none}
+
+.ysg2{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:1.6em;line-height:1.25}
+.yfq{text-align:center;font-size:8.6pt;color:var(--muted);margin:0 0 1.2mm;font-style:italic}
+.yc>.hs{top:auto;bottom:.5mm;right:auto;left:.5mm;width:3.4mm;height:3.4mm;opacity:.9}
+.yc>.hs svg{width:2.4mm;height:2.4mm}
+.ysk{color:#C3BBAA}
+.ytash span{display:block}
+.ytash{font-size:14pt!important;line-height:1.72!important}
+
+/* help box (new) */
+.yh2{display:flex;flex-direction:column;align-items:center;gap:1.8vh;height:100%;overflow:auto;padding:1vh 4px 2vh;box-sizing:border-box}
+.yh2>:first-child{margin-top:auto}.yh2>:last-child{margin-bottom:auto}
+.yh2key{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;direction:rtl}
+.yh2key>span{color:#fff;font:700 13px 'Source Sans 3',sans-serif;padding:3px 12px;border-radius:999px}
+.yh2top{display:flex;align-items:center;gap:3vw;flex-wrap:wrap;justify-content:center;direction:rtl}
+.yh2top>.yp{font:700 min(13vh,116px)/1.45 'Noto Naskh Arabic',serif}
+.yh2top.ystp>.yp{font-size:min(10vh,90px)}
+.yh2top>b{direction:ltr;font:800 clamp(26px,5.6vh,50px) 'Source Sans 3',sans-serif;color:#0B3D2E}
+.yh2top.ystp>b{color:#C92A2A}
+.yh2sb{display:inline-flex;align-items:center;gap:6px;background:#C92A2A;color:#fff;font:800 14px Montserrat,sans-serif;padding:6px 12px;border-radius:10px;letter-spacing:.06em;animation:ystopIn .5s cubic-bezier(.2,.9,.3,1.4)}
+.yh2sb svg{width:20px;height:20px}
+@keyframes ystopIn{from{transform:scale(.4) rotate(-20deg);opacity:0}}
+.yts{display:flex;direction:rtl;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 8px;max-width:1100px}
+.yt{display:flex;flex-direction:column;align-items:center;background:#fff;border-radius:18px;box-shadow:0 6px 20px rgba(11,61,46,.11);padding:2px 18px 10px;opacity:0;transform:translateY(16px) scale(.85);transition:opacity .4s,transform .5s cubic-bezier(.2,.9,.3,1.35)}
+.yt.on{opacity:1;transform:none}
+.yt>.yp{font:700 min(8vh,60px)/1.7 'Noto Naskh Arabic',serif}
+.yt>.yp .yj{top:calc(100% - .32em);height:.36em}
+.yt>.yp .yj path{stroke-width:2.6;stroke-dasharray:1 1;stroke-dashoffset:1;transition:stroke-dashoffset .55s .25s}
+.yt>.yp .yj .yjh{stroke-dasharray:none;opacity:0;transition:opacity .2s .75s}
+.yt.on>.yp .yj path{stroke-dashoffset:0}
+.yt.on>.yp .yj .yjh{opacity:1}
+.yt>b{direction:ltr;font:800 clamp(18px,3vh,26px) 'Source Sans 3',sans-serif;color:#0B3D2E;margin-top:4px}
+.yt.chg{box-shadow:0 0 0 3px #C92A2A,0 6px 20px rgba(201,42,42,.25)}
+.yt.chg.on{animation:ychg 1s .2s 2}
+.yt.chg>b{color:#C92A2A}
+@keyframes ychg{50%{transform:scale(1.08)}}
+.ytplus{font:800 22px Montserrat,sans-serif;color:#C9A227;font-style:normal;opacity:0;transition:opacity .3s}
+.ytplus.sp{width:14px}
+.ytplus.on{opacity:1}
+.yeq{font-style:normal;font:800 clamp(20px,3.4vh,30px) 'Source Sans 3',sans-serif;color:#C9A227;direction:ltr;opacity:0;transform:translateX(-10px);transition:.4s;margin-inline-start:6px}
+.yeq b{color:#0B6B45}
+.yeq.on{opacity:1;transform:none}
+.yrs{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:1100px;width:100%}
+.yr{display:flex;align-items:center;gap:14px;background:#fff;border-radius:16px;padding:10px 16px;box-shadow:0 4px 14px rgba(11,61,46,.08);border-left:5px solid var(--c);flex:1 1 300px;max-width:540px}
+.yr .ys{flex:none;width:62px;height:62px;border-radius:14px;background:color-mix(in srgb,var(--c) 11%,#fff);color:var(--c);display:grid;place-items:center;font:700 30px/1 'Noto Naskh Arabic',serif}
+.yr .ys svg{width:34px;height:34px}
+.yr h4{margin:0;font:800 15px Montserrat,sans-serif;color:var(--c)}
+.yr p{margin:3px 0 6px;font-size:16.5px;line-height:1.35;color:#14231D}
+.yx{display:flex;gap:6px;flex-wrap:wrap;direction:rtl;align-items:center}
+.yx>span{display:flex;align-items:center;gap:7px;background:#F6F4EE;border-radius:10px;padding:0 10px}
+.yx>span>.yp{font:700 24px/1.7 'Noto Naskh Arabic',serif}
+.yx b{direction:ltr;font-size:15px;color:#0B3D2E}
+.yx em{font-style:normal;color:#C92A2A;font-weight:800}
+.yx>span.hl{background:#FFE9E7}
+.yrstop{max-width:760px;flex-basis:100%}
+.xbtn.stopon{background:#C92A2A!important;border-color:#C92A2A!important;color:#fff!important}
+.xbtn svg{vertical-align:-4px}
+@media screen and (max-width:700px){ .yh2top>.yp{font-size:min(11vh,80px)} .yt{padding:0 10px 8px;border-radius:14px} .yt>.yp{font-size:min(7vh,42px)} .yr{flex-basis:100%;padding:8px 12px} .yr .ys{width:48px;height:48px;font-size:24px} .yr p{font-size:15px} }
+
+/* help box v3: word → Break it → Explain step by step */
+.yh3{display:flex;flex-direction:column;align-items:center;gap:1.6vh;height:100%;overflow:auto;padding:1vh 6px 2vh;box-sizing:border-box}
+.yh3>:first-child{margin-top:auto}.yh3>:last-child{margin-bottom:auto}
+.ycap{min-height:0;display:none;align-items:center;gap:12px;background:#0B3D2E;color:#fff;border-radius:16px;padding:10px 18px;max-width:900px;font-size:clamp(17px,2.6vh,23px);line-height:1.35;box-shadow:0 6px 18px rgba(11,61,46,.18)}
+.m-explain .ycap{display:flex}
+.ycn2{flex:none;background:#C9A227;color:#0B3D2E;font:800 13px Montserrat,sans-serif;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.yct b{color:#FFE08A}.yct .ycapr{color:#8CE99A;font-size:1.15em}
+.ycstop{display:inline-flex;align-items:center;gap:4px;background:#C92A2A;border-radius:8px;padding:2px 8px;font:800 12px Montserrat,sans-serif;vertical-align:2px}
+.ycstop svg{width:15px;height:15px}
+.yhst{position:relative;display:flex;flex-direction:column;align-items:center;width:100%}
+.ywd{display:flex;align-items:center;gap:22px;direction:rtl}
+.ywd>.yp{font:700 min(16vh,140px)/1.5 'Noto Naskh Arabic',serif}
+.m-break .ywd,.m-explain .ywd{display:none}
+.ygs{display:none;direction:rtl;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:18px 26px}
+.m-break .ygs,.m-explain .ygs{display:flex}
+.ygap{width:30px}
+.ygp{display:flex;flex-direction:column;align-items:center;gap:54px}
+.ycds{display:flex;direction:rtl;gap:10px;align-items:stretch}
+.ycd{display:flex;flex-direction:column;align-items:center;background:#fff;border-radius:18px;box-shadow:0 6px 18px rgba(11,61,46,.12);padding:4px 16px 12px;min-width:120px;transition:box-shadow .3s,transform .3s;animation:ycdIn .45s both}
+@keyframes ycdIn{from{opacity:0;transform:translateY(12px)}}
+.ycd.sil{opacity:.5}
+.ycg{border-radius:14px;padding:0 8px;transition:box-shadow .3s}
+.ycg>.yp{font:700 min(13vh,104px)/1.6 'Noto Naskh Arabic',serif}
+.ycn{font:800 15px 'Source Sans 3',sans-serif;color:#0B3D2E}
+.ycs{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:14px!important;border:2px solid transparent;border-radius:999px;padding:0 10px 0 4px;background:color-mix(in srgb,var(--c) 12%,#fff);color:var(--c);font:800 13px 'Source Sans 3',sans-serif;white-space:nowrap;transition:box-shadow .3s}
+.ycm .yp{font:700 34px/1.45 'Noto Naskh Arabic',serif}
+.ycb{font:800 clamp(17px,2.6vh,22px) 'Source Sans 3',sans-serif;color:#0B6B45;margin-top:6px}
+.ycd.ring{box-shadow:0 0 0 4px #F59F00,0 6px 22px rgba(245,159,0,.35);transform:translateY(-4px)}
+.ycg.ring{box-shadow:0 0 0 3px #F59F00}
+.ycs.ring{box-shadow:0 0 0 3px #F59F00;animation:yring 1s ease-in-out 2}
+@keyframes yring{50%{transform:scale(1.12)}}
+.m-explain .ycd .ycb{visibility:hidden}
+.m-explain.fin .ycd .ycb{visibility:visible}
+.ypl{opacity:0;background:#0B6B45;color:#fff;font:800 clamp(20px,3vh,28px) 'Source Sans 3',sans-serif;border-radius:999px;padding:4px 22px;direction:ltr;transform:scale(.6);transition:opacity .3s .35s,transform .4s .35s cubic-bezier(.2,.9,.3,1.5)}
+.ypl.on{opacity:1;transform:none}
+.yar{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.yar path{fill:none;stroke:#7048E8;stroke-width:3;stroke-linecap:round}
+.yar path.an{stroke-dasharray:1 1;stroke-dashoffset:1;animation:ydraw .5s .05s forwards}
+@keyframes ydraw{to{stroke-dashoffset:0}}
+.yread{text-align:center}
+.yread>b{font:800 clamp(24px,5vh,46px) 'Source Sans 3',sans-serif;color:#0B3D2E;direction:ltr;display:block}
+.m-explain .yread{visibility:hidden}.m-explain.fin .yread{visibility:visible}
+.ywhy{display:inline-flex;align-items:center;gap:6px;color:#C92A2A;font-weight:700;font-size:16px;margin:4px 0 0}
+.ywhy svg{width:18px;height:18px}
+.yh3 .yrs{display:none}.m-break .yrs{display:flex}
+.ywd .yh2sb{font-size:13px}
+@media screen and (max-width:700px){ .ywd>.yp{font-size:min(12vh,90px)} .ycd{min-width:70px;padding:2px 8px 8px;border-radius:14px} .ycg>.yp{font-size:min(8vh,52px)} .ycs{font-size:11px;padding:0 7px 0 2px} .ycm .yp{font-size:20px} .ycn{font-size:13px} .ygp{gap:44px} .ycap{font-size:16px;padding:8px 12px} }
+.yh3.one .yread{display:none}
+.m-word .yread{display:block!important}
+.yh3>*{flex-shrink:0}
+@media screen and (max-width:700px){ .ycap{flex-wrap:wrap;gap:6px} }
+
+</style>
+</head>
+<body>
+<div class="tb">
+  <span class="tbm">بْ</span><b class="tbt">eQaida<small>Interactive · Part 2</small></b>
+  <a class="tbb wide" id="bookSw" href="index.html" title="Open the other part of eQaida"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg><span>Part 1</span></a>
+  <div class="tbsp"></div>
+  <button class="tbb" id="pPrev" aria-label="Previous page">‹</button>
+  <select id="pSel" aria-label="Go to page"></select>
+  <button class="tbb" id="pNext" aria-label="Next page">›</button>
+  <div class="tbsp"></div>
+  <button class="tbb wide on" id="hsBtn" title="Show or hide the help buttons"><span>Help buttons</span></button>
+  <button class="tbb wide" id="fitBtn" title="Change the zoom"><span>Fit width</span></button>
+  <button class="tbb eq-snd" id="sndBtn" aria-label="Sound effects on or off" title="Sound effects">🔊</button>
+  <button class="tbb" id="fsBtn" aria-label="Full screen" title="Full screen">⛶</button>
+</div>
+<div id="book"></div>
+<div class="xm" id="xm" hidden>
+  <div class="xcard" role="dialog" aria-modal="true" aria-labelledby="xTitle">
+    <div class="xhead"><div class="xt" id="xTitle"></div><div class="xsp"></div><span class="xcount" id="xCount"></span><button class="xclose" id="xClose" aria-label="Close">✕</button></div>
+    <div class="xbody" id="xBody"></div>
+    <div class="xfoot"><button class="xbtn" id="xNext">← Next box</button><div class="xctl" id="xCtl"></div><button class="xbtn" id="xPrev">Previous box →</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const P="var(--P)",B="var(--B)",G="var(--G)",R="var(--R)";
+const ZWJ="‍", TAT="ـ";
+const FATHA="َ",KASRA="ِ",DAMMA="ُ";
+const MARKS=/[ً-ٰٗ]/;
+
+/* ---------- the 29 letters, names and colours as on page 3 ---------- */
+const L={
+ alif:{ch:"ا",en:"Alif",ur:"الف",c:P,j:"R"}, ba:{ch:"ب",en:"Ba",ur:"با",c:B,j:"D"}, ta:{ch:"ت",en:"Ta",ur:"تا",c:P,j:"D"},
+ tha:{ch:"ث",en:"Tha",ur:"ثا",c:B,j:"D"}, jeem:{ch:"ج",en:"Jeem",ur:"جیٓم",c:P,j:"D"}, hha:{ch:"ح",en:"Ha",ur:"حا",c:B,j:"D"},
+ kha:{ch:"خ",en:"Kha",ur:"خا",c:G,j:"D"}, dal:{ch:"د",en:"Daal",ur:"دآل",c:P,j:"R"}, dhal:{ch:"ذ",en:"Zaal",ur:"ذآل",c:B,j:"R"},
+ ra:{ch:"ر",en:"Ra",ur:"را",c:P,j:"R"}, zay:{ch:"ز",en:"Zaa",ur:"زا",c:P,j:"R"}, seen:{ch:"س",en:"Seen",ur:"سیٓن",c:B,j:"D"},
+ sheen:{ch:"ش",en:"Sheen",ur:"شیٓن",c:P,j:"D"}, sad:{ch:"ص",en:"Soad",ur:"صآد",c:G,j:"D"}, dad:{ch:"ض",en:"Doad",ur:"ضآد",c:G,j:"D"},
+ tta:{ch:"ط",en:"Toa",ur:"طا",c:G,j:"D"}, zza:{ch:"ظ",en:"Zoa",ur:"ظا",c:G,j:"D"}, ain:{ch:"ع",en:"Ain",ur:"عیٓن",c:B,j:"D"},
+ ghain:{ch:"غ",en:"Ghain",ur:"غیٓن",c:G,j:"D"}, fa:{ch:"ف",en:"Fa",ur:"فا",c:P,j:"D"}, qaf:{ch:"ق",en:"Qaaf",ur:"قآف",c:G,j:"D"},
+ kaf:{ch:"ك",en:"Kaaf",ur:"کآف",c:B,j:"D"}, lam:{ch:"ل",en:"Laam",ur:"لآم",c:P,j:"D"}, meem:{ch:"م",en:"Meem",ur:"میٓم",c:B,j:"D"},
+ noon:{ch:"ن",en:"Noon",ur:"نوٓن",c:P,j:"D"}, waw:{ch:"و",en:"Waaw",ur:"وآو",c:B,j:"R"}, ha:{ch:"ه",en:"Ha",ur:"ها",c:P,j:"D"},
+ hamza:{ch:"ء",en:"Hamza",ur:"همزه",c:B,j:"U"}, ya:{ch:"ی",en:"Yaa",ur:"یا",c:P,j:"D"}
+};
+const ORDER=["alif","ba","ta","tha","jeem","hha","kha","dal","dhal","ra","zay","seen","sheen","sad","dad","tta","zza","ain","ghain","fa","qaf","kaf","lam","meem","noon","waw","ha","hamza","ya"];
+const CH={}; for(const id in L) CH[L[id].ch]={id,j:L[id].j};
+Object.assign(CH,{"ي":{id:"ya",j:"D"},"ى":{id:"ya",j:"R"},"ک":{id:"kaf",j:"D"},"ڪ":{id:"kaf",j:"D"},"ھ":{id:"ha",j:"D"},"ہ":{id:"ha",j:"D"},
+ "أ":{id:"hamza",j:"R"},"إ":{id:"hamza",j:"R"},"ؤ":{id:"hamza",j:"R"},"ئ":{id:"hamza",j:"D"},"ة":{id:"ta",j:"R"},"آ":{id:"alif",j:"R"}});
+const ZONE_OF={hamza:"throatLow",ha:"throatLow",ain:"throatMid",hha:"throatMid",ghain:"throatUp",kha:"throatUp",qaf:"qaf",kaf:"kaf",jeem:"tongueMid",sheen:"tongueMid",ya:"tongueMid",dad:"tongueEdge",lam:"tipGums",noon:"tipGums",ra:"tipGums",ta:"tipRoot",dal:"tipRoot",tta:"tipRoot",tha:"tipEnd",dhal:"tipEnd",zza:"tipEnd",zay:"tipBack",seen:"tipBack",sad:"tipBack",fa:"lipTeeth",ba:"lips",meem:"lips",waw:"lipsRound",alif:"mouthSpace"};
+const zoneOf=t=>[...new Set([...t].filter(c=>CH[c]).map(c=>ZONE_OF[CH[c].id]))].join(",");
+
+function analyze(w){
+  const ps=[]; for(const c of w){ if(MARKS.test(c)){ if(ps.length) ps[ps.length-1].m+=c; continue; } const k=CH[c]; if(!k) continue; ps.push({ch:c,m:"",id:k.id,j:k.j}); }
+  ps.forEach((p,i)=>{ const a=ps[i-1], b=ps[i+1]; p.jp=!!a&&a.j==="D"&&p.j!=="U"; p.jn=!!b&&p.j==="D"&&b.j!=="U"; p.form=p.jp?(p.jn?"M":"E"):(p.jn?"S":"A"); });
+  return ps;
+}
+const ptxt=p=>(p.jp?ZWJ:"")+p.ch+p.m+(p.jn?ZWJ:"");
+const CYC=[P,B,G];
+/* a word with each letter in its own colour (lam-alif kept as one ligature) */
+function colourWord(w,colors){
+  const ps=analyze(w), out=[];
+  for(let i=0;i<ps.length;i++){
+    const p=ps[i], n=ps[i+1], col=colors?colors(i,p):CYC[i%3];
+    if(p.id==="lam"&&n&&n.ch==="ا"&&p.jn){ out.push(`<span style="color:${col}">${(p.jp?ZWJ:"")+p.ch+p.m+n.ch+n.m}</span>`); i++; }
+    else out.push(`<span style="color:${col}">${ptxt(p)}</span>`);
+  }
+  return out.join("");
+}
+const mk=(t,n)=>`<span class="mk ${t}">${n}</span>`;
+const mks=(list,pos)=>list&&list.length?`<span class="mks ${pos||"L"}">${list.map(([t,n])=>mk(t,n)).join("")}</span>`:"";
+const ar=(t,c)=>`<span class="ar" style="color:${c||R}">${t}</span>`;
+const qa=(q,a,tail="")=>`<div class="qa"><p class="q"><span class="l">Q</span><span>${q}</span></p><p class="a"><span class="l">A</span><span>${a}${tail}</span></p></div>`;
+const lesson=(n,t)=>`<div class="lesson"><span class="lw">Lesson</span><span class="ln">${n}</span><span class="lt">${t}</span></div>`;
+function page(no,inner,cls=""){
+  return `<section class="page"><div class="frame"></div>
+    <div class="hdr"><div class="pill">quranmasteronline.com</div><div class="no">${no}</div><div class="pill">eQaida</div></div>
+    <div class="body ${cls}">${inner}</div></section>`;
+}
+
+/* ---------- grids ---------- */
+function letterCell(id,marks){ const l=L[id];
+  return `<div class="cell lc" data-x="l:${id}">${mks(marks)}<span class="un" style="color:${l.c}">${l.ur}</span><span class="bg" style="color:${l.c}">${l.ch}</span><span class="en">${l.en}</span></div>`; }
+function compCell(spec){
+  const s=typeof spec==="string"?{t:spec}:spec;
+  let main, small="";
+  if(s.raw){ main=`<span style="color:${s.c||P}">${s.t}</span>`; }
+  else{
+    const ps=analyze(s.t);
+    if(ps.length===1){ main=`<span style="color:${s.c||L[ps[0].id].c}">${s.t}</span>`; }
+    else{ main=colourWord(s.t); if(!s.nosmall) small=ps.map((p,i)=>`<span style="color:${CYC[i%3]}">${p.ch==="ة"?"ة":p.ch}</span>`).join(" "); }
+  }
+  return `<div class="cell cc" data-x="${(s.raw||analyze(s.t).length<=1)?"s:":"w:"}${s.t}">${mks(s.mk,s.pos)}<div class="w">${main}</div>${small?`<div class="sm">${small}</div>`:""}${s.cap?`<div class="cap">${s.cap}</div>`:""}</div>`;
+}
+function grid(rows,cellFn,cols=6,style=""){
+  return `<div class="grid" style="grid-template-columns:repeat(${cols},1fr);${style}">${rows.map(r=>r.map(cellFn).join("")).join("")}</div>`;
+}
+const HC={fatha:"var(--hf)",kasra:"var(--hk)",damma:"var(--hd)"};
+const HM={fatha:FATHA,kasra:KASRA,damma:DAMMA};
+function hCell(spec){
+  const [id,h,marks,pos]=spec; if(id==="LABEL") return "";
+  const base=id==="alif"?"ا":L[id].ch;
+  return `<div class="cell hc" data-x="h:${id}:${h}">${mks(marks,pos)}<span class="hg" style="color:${HC[h]}">${base+HM[h]}</span><span class="hg base">${base}</span></div>`;
+}
+const hrow=(a,b)=>["fatha","kasra","damma"].map(h=>[a,h]).concat(["fatha","kasra","damma"].map(h=>[b,h]));
+
+/* ---------- shapes (new exercise) ---------- */
+const SC={S:"var(--S)",M:"var(--M)",E:"var(--E)",A:"var(--A)"};
+function formHTML(id,form,col){
+  const l=L[id]; const c=col||SC[form];
+  if(l.j==="U") return `<span style="color:${c}">${l.ch}</span>`;
+  const jp=form==="M"||form==="E", jn=(form==="S"||form==="M")&&l.j==="D";
+  const hand=`<span class="hand">${ZWJ}${TAT}${ZWJ}</span>`;
+  return (jp?hand:"")+`<span style="color:${c}">${jp?ZWJ:""}${l.ch}${jn?ZWJ:""}</span>`+(jn?hand:"");
+}
+function dimWord(w,idx){
+  const ps=analyze(w);
+  return ps.map((p,i)=>`<span class="${i===idx?"":"dim"}" style="${i===idx?`color:${SC[p.form]}`:""}">${ptxt(p)}</span>`).join("");
+}
+const BOOKWORDS=("لج بلب كت كا كل بكت تكث ثا بس یس نص تض ثط ثج تح نخ یخ بج یم بم نم تم ثم بی یی تی ثی نبل بنل تنل یتل یثل بنن ینن تین یثن بثن حث خب جت تحت یجب بخت نه ههه یهب بها بهم جد خذ جر خز یر تز سل شل ظا صب طب ضا عج غح بع یغ بعد بغذ فو قو نقر یفر یف فیه منه "+
+  "بَصَرَ بَلَغَ فَعَلَ اَخَذَ عَبَسَ سَجَدَ اِرَمَ اِبِلِ كِبَرَ اَذِنَ شَهِدَ سَفِهَ مُنِعَ كُتِبَ ذُكِرَ خَبُثَ رُسُلُ یَعِدُ").split(/\s+/);
+function example(id){
+  const pref=L[id].j==="D"?["M","S","E"]:["E"];
+  for(const f of pref) for(const w of BOOKWORDS){ if(MARKS.test(w)) continue; const ps=analyze(w); const i=ps.findIndex(p=>p.id===id&&p.form===f&&p.ch===L[id].ch); if(i>=0) return {w,i}; }
+  return null;
+}
+function shapeRow(id){
+  const l=L[id], nj=l.j==="R", hz=l.j==="U";
+  const name=`<div class="td nm" data-x="l:${id}:Shapes"><span class="ar" style="color:${l.c}">${l.ch}</span><b>${l.en}</b></div>`;
+  const al=`<div class="td"><span class="gl">${formHTML(id,"A")}</span></div>`;
+  if(hz) return name+al+`<div class="td nj6" style="grid-column:span 4"><span class="na" style="color:#8A6A0C;font-weight:700;font-size:8.4pt">Never joins any letter — it always sits alone</span></div>`;
+  const st=nj?`<div class="td same nj6"><span class="gl">${formHTML(id,"A","var(--A)")}</span><small>same as alone</small></div>`:`<div class="td"><span class="gl">${formHTML(id,"S")}</span></div>`;
+  const md=nj?`<div class="td same nj6"><span class="gl">${formHTML(id,"E","var(--E)")}</span><small>same as end</small></div>`:`<div class="td"><span class="gl">${formHTML(id,"M")}</span></div>`;
+  const en=`<div class="td"><span class="gl">${formHTML(id,"E")}</span></div>`;
+  const ex=example(id);
+  const exc=ex?`<div class="td ex" data-x="w:${ex.w}"><span class="exw">${dimWord(ex.w,ex.i)}</span><small>${l.en} = ${({S:"start",M:"middle",E:"end",A:"alone"})[analyze(ex.w)[ex.i].form]}</small></div>`:`<div class="td"><span class="na">—</span></div>`;
+  return name+al+st+md+en+exc;
+}
+function shapeTable(ids){
+  const head=`<div class="th">Letter</div><div class="th A">Alone</div><div class="th S">Start</div><div class="th M">Middle</div><div class="th E">End</div><div class="th">In the book</div>`;
+  return `<div class="st" style="grid-template-rows:auto repeat(${ids.length},1fr)">${head}${ids.map(shapeRow).join("")}</div>`;
+}
+
+/* =====================================================================
+   eQaida PART 2 — the book pages, the reading of every sign, and the help boxes.
+   This block replaces Part 1's pages inside part2.html (made by tools/make_part2.py).
+   The Arabic of every table lives in part2/tables.py (T below is filled in from it).
+   Content plan: part2-spec.md (written with Fable, 16 Nov 2026).
+   ===================================================================== */
+const T={"p1": [["اَتْ", "اِتْ", "اُتْ", "اَثْ", "اِثْ", "اُثْ"], ["اَحْ", "اِحْ", "اُحْ", "اَخْ", "اِخْ", "اُخْ"], ["اَذْ", "اِذْ", "اُذْ", "اَرْ", "اِرْ", "اُرْ"]], "p2": [["اَزْ", "اِزْ", "اُزْ", "اَسْ", "اِسْ", "اُسْ"], ["اَشْ", "اِشْ", "اُشْ", "اَصْ", "اِصْ", "اُصْ"], ["اَضْ", "اِضْ", "اُضْ", "اَظْ", "اِظْ", "اُظْ"], ["اَعْ", "اِعْ", "اُعْ", "اَغْ", "اِغْ", "اُغْ"], ["اَفْ", "اِفْ", "اُفْ", "اَكْ", "اِكْ", "اُكْ"], ["اَلْ", "اِلْ", "اُلْ", "اَمْ", "اِمْ", "اُمْ"], ["اَنْ", "اِنْ", "اُنْ", "اَوْ", "اُوْ"], ["اَهْ", "اِهْ", "اُهْ", "اَءْ", "اِءْ", "اُءْ"], ["اَیْ", "اِیْ"]], "p3": [["اَقْ", "اِقْ", "اُقْ", "اَطْ", "اِطْ", "اُطْ"], ["اَبْ", "اِبْ", "اُبْ", "اَجْ", "اِجْ", "اُجْ"], ["اَدْ", "اِدْ", "اُدْ"]], "p4": [["دَعْ", "كَمْ", "قَدْ", "بَلْ", "زِدْ", "مِنْ"], ["عِدْ", "اِذْ", "قُلْ", "ذُقْ", "تُبْ", "كُلْ"], ["اَلْقَتْ", "اَتْمِمْ", "اَرْسَلَ", "اَثَرْنَ", "نَعْبُدُ", "اَمْسِكْ"], ["اِرْحَمْ", "اِذْهَبْ", "اِقْرَأْ", "طِبْتُمْ", "اُرْكُضْ", "اُعْبُدْ"], ["حُشِرَتْ", "كُشِطَتْ", "اُقْتُلْ", "یُؤْمِنُ"]], "p5": [["مًا/مًی", "مٍ", "مٌ", "بًا", "بٍ", "بٌ"], ["وًا", "وٍ", "وٌ", "فًا", "فٍ", "فٌ"], ["ظًا", "ظٍ", "ظٌ", "ذًی", "ذٍ", "ذٌ"], ["ثًا", "ثٍ", "ثٌ", "صًا", "صٍ", "صٌ"], ["سًا", "سٍ", "سٌ", "زًا", "زٍ", "زٌ"], ["طًا", "طٍ", "طٌ", "دًی", "دٍ", "دٌ"], ["ةً", "تٍ", "تٌ", "رًا", "رٍ", "رٌ"], ["نًا", "نٍ", "نٌ", "لًا", "لٍ", "لٌ"], ["ضًا", "ضٍ", "ضٌ", "یًا", "یٍ", "یٌ"], ["شًا", "شٍ", "شٌ", "جًا", "جٍ", "جٌ"], ["كًا", "كٍ", "كٌ", "قًا", "قٍ", "قٌ"], ["خًا", "خٍ", "خٌ", "غًا", "غٍ", "غٌ"], ["حًا", "حٍ", "حٌ", "عًا", "عٍ", "عٌ"], ["هًا", "هٍ", "هٌ", "ءً", "ءٍ", "ءٌ"]], "p6": [["تًا", "طًا", "ثًا"], ["صًا", "سًا", "حٍ", "هٍ", "ذٍ", "زٍ"], ["ضٍ", "ظٍ", "عٌ", "ءٌ", "قٌ", "كٌ"]], "p7": [["اَبَدًا", "رَغَدًا", "كِسَفًا", "عِنَبًا", "طُوًی", "صُحُفًا"], ["كَبَدٍ", "طَبَقٍ", "بِدَمٍ", "فِئَةٍ", "فُرُشٍ", "نُسُكٍ"], ["اَحَدٌ", "قَسَمٌ", "دِیَةٌ", "عِنَبٌ", "سُرُرٌ", "رُسُلٌ"]], "p8": [["بٰ", "بٖ", "بٗ", "تٰ", "تٖ", "تٗ"], ["ثٰ", "ثٖ", "ثٗ", "جٰ", "جٖ", "جٗ"], ["حٰ", "حٖ", "حٗ", "خٰ", "خٖ", "خٗ"], ["دٰ", "دٖ", "دٗ", "ذٰ", "ذٖ", "ذٗ"], ["رٰ", "رٖ", "رٗ", "زٰ", "زٖ", "زٗ"], ["سٰ", "سٖ", "سٗ", "شٰ", "شٖ", "شٗ"], ["صٰ", "صٖ", "صٗ", "ضٰ", "ضٖ", "ضٗ"], ["طٰ", "طٖ", "طٗ", "ظٰ", "ظٖ", "ظٗ"], ["عٰ", "عٖ", "عٗ", "غٰ", "غٖ", "غٗ"], ["فٰ", "فٖ", "فٗ", "قٰ", "قٖ", "قٗ"], ["كٰ", "كٖ", "كٗ", "لٰ", "لٖ", "لٗ"], ["مٰ", "مٖ", "مٗ", "نٰ", "نٖ", "نٗ"]], "p9": [["وٰ", "وٖ", "وٗ", "هٰ", "هٖ", "هٗ"], ["ءٰ", "ءٖ", "ءٗ", "اٰ", "اٖ", "اٗ"], ["یٰ", "یٖ", "یٗ"]], "p9r": [["تٰ", "طٰ", "ثٰ"], ["سٰ", "صٰ", "حٖ", "هٖ", "ذٖ", "زٖ"], ["ضٖ", "ظٖ", "عٗ", "ءٗ", "قٗ", "كٗ"]], "p10": [["اٰمَنَ", "اَوٰی", "یَدٰهُ", "مَاٰرِبُ", "یَحْیٰی"], ["اٖلٰفِ", "بِهٖ", "اِبْرٰهٖمَ", "بِیَدِهٖ", "كُتُبِهٖ"], ["وٗرِیَ", "مَعَهٗ", "نِصْفَهٗ", "اَقْبَرَهٗ", "وَجْهَهٗ"], ["خَطٰیٰكُمْ", "رِسٰلٰتِ", "مَسٰجِدَ", "قُرْاٰنًا", "هَمَزٰتِ"], ["بَعْدِهٖ", "بِنَصْرِهٖ", "بِرَحْمَتِهٖ", "اٖلٰفِهِمْ", "ظُلْمِهٖ"], ["یَبْسُطُهٗ", "قَتَلَهٗ", "قَبْضَتُهٗ", "اَطْعَمَهٗ", "یَسْتَوٗنَ"], ["طَغٰی", "زَكٰوةً", "رُسُلِهٖ", "صَدْرَهٗ", "بِعَبْدِهٖ"]], "p11": [["بَا", "بِیْ", "بُوْ", "تَا", "تِیْ", "تُوْ"], ["ثَا", "ثِیْ", "ثُوْ", "جَا", "جِیْ", "جُوْ"], ["حَا", "حِیْ", "حُوْ", "خَا", "خِیْ", "خُوْ"], ["دَا", "دِیْ", "دُوْ", "ذَا", "ذِیْ", "ذُوْ"], ["رَا", "رِیْ", "رُوْ", "زَا", "زِیْ", "زُوْ"], ["سَا", "سِیْ", "سُوْ", "شَا", "شِیْ", "شُوْ"], ["صَا", "صِیْ", "صُوْ", "ضَا", "ضِیْ", "ضُوْ"], ["طَا", "طِیْ", "طُوْ", "ظَا", "ظِیْ", "ظُوْ"], ["عَا", "عِیْ", "عُوْ", "غَا", "غِیْ", "غُوْ"]], "p12": [["فَا", "فِیْ", "فُوْ", "قَا", "قِیْ", "قُوْ"], ["كَا", "كِیْ", "كُوْ", "لَا", "لِیْ", "لُوْ"], ["مَا", "مِیْ", "مُوْ", "نَا", "نِیْ", "نُوْ"], ["وَا", "وِیْ", "وُوْ", "هَا", "هِیْ", "هُوْ"], ["ءٰ", "ءِیْ", "ءُوْ", "اٰ", "اِیْ", "اُوْ"], ["یَا", "یِیْ", "یُوْ"]], "p12r": [["سَ", "سٰ", "سَا"], ["سِ", "سٖ", "سِیْ", "سُ", "سٗ", "سُوْ"], ["صَ", "صٰ", "صَا", "صِ", "صٖ", "صِیْ"], ["صُ", "صٗ", "صُوْ", "زَ", "زٰ", "زَا"], ["زِ", "زٖ", "زِیْ"]], "p13": [["بَنٰهَا", "طَحٰهَا", "ذَرُوْنَا", "وَضَعْنَا", "رَفَعْنَا"], ["اَخِیْ", "رُوْحِیْ", "دِیْنِیْ", "تَجْرِیْ", "اَبِیْ"], ["یَدْعُوْا", "یَتْلُوْا", "قَالُوْا", "خَسِرُوْا", "اُعْبُدُوْا"], ["خَافَ", "فَوَاكِهَ", "ضَاحِكًا", "طَالَ", "عَادٌ"]], "p14": [["تَسْنِیْمٌ", "نَذِیْرٌ", "نُوْحِیْهَا", "غِیْضَ", "قِیْلَ"], ["اَعُوْذُ", "جُوْعٍ", "تَفُوْرُ", "مَسْكُوْبٍ", "یَمْنَعُوْنَ"], ["غَاوٗنَ", "مَحْفُوْظٍ", "یَقُوْلُوْنَ", "مُفْسِدِیْنَ", "مَخْتُوْمٍ"], ["اِفْعَلُوْا", "خَلَقْنَا", "نَفْسِیْ", "اَصَابَ", "عَلِیْمٌ"], ["رَسُوْلٍ", "مَاكِثِیْنَ"]], "p15": [["بَوْ", "بَیْ", "تَوْ", "تَیْ", "ثَوْ", "ثَیْ"], ["جَوْ", "جَیْ", "حَوْ", "حَیْ", "خَوْ", "خَیْ"], ["دَوْ", "دَیْ", "ذَوْ", "ذَیْ", "رَوْ", "رَیْ"], ["زَوْ", "زَیْ", "سَوْ", "سَیْ", "شَوْ", "شَیْ"], ["صَوْ", "صَیْ", "ضَوْ", "ضَیْ", "طَوْ", "طَیْ"], ["ظَوْ", "ظَیْ", "عَوْ", "عَیْ", "غَوْ", "غَیْ"], ["فَوْ", "فَیْ", "قَوْ", "قَیْ", "كَوْ", "كَیْ"], ["لَوْ", "لَیْ", "مَوْ", "مَیْ", "نَوْ", "نَیْ"], ["وَوْ", "وَیْ", "هَوْ", "هَیْ", "ءَوْ", "ءَیْ"], ["اَوْ", "اَیْ", "یَوْ", "یَیْ"]], "p16": [["تَوْ", "تُوْ", "تَیْ", "تِیْ", "طَوْ", "طُوْ"], ["طَیْ", "طِیْ", "ثَوْ", "ثُوْ", "ثَیْ", "ثِیْ"], ["سَوْ", "سُوْ", "سَیْ", "سِیْ", "صَوْ", "صُوْ"], ["صَیْ", "صِیْ", "حَوْ", "حُوْ", "حَیْ", "حِیْ"], ["هَوْ", "هُوْ", "هَیْ", "هِیْ", "ذَوْ", "ذُوْ"], ["ذَیْ", "ذِیْ", "زَوْ", "زُوْ", "زَیْ", "زِیْ"], ["ظَوْ", "ظُوْ", "ظَیْ", "ظِیْ", "ضَوْ", "ضُوْ"], ["ضَیْ", "ضِیْ", "عَوْ", "عُوْ", "عَیْ", "عِیْ"], ["ءَوْ", "ءُوْ", "ءَیْ", "ءِیْ", "قَوْ", "قُوْ"], ["قَیْ", "قِیْ", "كَوْ", "كُوْ", "كَیْ", "كِیْ"]], "p17": [["طَغَوْا", "لِیُرَوْا", "تَوَاصَوْا", "یَدَیْ", "لَدَیْ", "وَهَدَیْ"], ["خَوْفٍ", "یَنْئَوْنَ", "یَرَوْنَ", "قَوْلٌ", "فَوْقَ", "سَوْفَ"], ["بِدَیْنٍ", "قُرَیْشٍ", "اَرَءَیْتَ", "عَیْنَیْنِ", "وَیْلٌ", "لِشَیْءٍ"], ["صَوْمًا", "مَوْءٗدَةُ", "یُسْقَوْنَ", "اَوْهَنَ", "مَوْقُوْفُوْنَ", "اَعْطَیْنَا"], ["هَیْهَاتَ", "عَصَایَ", "رُوَیْدًا", "عَلَیْهِمْ", "لَیْلَةُ الْقَدْرِ"]], "p18": [["اَثَّ", "اِثَّ", "اُثَّ", "اَذَّ", "اِذَّ", "اُذَّ"], ["اَظَّ", "اِظَّ", "اُظَّ", "اَزَّ", "اِزَّ", "اُزَّ"], ["اَسَّ", "اِسَّ", "اُسَّ", "اَصَّ", "اِصَّ", "اُصَّ"], ["اَقَّ", "اِقَّ", "اُقَّ", "اَطَّ", "اِطَّ", "اُطَّ"], ["اَبَّ", "اِبَّ", "اُبَّ", "اَجَّ", "اِجَّ", "اُجَّ"], ["اَدَّ", "اِدَّ", "اُدَّ", "اَفَّ", "اِفَّ", "اُفَّ"]], "p19": [["وَتَبَّ", "صَبَّ", "لَدَیَّ", "قَدَّرَ", "نَعَّمَ", "كَرَّةٌ"], ["عَدُوٌّ", "تَوَلّٰی", "لَشَتّٰی", "مُدَّتْ", "حُقَّتْ", "تَبَّتْ"], ["مُسْتَقَرٌّ", "دُرِّیٌّ", "یَذَّكَّرُ", "یَشَّقَّقُ", "عِلِّیُّوْنَ", "عِلِّیِّیْنَ"], ["سَامِرِیٌّ", "مِنَ الْحَیِّ", "فَطَلٌّ", "غَسَّاقًا", "اَشَقُّ", "عَرَبِیٌّ"]], "b1a": [["جَآءَ", "شَآءَ", "مَآءً", "نِسَآءً", "سَوَآءٌ", "اُولٰٓئِكَ"], ["دَآبَّةٍ", "حَآجَّ", "وَلَا الضَّآلِّیْنَ"]], "b1b": [["اِنَّ", "اَنَّ", "ثُمَّ", "لَمَّا", "عَمَّ", "اِنَّا"], ["مِمَّا", "جَهَنَّمَ", "اَلنَّاسِ", "اَلْجَنَّةَ", "مُحَمَّدٌ", "اُمَّةً"]], "b2a": [["اَلْحَمْدُ", "اَلْقَمَرُ", "اَلْكِتٰبُ", "اَلْبَلَدِ", "اَلْفَلَقِ", "اَلْاَرْضِ"]], "b2b": [["اَلشَّمْسُ", "اَلنَّاسِ", "اَلرَّحْمٰنِ", "اَلصَّمَدُ", "اَلدِّیْنِ", "اَلتِّیْنِ"]], "b2c": [["وَالْقَمَرِ", "وَالشَّمْسِ", "بِالْحَقِّ", "فِی الْاَرْضِ", "مِنَ النَّاسِ", "هُوَ الْاَبْتَرُ"]], "b2d": [["اَللّٰهُ", "هُوَ اللّٰهُ", "رَسُوْلُ اللّٰهِ", "بِسْمِ اللّٰهِ", "لِلّٰهِ", "بِاللّٰهِ"]]};
+const pages=[];
+
+/* ---------- reading engine: any vowelled syllable or word → simple Latin ("ab", "bun", "baa", "ab-ba") ---------- */
+const P2=(()=>{
+  const F="َ",K="ِ",D="ُ",S="ْ",FF="ً",KK="ٍ",DD="ٌ",SH="ّ",SF="ٰ",SK="ٖ",SD="ٗ",MD="ٓ";
+  const QAL=new Set(["qaf","tta","ba","jeem","dal"]);
+  const vowelOf=m=>m.includes(SF)?"aa":m.includes(SK)?"ee":m.includes(SD)?"oo":m.includes(FF)?"an":m.includes(KK)?"in":m.includes(DD)?"un":m.includes(F)?"a":m.includes(K)?"i":m.includes(D)?"u":"";
+  const SEP=/[\s\/]+/;
+  function pieces(w){ const out=[]; w.split(SEP).filter(Boolean).forEach(word=>{ analyze(word).forEach((p,i)=>{ p.ws=i===0; out.push(p); }); }); return out; }
+  const isArticle=(ps,i)=>{ const p=ps[i], n=ps[i+1]; return p&&p.id==="alif"&&p.m===""&&n&&n.id==="lam"&&(n.m===""||n.m===S)&&ps[i+2]&&!ps[i+2].ws; };
+  function read(w){
+    const ps=pieces(w), parts=ps.map(()=>({t:"",role:""})), sy=[], SW=[]; let wasl=false, wn=-1; const remap={};
+    ps.forEach(p=>{ if(p.ws) wn++; p.wi=wn; });
+    const ew=i=>remap[ps[i].wi]!==undefined?remap[ps[i].wi]:ps[i].wi;
+    const cons=(p,i)=>{ if(p.ch==="ة") return "t"; if(p.id==="alif"||p.id==="hamza") return p.ws?"":"'"; return SND[p.id]; };
+    const shorten=t=>t.replace(/(aa|ee|oo)~?$/,m=>({a:"a",e:"i",o:"u"})[m[0]]);
+    const close=(c,i)=>{ if(!sy.length){ sy.push(c); SW.push(ew(i)); parts[i].cl=0; return; } parts[i].cl=sy.length-1; let t=sy[sy.length-1]; if(wasl){ t=shorten(t); wasl=false; } sy[sy.length-1]=t+c;
+      if(SW[SW.length-1]!==ew(i)) remap[ps[i].wi]=SW[SW.length-1]; };
+    const push=(t,i)=>{ sy.push(t); SW.push(ew(i)); parts[i].sy=sy.length-1; };
+    for(let i=0;i<ps.length;i++){
+      const p=ps[i], m=p.m; if(parts[i].role) continue;
+      if(isArticle(ps,i)){ if(i===0){ parts[i].role="vowel"; parts[i].t="a"; push("a",i); continue; } parts[i].role="silent"; wasl=true; continue; }
+      if(m===""||m===MD&&p.id==="alif"){ parts[i].role="silent"; continue; }
+      const C=cons(p,i), sh=m.includes(SH); let V=vowelOf(m);
+      if(sh){ /* a Noon with Sukun at the end of the word before is skipped (یَكُنْ لَّهٗ) */
+        if(p.ws&&i>0&&ps[i-1].id==="noon"&&ps[i-1].m===S&&sy.length){ sy[sy.length-1]=sy[sy.length-1].replace(/n$/,""); parts[i-1].role="silent"; parts[i-1].t=""; }
+        close(C,i); parts[i].role="shadda"; if(!V){ sy[sy.length-1]+=C; parts[i].t=C+C; continue; } }
+      else if(!V){ close(C,i); parts[i].t=C; parts[i].role="rest"; continue; }
+      if(!sh) parts[i].role=/an|in|un/.test(V)&&V.length===2&&!/aa|ee|oo/.test(V)?"tanween":/aa|ee|oo/.test(V)?"standing":"vowel";
+      const n=ps[i+1], nn=n&&!n.ws?n:null;
+      if(nn){
+        const nm=nn.m, n2=ps[i+2], n2same=n2&&!n2.ws;
+        if(V==="a"&&nn.id==="alif"&&(nm===""||nm===MD||nn.ch==="آ")&&!isArticle(ps,i+1)){
+          if(nm===""&&nn.ch!=="آ"&&n2same&&(n2.m.includes(SH)||n2.m.includes(S)&&ps[i+3]&&!ps[i+3].ws)) parts[i+1].role="silent";   /* joining Alif: وَانْحَرْ */
+          else { V="aa"+(nm===MD||nn.ch==="آ"?"~":""); parts[i+1].role="madd"; } }
+        else if(V==="i"&&nn.id==="ya"&&(nm===S||nm===""||nm===MD)){ V="ee"+(nm===MD?"~":""); parts[i+1].role="madd"; }
+        else if(V==="u"&&nn.id==="waw"&&(nm===S||nm===MD)){ V="oo"+(nm===MD?"~":""); parts[i+1].role="madd";
+          if(n2same&&n2.id==="alif"&&n2.m===""&&(!ps[i+3]||ps[i+3].ws)) parts[i+2].role="silent"; }
+        else if(V==="u"&&nn.id==="waw"&&nm===""){ parts[i+1].role="silent"; }   /* written, not read: اُولٰٓئِكَ */
+        else if(V==="a"&&(nn.id==="waw"||nn.id==="ya")&&nm===S){ V=nn.id==="waw"?"aw":"ay"; parts[i+1].role="leen"; }
+        else if((V==="an"||/^(aa|ee|oo)$/.test(V)&&parts[i].role==="standing")&&nm===""&&(nn.id==="alif"||nn.id==="ya"||nn.id==="waw")&&!isArticle(ps,i+1)){ parts[i+1].role="silent"; }
+      }
+      if(m.includes(MD)&&!/~/.test(V)) V+="~";
+      wasl=false;
+      push(C+V,i); parts[i].t=(sh?C:"")+C+V;
+    }
+    const tags=[];
+    if(ps.some((p,i)=>QAL.has(p.id)&&p.ch!=="ة"&&(parts[i].role==="rest"||parts[i].role==="shadda"&&!vowelOf(p.m)))) tags.push("bounce");
+    if(ps.some(p=>(p.id==="noon"||p.id==="meem")&&p.m.includes(SH))) tags.push("nose");
+    const text=sy.map((t,k)=>(k===0?"":SW[k]===SW[k-1]?"-":" ")+t).join("").replace(/^[-\s]+|[-\s]+$/g,"");
+    return {text, parts, ps, tags, syl:sy, sw:SW};
+  }
+  /* sign families, used to find "the same letter with another sign" */
+  const FAM={short:["Xَ","Xِ","Xُ"],sukun:["اَXْ","اِXْ","اُXْ"],tanween:["Xًا","Xٍ","Xٌ"],standing:["Xٰ","Xٖ","Xٗ"],madd:["Xَا","Xِیْ","Xُوْ"],leen:["Xَوْ","Xَیْ"],shadda:["اَXَّ","اِXَّ","اُXَّ"]};
+  const EXTRA={"Xًی":"tanween","Xً":"tanween"};
+  const nz=t=>t.replace(/([\u064B-\u0650\u0670])\u0651/g,"\u0651$1");
+  for(const f in FAM) FAM[f]=FAM[f].map(nz);
+  const LESSONFAM={1:["sukun","short"],2:["tanween","short"],3:["standing","short","tanween","sukun"],4:["madd","standing","short","tanween"],5:["leen","madd","sukun"],6:["shadda","sukun","short","tanween"]};
+  const TANSEAT={"ء":"ءً","ت":"ةً","ذ":"ذًی","د":"دًی","م":"مًا"};
+  function core(w,lesson){
+    w=nz(w); const prefer=LESSONFAM[lesson]||[]; const chars=[...new Set([...w].filter(c=>CH[c]))]; let best=null;
+    for(const c of chars){ const pat=w.replace(c,"X"); let fam=null;
+      for(const f in FAM) if(FAM[f].includes(pat)) fam=f; if(!fam&&EXTRA[pat]) fam=EXTRA[pat];
+      if(fam){ const score=prefer.includes(fam)?prefer.indexOf(fam):9; if(!best||score<best.score) best={c,pat,fam,score}; } }
+    return best;
+  }
+  function variants(w,lesson,n){
+    const co=core(w,lesson); if(!co||co.c==="ا") return [];
+    const mine=read(w).text, fams=[co.fam,...(LESSONFAM[lesson]||[]).filter(f=>f!==co.fam)], out=[], seen=new Set([mine]);
+    for(const f of fams) for(const pat of FAM[f]){ const v=pat==="Xًا"&&TANSEAT[co.c]?TANSEAT[co.c]:pat.replace("X",co.c); if(v===w) continue; const r=read(v).text; if(seen.has(r)) continue; seen.add(r); out.push(v); }
+    return out.slice(0,n||8);
+  }
+  return {read,pieces,core,variants,FAM,vowelOf,marks:{F,K,D,S,FF,KK,DD,SH,SF,SK,SD,MD}};
+})();
+window.P2=P2;
+window.READ2=w=>P2.read(w).text;
+
+/* ---------- page helpers ---------- */
+const SIGNCOL={1:"#D64545",2:"#1C6FD1",3:"#7048E8",4:"#0E8A43",5:"#C2410C",6:"#A16207",B:"#0B6B45"};
+const stripMarks=t=>t.replace(/[ً-ٰٟ]/g,"");
+const COL={fatha:"#E03131",kasra:"#1971C2",damma:"#2F9E44",sukun:"#7048E8",shadda:"#E8590C",madd:"#0C8599"};
+const COLN={fatha:"Fatha",kasra:"Kasra",damma:"Damma",sukun:"Sukun",shadda:"Shadda",madd:"Madd sign"};
+const MARKGRP={"\u064E":"fatha","\u064B":"fatha","\u0670":"fatha","\u0650":"kasra","\u064D":"kasra","\u0656":"kasra","\u064F":"damma","\u064C":"damma","\u0657":"damma","\u0652":"sukun","\u0653":"madd","\u08F1":"damma"};
+const isMk=c=>/[\u064B-\u065F\u0670\u08F0-\u08F2]/.test(c);
+const disp=t=>t.replace(/\u064C/g,"\u08F1");
+const JOINSVG=`<svg class="yj" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M94 5 C80 30 22 30 7 7"/><path class="yjh" d="M7 7 L19 9 M7 7 L9 19"/></svg>`;
+/* draw Arabic with every sign in its own colour: one layer per colour, the letters in ink on top */
+function paint(w,o){ o=o||{}; const segs=(typeof w==="string"?[{t:w}]:w).map(g=>({t:disp(g.t.replace(/آ/g,"ا\u0653")),grey:g.grey})), all=segs.map(g=>g.t).join(""), ch=[...all];
+  const keep=(t,f)=>[...t].filter(c=>!isMk(c)||f(c)).join("");
+  const grps=["fatha","kasra","damma","sukun","madd"].filter(g=>ch.some(c=>MARKGRP[c]===g));
+  const L=grps.map(g=>`<span class="yg" style="color:${COL[g]}">${keep(all,c=>MARKGRP[c]===g||c==="\u0651")}</span>`);
+  if(all.includes("\u0651")) L.push(`<span class="yg" style="color:${COL.shadda}">${keep(all,c=>c==="\u0651")}</span>`);
+  const base=segs.length>1?segs.map(g=>`<span${g.grey?' class="ysk"':""}>${keep(g.t,()=>false)}</span>`).join(""):keep(all,()=>false);
+  return `<span class="yp${o.cls?" "+o.cls:""}">${L.join("")}<span class="yg base">${base}</span>${o.join?JOINSVG:""}</span>`; }
+const MSIGNS=[["\u064E","Fatha","fatha"],["\u064B","Fathatain (2 Fathas)","fatha"],["\u0670","Standing Fatha","fatha"],["\u0650","Kasra","kasra"],["\u064D","Kasratain (2 Kasras)","kasra"],["\u0656","Standing Kasra","kasra"],
+  ["\u064F","Damma","damma"],["\u064C","Dammatain (2 Dammas)","damma"],["\u0657","Standing Damma","damma"],["\u0652","Sukun","sukun"],["\u0651","Shadda","shadda"],["\u0653","Madd sign","madd"]];
+const signsIn=w=>{ const t=w.replace(/آ/g,"ا\u0653"); return MSIGNS.filter(([c])=>t.includes(c)); };
+/* one tappable cell: the signs are drawn in the lesson's colour, the letters in ink */
+function yc(w,L_,o){ o=o||{}; const show=o.show||w, small=o.small?" sm":"";
+  return `<div class="cell yc${small}" data-x="y:${w}">${paint(show)}</div>`; }
+const orn=`<div class="cell yorn"><span>✦</span></div>`;
+/* a table: full rows in one grid; a short row gets its own centred grid with the same cell size */
+function ytab(rows,cols,L_,o){ o=o||{}; const h=o.h||13, out=[]; let full=[];
+  const flush=()=>{ if(full.length){ out.push(`<div class="grid ygrid" style="grid-template-columns:repeat(${cols},1fr);grid-auto-rows:${h}mm">${full.join("")}</div>`); full=[]; } };
+  rows.forEach((r,ri)=>{ const cells=r.map(c=>c==="✦"?orn:yc(c,L_,{small:o.small||(o.smallIf&&o.smallIf(c))}));
+    if(r.length===cols) full.push(...cells);
+    else { flush(); out.push(`<div class="grid ygrid part" style="grid-template-columns:repeat(${r.length},1fr);grid-auto-rows:${h}mm;width:${(100*r.length/cols).toFixed(3)}%">${cells.join("")}</div>`); } });
+  flush(); return `<div class="ytab">${out.join("")}</div>`;
+}
+/* a heading cell beside the first (short) row, like the book */
+function ytabHead(head,rows,cols,L_,o){ o=o||{}; const h=o.h||13, r1=rows[0];
+  const first=`<div class="grid ygrid" style="grid-template-columns:repeat(${cols},1fr);grid-auto-rows:${h}mm"><div class="cell label" style="grid-column:span ${cols-r1.length}">${head}</div>${r1.map(c=>yc(c,L_)).join("")}</div>`;
+  return `<div class="ytab">${first}${ytab(rows.slice(1),cols,L_,o).replace(/^<div class="ytab">|<\/div>$/g,"")}</div>`;
+}
+const tip=t=>`<p class="ytip">${t}</p>`;
+const yline=t=>`<p class="yline">${t}</p>`;
+const yh=t=>`<p class="yh">${t}</p>`;
+/* "Say it stopping": numbered word → stopped-word pairs */
+function stops(rule,pairs){
+  return `<div class="ystop"><div class="ysh"><span class="ysi">STOP</span><b>Say it stopping</b></div>${rule.map(r=>`<p class="ysr">${r}</p>`).join("")}
+    <div class="ysg">${pairs.map(([w,s,tag],i)=>`<div class="ysp" data-x="z:${w}|${s}|${tag||""}"><span class="ysn">${i+1}</span><span class="ysw">${w}</span><span class="ysa">←</span><span class="ysw yst">${s}</span>${tag?`<i class="ybr"></i><span class="ytag ${tag}">${({bounce:"bounce",hold:"hold"})[tag]}</span>`:""}</div>`).join("")}</div></div>`;
+}
+function page2(no,L_,inner,o){ o=o||{};
+  return `<section class="page" data-lesson="${L_}" data-title="${o.title||""}"${o.lines?` data-lines="1"`:""}${o.twins?` data-twins='${JSON.stringify(o.twins)}'`:""}><div class="frame"></div>
+    <div class="hdr"><div class="pill">quranmasteronline.com</div><div class="no">${no}</div><div class="pill">eQaida</div></div>
+    <div class="body ${o.cls||"compact"}">${inner}</div></section>`;
+}
+const qs=list=>list.map(([q,a])=>qa(q,a)).join("");
+const sg=t=>paint(t,{cls:"ysg2"});
+const fromQuran=`<p class="yfq">These words are from the Quran.</p>`;
+
+/* =====================================================================
+   PAGES
+   ===================================================================== */
+/* COVER */
+pages.push(`<section class="page cover">
+  <div class="band">
+    <img class="logo" src="img/qmo-logo.png" alt="Quran Master Online">
+    <div class="arbig">اَبْ بٌ بٰ</div>
+    <div class="k">Part 2 · Reading with the signs</div>
+    <h1>eQaida</h1>
+    <div class="t">Part 2</div>
+    <div class="s">Reading with the signs: Sukun, Tanween, Standing sounds, Madd, Leen and Shadda — then your first lines of the Quran.</div>
+  </div>
+  <div class="lower">
+    <div class="letters" style="font-size:24pt">${["اَبْ","بٌ","بٰ","بَا","بَوْ","اَبَّ"].map(t=>paint(t)).join("")}</div>
+    <div class="toc">
+      <div><b>Lesson 1 · Sukun</b><span>pages 1 – 4</span></div>
+      <div><b>Lesson 2 · Tanween</b><span>pages 4 – 7</span></div>
+      <div><b>Lesson 3 · Standing sounds</b><span>pages 7 – 10</span></div>
+      <div><b>Lesson 4 · Madd letters</b><span>pages 10 – 14</span></div>
+      <div><b>Lesson 5 · Leen letters</b><span>pages 14 – 17</span></div>
+      <div><b>Lesson 6 · Shadda</b><span>pages 17 – 19</span></div>
+      <div class="nw"><b>Ready for the Quran</b><span>pages 19A – 19C</span></div>
+      <div><b>In Salah: Sana, Al-Fatiha, Tashahhud</b><span>pages 20 – 21</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>quranmasteronline.com</span><span>eQaida · Part 2</span></div>
+</section>`);
+
+/* PAGE 1 — Lesson 1 · Sukun */
+pages.push(page2(1,1,`
+  ${lesson(1,"Sukun")}
+  ${qs([["What is our lesson today?","Lesson 1: Sukun."],
+        [`What does Sukun look like?`,`A tiny sign that sits on top of a letter: ${sg("بْ","var(--R)")}`],
+        ["What does it tell us?","The letter rests. It has no a, i or u of its own."],
+        ["How do we read it?",`Join it to the letter before it and say them together, once:<span class="yjoin">${sg("اَ")}<i>+</i>${sg("بْ")}<i>←</i>${paint("اَبْ",{cls:"ysg2"})}<i>=</i><b>ab</b></span>`]])}
+  ${tip(`Teacher tip: Raa with Sukun sounds full after Fatha or Damma (${ar("اَرْ اُرْ","#6E6A60")}) and light after Kasra (${ar("اِرْ","#6E6A60")}). Listen and copy.`)}
+  ${ytab(T.p1,6,1,{h:17})}
+`,{title:"Sukun"}));
+
+/* PAGE 2 */
+const p2rows=T.p2.map((r,i)=>i===6?[...r.slice(0,4),"✦",r[4]]:r);
+pages.push(page2(2,1,`
+  ${ytab(p2rows,6,1,{h:13.2})}
+  ${yh("The bounce letters (Qalqala)")}
+  ${qs([["Which letters bounce?",`Five letters: ${ar("ق ط ب ج د","var(--R)")}`],
+        ["What is Qalqala?","A little bounce in the sound of the letter. No a, i or u is added."]])}
+`,{title:"Sukun"}));
+
+/* PAGE 3 */
+pages.push(page2(3,1,`
+  ${qs([["When do they bounce?","When they have Sukun (when they are resting)."]])}
+  ${ytab(T.p3,6,1,{h:17})}
+  <div class="tip" style="margin-top:4mm"><b>Bounce letters:</b> <span class="ar" style="color:var(--R)">ق ط ب ج د</span> — they bounce only when they are resting. Say <span class="ar">اَقْ</span> and let the <span class="ar">ق</span> bounce, without adding a, i or u.</div>
+`,{title:"The bounce letters"}));
+
+/* PAGE 4 — Lesson 1 exercise · Lesson 2 starts */
+pages.push(page2(4,1,`
+  <p class="title" style="color:var(--R);font-style:italic;margin-bottom:.4mm">Exercise</p>${fromQuran}
+  ${ytab(T.p4,6,1,{h:10.6,smallIf:c=>c.length>7})}
+  ${stops(["Stopping means we pause on the last letter of a word and take a breath.","When we stop, the last letter rests: its Fatha, Kasra or Damma is dropped."],
+    [["بَصَرَ","بَصَرْ"],["سَجَدَ","سَجَدْ","bounce"],["دَعْ","دَعْ"],["زِدْ","زِدْ","bounce"],["نَعْبُدُ","نَعْبُدْ","bounce"],["اَرْسَلَ","اَرْسَلْ"]])}
+  ${lesson(2,"Tanween")}
+  ${qs([["What is our lesson today?","Lesson 2: Tanween."],
+        ["What is Tanween?",`A sign written twice: two Fathas ${sg("بً","var(--B)")}, two Kasras ${sg("بٍ","var(--B)")}, two Dammas ${sg("بٌ","var(--B)")}`],
+        ["How do we read it?",`We add an “n” sound at the end: ${ar("بًا","var(--B)")} = “ban”, ${ar("بٍ","var(--B)")} = “bin”, ${ar("بٌ","var(--B)")} = “bun”.`],
+        ["What about the Alif or Yaa after two Fathas?","It is only there to carry the sign. We do not read it."]])}
+`,{title:"Sukun words"}));
+
+/* PAGE 5 — Tanween drill */
+const p5rows=T.p5.map(r=>r.map(c=>c));
+pages.push(page2(5,2,`<div class="ytab">${(()=>{ const cells=p5rows.flat().map(c=>c==="مًا/مًی"?yc("مًا",2,{show:"مًا مًی",small:true}):yc(c,2)).join("");
+  return `<div class="grid ygrid" style="grid-template-columns:repeat(6,1fr);grid-auto-rows:12.6mm">${cells}</div>`; })()}</div>
+`,{title:"Tanween",cls:"compact"}));
+
+/* PAGE 6 — look-alike sounds */
+const TW6=[["تًا","طًا","ثًا"],["صًا","سًا"],["حٍ","هٍ"],["ذٍ","زٍ"],["ضٍ","ظٍ"],["عٌ","ءٌ"],["قٌ","كٌ"]];
+pages.push(page2(6,2,`
+  ${ytabHead("Sounds that are easy to mix up",T.p6,6,2,{h:17})}
+  ${yline("Say each pair slowly. Can you hear the difference?")}
+  <div class="tip" style="margin-top:4mm"><b>The pairs:</b> <span class="ar">ت / ط / ث · ص / س · ح / ه · ذ / ز · ض / ظ · ع / ء · ق / ك</span></div>
+  ${tip("Teacher tip: the “n” of Tanween comes through the nose (Ghunna). Model it; do not explain it yet.")}
+`,{title:"Tanween look-alikes",twins:TW6}));
+
+/* PAGE 7 — Lesson 2 exercise · Lesson 3 starts */
+pages.push(page2(7,2,`
+  <p class="title" style="color:var(--R);font-style:italic;margin-bottom:.4mm">Exercise</p>${fromQuran}
+  ${ytab(T.p7,6,2,{h:12})}
+  ${stops(["Two Fathas become a long “aa”. Two Kasras and two Dammas are dropped and the letter rests. Round Ta ة becomes a resting Haa."],
+    [["اَبَدًا","اَبَدَا"],["كَبَدٍ","كَبَدْ","bounce"],["عِنَبٌ","عِنَبْ","bounce"],["دِیَةٌ","دِیَهْ"],["رَغَدًا","رَغَدَا"],["قَسَمٌ","قَسَمْ"],["فِئَةٍ","فِئَهْ"],["طَبَقٍ","طَبَقْ","bounce"]])}
+  ${lesson(3,"Standing sounds")}
+  ${qs([["What is our lesson today?","Lesson 3: Standing sounds."],
+        ["What are they?",`Standing Fatha ${sg("بٰ","#7048E8")}, Standing Kasra ${sg("بٖ","#7048E8")}, Standing Damma ${sg("بٗ","#7048E8")}`],
+        ["How are they different from Fatha, Kasra and Damma?","We hold them longer: “aa”, “ee”, “oo”. The short ones are quick: “a”, “i”, “u”."],
+        ["How long?","About as long as it takes to open one closed finger."]])}
+  ${tip("Teacher tip: keep the sound clean and steady (a pure aa, ee, oo), do not drag it, and do not change the letter. Raa is full with Standing Fatha or Damma, light with Standing Kasra.")}
+`,{title:"Tanween words"}));
+
+/* PAGE 8 — Standing drill */
+pages.push(page2(8,3,`${ytab(T.p8,6,3,{h:14.6})}`,{title:"Standing sounds"}));
+
+/* PAGE 9 */
+const TW9=[["تٰ","طٰ","ثٰ"],["سٰ","صٰ"],["حٖ","هٖ"],["ذٖ","زٖ"],["ضٖ","ظٖ"],["عٗ","ءٗ"],["قٗ","كٗ"]];
+pages.push(page2(9,3,`
+  ${ytab(T.p9,6,3,{h:15})}
+  <div style="height:5mm"></div>
+  ${ytabHead("Sounds that are easy to mix up",T.p9r,6,3,{h:15})}
+  ${yline("Say each pair slowly. Can you hear the difference?")}
+`,{title:"Standing sounds",twins:TW9}));
+
+/* PAGE 10 — Lesson 3 exercise · Lesson 4 starts */
+pages.push(page2(10,3,`
+  <p class="title" style="color:var(--R);font-style:italic;margin-bottom:.4mm">Exercise</p>${fromQuran}
+  ${ytab(T.p10,5,3,{h:10.4,small:true})}
+  ${stops(["Standing Fatha at the end does not change. On a final Haa, Standing Kasra and Standing Damma are dropped and the Haa rests."],
+    [["اَوٰی","اَوٰی"],["مَعَهٗ","مَعَهْ"],["بِهٖ","بِهْ"],["اِبْرٰهِیْمُ","اِبْرٰهِیْمْ","hold"],["یَلْوٗنَ","یَلْوٗنْ","hold"],["طَغٰی","طَغٰی"],["رُسُلِهٖ","رُسُلِهْ"]])}
+  ${lesson(4,"Madd letters")}
+  ${qs([["What is our lesson today?","Lesson 4: the Madd letters. Madd means “stretch”."],
+        ["Which letters are they?","Three: Alif, Yaa and Waaw."]])}
+`,{title:"Standing words"}));
+
+/* PAGE 11 — Madd drill */
+pages.push(page2(11,4,`
+  ${qs([["When is Alif a Madd letter?",`When the letter before it has Fatha: ${ar("بَا","var(--G)")} = “baa”.`],
+        ["When is Yaa a Madd letter?",`When it has Sukun and the letter before it has Kasra: ${ar("بِیْ","var(--G)")} = “bee”.`],
+        ["When is Waaw a Madd letter?",`When it has Sukun and the letter before it has Damma: ${ar("بُوْ","var(--G)")} = “boo”.`]])}
+  ${yline(`We stretch as long as a Standing sound: ${ar("بٰ","var(--G)")} and ${ar("بَا","var(--G)")} are written differently and read the same.`)}
+  ${ytab(T.p11,6,4,{h:11.6})}
+`,{title:"Madd letters"}));
+
+/* PAGE 12 */
+pages.push(page2(12,4,`
+  ${ytab(T.p12,6,4,{h:13.4})}
+  <div style="height:4mm"></div>
+  ${ytabHead("Short, Standing, Madd",T.p12r,6,4,{h:13.4})}
+  ${yline("The first one is quick. The second and third are long, and they sound the same.")}
+`,{title:"Short, Standing, Madd"}));
+
+/* PAGE 13 — Lesson 4 exercise 1 */
+pages.push(page2(13,4,`
+  <p class="title" style="color:var(--R);font-style:italic;margin-bottom:.4mm">Exercise</p>${fromQuran}
+  ${ytab(T.p13,5,4,{h:16})}
+  <div class="tip" style="margin-top:4mm"><b>Look for the stretch:</b> Fatha + Alif, Kasra + Yaa, Damma + Waaw. An Alif after <span class="ar">ـُوْ</span> at the end (<span class="ar">قَالُوْا</span>) is not read.</div>
+`,{title:"Madd words"}));
+
+/* PAGE 14 — Lesson 4 exercise 2 · Lesson 5 starts */
+pages.push(page2(14,4,`
+  ${ytab(T.p14,5,4,{h:10.2,small:true})}
+  ${stops(["A Madd letter at the end does not change. If the last letter comes right after a Madd letter, it rests and we hold the stretch a little longer."],
+    [["بَنٰهَا","بَنٰهَا"],["اَخِیْ","اَخِیْ"],["یَدْعُوْا","یَدْعُوْا"],["خَافَ","خَافْ","hold"],["اَعُوْذُ","اَعُوْذْ","hold"],["نَذِیْرٌ","نَذِیْرْ","hold"],["یَقُوْلُوْنَ","یَقُوْلُوْنْ","hold"],["طَالَ","طَالْ","hold"]])}
+  ${lesson(5,"Leen letters")}
+  ${qs([["What is our lesson today?","Lesson 5: the Leen letters. Leen means “soft”."],
+        ["Which letters are they?","Two: Waaw and Yaa."],
+        ["When is Waaw a Leen letter?",`When it has Sukun and the letter before it has Fatha: ${ar("بَوْ","#C2410C")} = “baw”.`],
+        ["When is Yaa a Leen letter?",`When it has Sukun and the letter before it has Fatha: ${ar("بَیْ","#C2410C")} = “bay”.`],
+        ["How do we read them?","Softly and quickly. We do not stretch them."]])}
+`,{title:"Madd words"}));
+
+/* PAGE 15 — Leen drill */
+pages.push(page2(15,5,`
+  ${qs([["Madd or Leen?","Madd letters are stretched. Leen letters are quick and soft."]])}
+  ${ytab(T.p15,6,5,{h:15})}
+`,{title:"Leen letters"}));
+
+/* PAGE 16 — Leen or Madd? */
+pages.push(page2(16,5,`
+  ${yh("Leen or Madd?")}
+  ${yline("Look at the sign before the Waaw or Yaa. Fatha: quick and soft. Damma or Kasra: stretch.")}
+  ${ytab(T.p16,6,5,{h:15})}
+`,{title:"Leen or Madd?"}));
+
+/* PAGE 17 — Lesson 5 exercise · Lesson 6 starts */
+pages.push(page2(17,5,`
+  <p class="title" style="color:var(--R);font-style:italic;margin-bottom:.4mm">Exercise</p>${fromQuran}
+  ${ytab(T.p17,6,5,{h:11.6,smallIf:c=>c.length>8})}
+  ${stops(["A Leen letter at the end does not change. If the last letter comes right after a Leen letter, it rests and the soft sound may be held a little."],
+    [["لِیُرَوْا","لِیُرَوْا"],["خَوْفٍ","خَوْفْ","hold"],["قُرَیْشٍ","قُرَیْشْ","hold"],["وَیْلٌ","وَیْلْ","hold"],["سَوْفَ","سَوْفْ","hold"]])}
+  ${lesson(6,"Shadda")}
+  ${qs([["What is our lesson today?","Lesson 6: Shadda."],
+        ["What does Shadda look like?",`Like a tiny “w” on top of a letter: ${sg("بّ","#A16207")}`]])}
+`,{title:"Leen words"}));
+
+/* PAGE 18 — Shadda drill */
+pages.push(page2(18,6,`
+  ${qs([["How do we read a letter with Shadda?",`Twice. First it joins the letter before it, then it is read with its own sign: ${ar("اَبَّ","#A16207")} = “ab-ba”.`],
+        ["How should it sound?","Strong. Press on the letter, then let it go."]])}
+  ${ytab(T.p18,6,6,{h:20})}
+`,{title:"Shadda"}));
+
+/* PAGE 19 — Lesson 6 exercise */
+pages.push(page2(19,6,`
+  <p class="title" style="color:var(--R);font-style:italic;margin-bottom:.4mm">Exercise</p>${fromQuran}
+  ${ytab(T.p19,6,6,{h:17,smallIf:c=>c.length>8})}
+  ${stops(["A letter with Shadda stays strong when we stop."],[["وَتَبَّ","وَتَبّْ","bounce"],["عَدُوٌّ","عَدُوّْ"],["حُقَّتْ","حُقَّتْ"]])}
+`,{title:"Shadda words"}));
+
+/* PAGE 19A — bridge */
+pages.push(page2("19A","B",`
+  <span class="new">Ready for the Quran</span>
+  <p class="exh">1 · The Madd sign ${sg("آ","var(--G)")}</p>
+  ${yline("This wavy sign means: stretch longer. Follow your teacher.")}
+  ${ytab(T.b1a.slice(0,1),6,"B",{h:14,smallIf:c=>c.length>7})}
+  <div class="ytab"><div class="grid ygrid part" style="grid-template-columns:1fr 1fr 2fr;grid-auto-rows:14mm;width:66.667%">${T.b1a[1].map(c=>yc(c,"B",{small:c.length>7})).join("")}</div></div>
+  <div class="ymq"><span>Some surahs begin with letters read by their names:</span><span class="ar" style="font-size:2em;color:var(--deep)">الٓمّٓ</span><span>Alif · Laam · Meem</span></div>
+  <p class="exh">2 · Noon and Meem with Shadda</p>
+  ${yline("On نّ and مّ the sound hums through the nose for a moment (Ghunna).")}
+  ${ytab(T.b1b,6,"B",{h:14,smallIf:c=>c.length>7})}
+`,{title:"Ready for the Quran"}));
+
+/* PAGE 19B — Alif-Laam and the name of Allah */
+pages.push(page2("19B","B",`
+  <span class="new">Ready for the Quran</span>
+  <p class="exh">1 · Alif-Laam at the start of a word</p>
+  ${yline("If the Laam has Sukun, read it.")}
+  ${ytab(T.b2a,6,"B",{h:13,small:true})}
+  ${yline("If the Laam has no sign, skip it and go to the letter with Shadda.")}
+  ${ytab(T.b2b,6,"B",{h:13,small:true})}
+  ${yline("When a word comes before it, the Alif is skipped too.")}
+  ${ytab(T.b2c,6,"B",{h:13,small:true})}
+  <p class="exh">2 · The name of Allah</p>
+  ${yline("After Fatha or Damma the Laam is full. After Kasra it is light.")}
+  ${ytab(T.b2d,6,"B",{h:13,small:true})}
+  ${tip("The first three are full, the last three are light.")}
+`,{title:"Alif-Laam"}));
+
+/* PAGE 19C — Read and stop */
+const SIGNS=[["۝","End of an ayah. Stop and breathe."],["م","You must stop."],["ط","Stop here."],["ج","You may stop or go on."],["لا","Do not stop here."]];
+const BISM="بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِیْمِ";
+const IKHLAS=["قُلْ هُوَ اللّٰهُ اَحَدٌ","اَللّٰهُ الصَّمَدُ","لَمْ یَلِدْ وَلَمْ یُوْلَدْ","وَلَمْ یَكُنْ لَّهٗ كُفُوًا اَحَدٌ"];
+const KAWTHAR=["اِنَّآ اَعْطَیْنٰكَ الْكَوْثَرَ","فَصَلِّ لِرَبِّكَ وَانْحَرْ","اِنَّ شَانِئَكَ هُوَ الْاَبْتَرُ"];
+const sline=(t,n)=>`<div class="ysl" data-x="y:${t}"><span class="ysln">${n}</span><span class="yslt">${t} <span class="aye">۝</span></span></div>`;
+pages.push(page2("19C","B",`
+  <span class="new">Ready for the Quran</span>
+  <p class="exh">Signs in the Mushaf</p>
+  <div class="ysigns">${SIGNS.map(([s,t],i)=>`<div><span class="n">${i+1}</span><span class="ar">${s}</span><small>${t}</small></div>`).join("")}</div>
+  <p class="exh">Now read, and stop at each <span class="ar">۝</span></p>
+  <p class="ybism">${BISM}</p>
+  ${IKHLAS.map((l,i)=>sline(l,i+1)).join("")}
+  ${tip("In line 4 the Noon of یَكُنْ is skipped: go straight to the Laam. Follow your teacher.")}
+  <p class="ybism">${BISM}</p>
+  ${KAWTHAR.map((l,i)=>sline(l,i+1)).join("")}
+`,{title:"Read and stop",lines:true}));
+
+/* PAGE 20 — Sana · Al-Fatiha */
+const FATIHA=["بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِیْمِ","اَلْحَمْدُ لِلّٰهِ رَبِّ الْعٰلَمِیْنَ","الرَّحْمٰنِ الرَّحِیْمِ","مٰلِكِ یَوْمِ الدِّیْنِ","اِیَّاكَ نَعْبُدُ وَاِیَّاكَ نَسْتَعِیْنُ","اِهْدِنَا الصِّرَاطَ الْمُسْتَقِیْمَ","صِرَاطَ الَّذِیْنَ اَنْعَمْتَ عَلَیْهِمْ غَیْرِ الْمَغْضُوْبِ عَلَیْهِمْ وَلَا الضَّآلِّیْنَ"];
+pages.push(page2(20,"S",`
+  <span class="kh" style="margin-top:0">SANA</span>
+  <p class="rel" style="font-size:17pt;line-height:2">سُبْحَانَكَ اللّٰهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالٰی جَدُّكَ وَلَآ اِلٰهَ غَیْرُكَ</p>
+  <p class="tr" style="font-size:10.4pt">Glory be to You, O Allah, and all praise is Yours. Blessed is Your name, high is Your majesty, and there is no god but You.</p>
+  <p class="tr" style="font-size:9.4pt;color:var(--muted);margin-top:-1.6mm">In the funeral prayer, after <span class="ar" style="font-size:1.25em">جَدُّكَ</span> we add <span class="ar" style="font-size:1.25em">وَجَلَّ ثَنَآؤُكَ</span> — “and great is Your praise.”</p>
+  <span class="kh">AL-FATIHA</span>
+  <p class="rel yfat">${FATIHA.map((l,i)=>`${l} <span class="aye">۝${i?"":""}</span>`).join(" ")}</p>
+  <p class="tr" style="font-size:9.6pt">In the name of Allah, the Most Gracious, the Most Merciful. All praise is for Allah, Lord of all the worlds, the Most Gracious, the Most Merciful, Master of the Day of Judgement. You alone we worship, and You alone we ask for help. Guide us on the straight path, the path of those You have blessed, not of those who earned Your anger, nor of those who went astray.</p>
+`,{cls:"compact"}));
+
+/* PAGE 21 — In Salah */
+const DUA=[["IN RUKU","سُبْحَانَ رَبِّیَ الْعَظِیْمِ","Glory be to my Lord, the Most Great."],["RISING FROM RUKU (TASMI‘)","سَمِعَ اللّٰهُ لِمَنْ حَمِدَهٗ","Allah hears the one who praises Him."],["STANDING (TAHMEED)","رَبَّنَا لَكَ الْحَمْدُ","Our Lord, all praise is Yours."],["IN SAJDAH","سُبْحَانَ رَبِّیَ الْاَعْلٰی","Glory be to my Lord, the Most High."]];
+pages.push(page2(21,"S",`
+  ${DUA.map(([h,a,e])=>`<span class="kh" style="margin-top:1.6mm">${h}</span><p class="rel" style="font-size:16.5pt;line-height:1.8">${a}</p><p class="tr" style="text-align:center;margin:0 0 1mm">${e}</p>`).join("")}
+  <span class="kh">TASHAHHUD</span>
+  <p class="rel ytash">${["اَلتَّحِیَّاتُ لِلّٰهِ وَالصَّلَوٰتُ وَالطَّیِّبَاتُ","اَلسَّلَامُ عَلَیْكَ اَیُّهَا النَّبِیُّ وَرَحْمَةُ اللّٰهِ وَبَرَكَاتُهٗ","اَلسَّلَامُ عَلَیْنَا وَعَلٰی عِبَادِ اللّٰهِ الصَّالِحِیْنَ","اَشْهَدُ اَنْ لَّآ اِلٰهَ اِلَّا اللّٰهُ","وَاَشْهَدُ اَنَّ مُحَمَّدًا عَبْدُهٗ وَرَسُوْلُهٗ"].map(l=>`<span>${l}</span>`).join("")}</p>
+  <p class="tr" style="font-size:9.8pt">All greetings, prayers and good things are for Allah. Peace be upon you, O Prophet, and the mercy of Allah and His blessings. Peace be upon us and upon the righteous servants of Allah. I bear witness that there is no god but Allah, and I bear witness that Muhammad is His servant and His Messenger.</p>
+  <p class="orn">✦ ✦ ✦</p>
+`,{cls:"compact"}));
+
+document.getElementById("book").innerHTML=pages.join("");
+window.__ready=true;
+
+/* =====================================================================
+   HELP BOXES for Part 2 cells (y: one cell, z: a stopping pair)
+   ===================================================================== */
+/* each help line: [sample, one short line, examples [[Arabic, reading]]] */
+const HELP={
+  short:["بَ","Quick sounds. Do not stretch them.",[["بَ","ba"],["بِ","bi"],["بُ","bu"]]],
+  sukun:["بْ","Sukun: the letter rests. Join it to the letter before.",[["اَبْ","ab"],["اِبْ","ib"],["اُبْ","ub"]]],
+  bounce:["قْ","ق ط ب ج د bounce a little when they rest.",[["اَقْ","aq"],["اَدْ","ad"]]],
+  raa:["رْ","Full after Fatha or Damma. Light after Kasra.",[["اَرْ","ar"],["اِرْ","ir"]]],
+  tanween:["بٌ","Two signs: add “n”.",[["بًا","ban"],["بٍ","bin"],["بٌ","bun"]]],
+  roundta:["ةٌ","Round Ta is a “t”. When we stop, it is a soft “h”.",[["ةٌ","tun"],["ةْ","h"]]],
+  standing:["بٰ","A standing sign makes a long sound.",[["بٰ","baa"],["بٖ","bee"],["بٗ","boo"]]],
+  madd:["بَا","Alif, Yaa and Waaw stretch the sound.",[["بَا","baa"],["بِیْ","bee"],["بُوْ","boo"]]],
+  leen:["بَوْ","Fatha, then Waaw or Yaa resting: soft and quick.",[["بَوْ","baw"],["بَیْ","bay"]]],
+  leenmadd:["بَوْ","Fatha before it: soft. Damma or Kasra before it: stretch.",[["بَوْ","baw"],["بُوْ","boo"],["بَیْ","bay"],["بِیْ","bee"]]],
+  shadda:["بّ","Shadda: say the letter twice. First it rests, then it moves.",[["اَبَّ","ab-ba"]]],
+  maddsign:["آ","Stretch it extra long. Follow your teacher.",[["جَآءَ","jaa~-'a"]]],
+  nose:["نّ","Noon or Meem with Shadda: hum through the nose.",[["اِنَّ","in-na"],["ثُمَّ","thum-ma"]]],
+  alaam:["اَلْ","Laam with Sukun: read it. Laam with no sign: skip it.",[["اَلْقَمَرُ","al-qa-ma-ru"],["اَلشَّمْسُ","ash-sham-su"]]],
+  allah:["اللّٰه","After Fatha or Damma: full. After Kasra: light.",[["هُوَ اللّٰهُ","hu-wal-laa-hu"],["بِسْمِ اللّٰهِ","bis-mil-laa-hi"]]],
+  hamza:["ءْ","A tiny catch in the throat.",[["اِقْرَأْ","iq-ra'"]]],
+  silent:["","A letter with no sign is not read. It is shown in grey.",[]]
+};
+const KCOL={short:COL.fatha,sukun:COL.sukun,bounce:COL.sukun,raa:COL.sukun,hamza:COL.sukun,tanween:COL.kasra,roundta:COL.kasra,standing:COL.fatha,madd:COL.damma,leen:COL.shadda,leenmadd:COL.shadda,shadda:COL.shadda,maddsign:COL.madd,nose:COL.madd,alaam:"#0B6B45",allah:"#0B6B45",silent:"#868E96"};
+const HELPT={short:"Quick sounds",sukun:"Sukun",bounce:"The bounce (Qalqala)",raa:"Raa with Sukun",tanween:"Tanween",roundta:"Round Ta",standing:"Standing sounds",madd:"Madd letters",leen:"Leen letters",leenmadd:"Leen or Madd?",shadda:"Shadda",maddsign:"The Madd sign",nose:"Noon and Meem with Shadda",alaam:"Alif-Laam",allah:"The name of Allah",hamza:"Hamza with Sukun",silent:"Silent letters",stop:"Stopping",hold:"Hold"};
+function helpKeys(w,R,lesson,title){
+  const ps=R.ps, roles=R.parts.map(p=>p.role), M=P2.marks, k=[];
+  const has=re=>ps.some(p=>re.test(p.m));
+  if(lesson===1&&roles.includes("rest")) k.push("sukun");
+  if(ps.some(p=>p.m.includes(M.MD)||p.ch==="آ")) k.push("maddsign");
+  if(R.tags.includes("nose")) k.push("nose");
+  if(/اللّٰه/.test(w)) k.push("allah"); else if(ps.some((p,i)=>p.id==="alif"&&(p.ws||roles[i]==="silent")&&ps[i+1]&&ps[i+1].id==="lam"&&!ps[i+1].ws&&(ps[i+1].m===""||ps[i+1].m===M.S))) k.push("alaam");
+  const byLesson={1:"sukun",2:"tanween",3:"standing",4:"madd",5:roles.includes("madd")&&roles.includes("leen")?"leenmadd":"leen",6:"shadda"};
+  const main=title==="Leen or Madd?"?"leenmadd":byLesson[lesson];
+  const present={shadda:has(/ّ/),leen:roles.includes("leen"),madd:roles.includes("madd"),standing:has(/[ٰٖٗ]/),tanween:has(/[ً-ٍ]/),sukun:roles.includes("rest"),leenmadd:roles.includes("leen")||roles.includes("madd")};
+  if(main&&present[main]) k.push(main);
+  ["shadda","leen","madd","standing","tanween","sukun"].forEach(x=>{ if(present[x]&&!k.includes(x)&&!(x==="leen"&&k.includes("leenmadd"))&&!(x==="madd"&&k.includes("leenmadd"))) k.push(x); });
+  if(R.tags.includes("bounce")) k.push("bounce");
+  if(ps.some((p,i)=>p.id==="ra"&&roles[i]==="rest")&&lesson===1) k.push("raa");
+  if(ps.some(p=>p.ch==="ة")) k.push("roundta");
+  if(ps.some((p,i)=>p.id==="hamza"&&roles[i]==="rest")) k.push("hamza");
+  const silentOwn=ps.some((p,i)=>roles[i]==="silent"&&!(i>0&&/[\u064B-\u064D\u0670\u0656\u0657]/.test(ps[i-1].m))&&!(i>1&&roles[i-1]==="madd"&&ps[i-1].id==="waw"&&false));
+  if(silentOwn&&!k.includes("alaam")&&!k.includes("allah")) k.push("silent");
+  if(!k.length&&ps.length===1&&/[\u064E-\u0650]/.test(ps[0].m)) k.push("short");
+  return [...new Set(k)].slice(0,3);
+}
+const TAGN={bounce:"bounce",nose:"nose sound",hold:"hold"};
+/* how a word is said when we stop on it (Waqf) */
+function stopForm(w){ const M=P2.marks, R=P2.read(w), ps=R.ps, P=R.parts; let j=ps.length-1, long=false;
+  while(j>0&&["madd","leen","silent"].includes(P[j].role)&&!ps[j].ws){ if(P[j].role!=="silent") long=true; j--; }
+  const p=ps[j], m=p.m, build=(nm,ch,tail)=>ps.slice(0,j).map((q,i)=>(q.ws&&i?" ":"")+q.ch+q.m).join("")+(p.ws&&j?" ":"")+(ch||p.ch)+nm+(tail!==undefined?tail:ps.slice(j+1).map(q=>q.ch+q.m).join(""));
+  const hold=j>0&&["madd","leen"].includes(P[j-1].role);
+  if(long||m.includes(M.SF)) return {s:w,k:"long"};
+  if(p.ch==="ة") return {s:build(M.S,"ه",""),k:"ta"};
+  if(m.includes(M.FF)){ const seat=ps[j+1]; if(seat&&(seat.id==="ya")) return {s:build(m.replace(M.FF,M.SF)),k:"aa"};
+    return {s:seat?build(m.replace(M.FF,M.F)):build(m.replace(M.FF,M.F),null,"ا"),k:"aa"}; }
+  const v=/\u0657/.test(m)?"Standing Damma":/\u0656/.test(m)?"Standing Kasra":/[\u064F\u064C]/.test(m)?"Damma":/[\u0650\u064D\u0656]/.test(m)?"Kasra":/[\u064E]/.test(m)?"Fatha":"";
+  if(!v) return {s:w,k:"already"};
+  return {s:build((m.includes(M.SH)?M.SH:"")+M.S),k:/[\u064C\u064D]/.test(m)?"tan":"rest",v,hold}; }
+const STOPWHY={long:"It ends with a long sound, so nothing changes.",already:"The last letter already rests.",ta:"Round Ta becomes a soft “h”.",aa:"Two Fathas become a long “aa”.",
+  tan:v=>`The two ${v}s are dropped. No “n”. The last letter rests.`,rest:v=>`The last letter rests. Its ${v} is dropped.`};
+/* the word cut into the pieces we say (one group per syllable), with each letter's job */
+function groups(R){ const ps=R.ps, P=R.parts, M=P2.marks, G=R.syl.map((t,k)=>({t,k,items:[]})); let last=0;
+  ps.forEach((p,i)=>{ const pt=P[i];
+    if(pt.role==="shadda"&&pt.cl!=null&&pt.sy!=null){ G[pt.cl].items.push({p,i,m:M.S,role:"sh1"}); G[pt.sy].items.push({p,i,m:p.m.replace(M.SH,""),role:"sh2"}); last=pt.sy; return; }
+    const k=pt.sy!=null?pt.sy:pt.cl!=null?pt.cl:last; if(G[k]) G[k].items.push({p,i,m:p.m,role:pt.role==="shadda"?"sh1":pt.role}); last=k; });
+  return G.filter(g=>g.items.length); }
+const isHead=it=>["vowel","tanween","standing","sh2"].includes(it.role);
+const LNAME=p=>p.ch==="ة"?"Round Ta":p.ch==="آ"?"Alif":p.id==="alif"?"Alif":(L[p.id]||{}).en||p.ch;
+const nameOf2=it=>it.p.id==="alif"&&isHead(it)?"Hamza (Alif)":LNAME(it.p);
+function signOf(m){ const M=P2.marks, sh=m.includes(M.SH);
+  const n=m.includes(M.FF)?"Fathatain (2 Fathas)":m.includes(M.KK)?"Kasratain (2 Kasras)":m.includes(M.DD)?"Dammatain (2 Dammas)":m.includes(M.SF)?"Standing Fatha":m.includes(M.SK)?"Standing Kasra":m.includes(M.SD)?"Standing Damma":
+    m.includes(M.F)?"Fatha":m.includes(M.K)?"Kasra":m.includes(M.D)?"Damma":m.includes(M.S)?"Sukun":m.includes(M.MD)?"Madd sign":"";
+  const c=/[ًَٰ]/.test(m)?COL.fatha:/[ٍِٖ]/.test(m)?COL.kasra:/[ٌُٗ]/.test(m)?COL.damma:m.includes(M.S)?COL.sukun:sh?COL.shadda:m.includes(M.MD)?COL.madd:"#868E96";
+  return {n:sh?(n?"Shadda + "+n:"Shadda"):(n||"No sign"),c}; }
+const consOf=p=>p.ch==="ة"?"t":(p.id==="alif"||p.id==="hamza")?(p.ws?"":"'"):SND[p.id];
+function cardSound(it,R){ const p=it.p, V=P2.vowelOf(it.m.replace(P2.marks.SH,""));
+  if(isHead(it)) return consOf(p)+V;
+  return {rest:consOf(p),sh1:consOf(p),madd:"stretch",leen:it.p.id==="waw"?"w (soft)":"y (soft)",silent:"not read"}[it.role]||consOf(p); }
+const OCT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M8.5 3h7L21 8.5v7L15.5 21h-7L3 15.5v-7z"/><path d="M8 12h8"/></svg>';
+const XIC={brk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8 8.5L20 17M8 15.5L20 7"/></svg>',
+  exp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>'};
+function yHelp(w,stopped,tag){
+  const pgEl=X.list[X.i]&&X.list[X.i].closest(".page"), lesson=+(pgEl&&pgEl.dataset.lesson)||0, R0=P2.read(w), keys=helpKeys(w,R0,lesson,pgEl&&pgEl.dataset.title);
+  const SFm=stopped?Object.assign(stopForm(w),{s:stopped}):stopForm(w), canStop=SFm.s!==w||SFm.k==="long";
+  let stop=!!stopped, mode="word", step=0, steps=[], G=[], R=R0;
+  const why=()=>(typeof STOPWHY[SFm.k]==="function"?STOPWHY[SFm.k](SFm.v):STOPWHY[SFm.k])+((tag==="hold"||SFm.hold)?" Hold the long sound a little.":"")+(P2.read(SFm.s).tags.includes("bounce")?" Let it bounce.":"");
+  const rule=k=>{ const h=HELP[k]; if(!h) return ""; const [smp,line,ex]=h;
+    return `<div class="yr" style="--c:${KCOL[k]||"#0B6B45"}">${smp?`<div class="ys">${paint(smp)}</div>`:""}<div class="yrt"><h4>${HELPT[k]}</h4><p>${line}</p>${ex.length?`<div class="yx">${ex.map(([a,b])=>`<span>${paint(a)}<b>${b}</b></span>`).join("")}</div>`:""}</div></div>`; };
+  const card=(it,gi,ci)=>{ const p=it.p, sg=signOf(it.m), g=(p.jp?ZWJ:"")+(p.ch==="ي"?"ی":p.ch)+it.m+(p.jn?ZWJ:"");
+    return `<div class="ycd${it.role==="silent"?" sil":""}" data-g="${gi}" data-c="${ci}"><div class="ycg">${paint(g)}</div><div class="ycn">${nameOf2(it)}</div>
+      <div class="ycs" style="--c:${sg.c}">${it.m.replace(/[ّ]/g,"")||it.m?`<span class="ycm">${paint("ـ"+it.m)}</span>`:""}<span>${sg.n}</span></div><b class="ycb">${cardSound(it,R)}</b></div>`; };
+  function build(){ const word=stop?SFm.s:w; R=stop?P2.read(word):R0; G=groups(R);
+    setTitle(`<bdi class="xa">${disp(w)}</bdi>${stop?` → <bdi class="xa">${disp(SFm.s)}</bdi>`:""}`);
+    steps=[]; G.forEach((g,gi)=>{ const hi=g.items.findIndex(isHead), h=hi>=0?g.items[hi]:null, others=g.items.map((it,ci)=>({it,ci})).filter(x=>x.ci!==hi);
+      if(h) steps.push({ring:[[gi,hi]],cap:h.role==="sh2"?`This is <b>${nameOf2(h)}</b> again: the second half of the Shadda.`:`This is <b>${nameOf2(h)}</b>.`});
+      others.forEach(({it,ci})=>{ const n=`<b>${nameOf2(it)}</b>`;
+        steps.push({ring:[[gi,ci]],cap:{rest:`${n} has <b>Sukun</b>: it rests (Saakin). It joins the letter before it.`,sh1:`${n} has <b>Shadda</b>: we say it twice. First it rests here, with the letter before it.`,
+          madd:`${n} is a Madd letter: it stretches the sound.`,leen:`${n} has Sukun after a Fatha: say it softly (Leen).`,silent:`${n} has no sign: we do not read it.`}[it.role]||`${n}.`}); });
+      const snd=h?cardSound(h,R):"";
+      steps.push({sign:h?[[gi,hi]]:[],pill:gi,cap:h?`${nameOf2(h)} with <b style="color:${signOf(h.m).c}">${signOf(h.m).n}</b> says “${snd}”.${g.items.length>1?` Put it together: <b class="ycapr">${g.t}</b>`:""}`:`Say <b class="ycapr">${g.t}</b>`}); });
+    if(stop) steps.push({ring:[[G.length-1,G[G.length-1].items.length-1]],cap:`<span class="ycstop">${OCT}STOP</span> ${why()}`});
+    steps.push({final:1,cap:`Now read it all together: <b class="ycapr">${R.text}</b>`});
+    xBody.innerHTML=`<div class="yh3 m-${mode}">
+      <div class="yh2key">${signsIn(word).map(([,n,c])=>`<span style="background:${COL[c]}">${n}</span>`).join("")}</div>
+      <div class="ycap" id="ycap"></div>
+      <div class="yhst" id="yhst"><div class="ywd">${paint(word)}${stop?`<span class="yh2sb">${OCT}STOP</span>`:""}</div>
+        <div class="ygs">${G.map((g,gi)=>`${gi&&R.sw[g.k]!==R.sw[G[gi-1].k]?`<i class="ygap"></i>`:""}<div class="ygp" data-g="${gi}"><div class="ycds">${g.items.map((it,ci)=>card(it,gi,ci)).join("")}</div><div class="ypl">${g.t}</div></div>`).join("")}</div>
+        <svg class="yar" id="yar"></svg></div>
+      <div class="yread"><b>${R.text}</b>${stop?`<p class="ywhy">${OCT} ${why()}</p>`:""}</div>
+      <div class="yrs">${keys.map(rule).join("")}</div></div>`;
+    show(); }
+  const $=q=>xBody.querySelector(q), $$=q=>[...xBody.querySelectorAll(q)];
+  const cardEl=(gi,ci)=>$(`.ycd[data-g="${gi}"][data-c="${ci}"]`);
+  function arrows(gis,anim){ const svg=$("#yar"), st=$("#yhst"); if(!svg||!st) return; const sr=st.getBoundingClientRect(); svg.setAttribute("viewBox",`0 0 ${sr.width} ${sr.height}`);
+    svg.innerHTML=`<defs><marker id="yah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7048E8"/></marker></defs>`+gis.map(gi=>{ const pl=$(`.ygp[data-g="${gi}"] .ypl`); if(!pl) return ""; const pr=pl.getBoundingClientRect(), x2=pr.left+pr.width/2-sr.left, y2=pr.top-sr.top-3;
+      const cs=$$(`.ycd[data-g="${gi}"]:not(.sil)`), sp=Math.min(26,pr.width/2-14); return cs.map((c,ci)=>{ const cr=c.getBoundingClientRect(), x1=cr.left+cr.width/2-sr.left, y1=cr.bottom-sr.top+2, xe=x2+Math.max(-sp,Math.min(sp,(x1-x2)*.45)), dy=y2-y1;
+        return `<path class="${anim?"an":""}" pathLength="1" d="M${x1} ${y1} C${x1} ${y1+dy*.6} ${xe} ${y2-dy*.6} ${xe} ${y2}" marker-end="url(#yah)"/>`; }).join(""); }).join(""); }
+  function show(){ const yh=$(".yh3"); if(!yh) return; yh.className="yh3 m-"+mode+(G.length===1&&!stop?" one":""); const cap=$("#ycap");
+    $$(".ring").forEach(e=>e.classList.remove("ring")); $$(".ypl").forEach(e=>e.classList.remove("on"));
+    if(mode==="word"){ cap.innerHTML=""; arrows([]); }
+    else if(mode==="break"){ cap.innerHTML=""; $$(".ypl").forEach(e=>e.classList.add("on")); requestAnimationFrame(()=>arrows(G.map((_,i)=>i),false)); }
+    else { const sp=steps[step]; cap.innerHTML=`<span class="ycn2">Step ${step+1} of ${steps.length}</span><span class="yct">${sp.cap}</span>`;
+      const done=new Set(); for(let k=0;k<=step;k++) if(steps[k].pill!=null) done.add(steps[k].pill);
+      done.forEach(gi=>{ const e=$(`.ygp[data-g="${gi}"] .ypl`); if(e) e.classList.add("on"); });
+      (sp.ring||[]).forEach(([g,c])=>{ const e=cardEl(g,c); if(e) e.classList.add("ring"); });
+      (sp.sign||[]).forEach(([g,c])=>{ const e=cardEl(g,c); if(e){ e.querySelector(".ycs").classList.add("ring"); e.querySelector(".ycg").classList.add("ring"); } });
+      yh.classList.toggle("fin",!!sp.final);
+      requestAnimationFrame(()=>arrows([...done],true));
+      if(window.EQSfx){ if(sp.final) EQSfx.yay(); else if(sp.pill!=null){ EQSfx.swish(); setTimeout(()=>EQSfx.coin(),420); } else if(/STOP/.test(sp.cap)) EQSfx.stop(); else EQSfx.bloop(); } }
+    btns(); }
+  /* buttons along the bottom change with the view */
+  function btns(){ xCtl.innerHTML="";
+    if(mode==="explain"){
+      ctlBtn(XI.back+"Back",()=>{ if(step>0){ step--; show(); } }).disabled=step===0;
+      if(step<steps.length-1) ctlBtn("Next step"+XI.fwd,()=>{ step++; show(); },true);
+      else ctlBtn(XI.again+"<span>Explain again</span>",()=>{ step=0; show(); },true);
+      ctlBtn(XI.x+"<span>Close</span>",()=>{ mode="word"; show(); });
+      X.space=()=>{ if(step<steps.length-1){ step++; show(); } };
+      return; }
+    ctlBtn(mode==="break"?XI.join+"Join it":XIC.brk+"Break it",()=>{ mode=mode==="break"?"word":"break"; if(window.EQSfx) EQSfx.swish(); show(); },mode==="word");
+    ctlBtn(XIC.exp+"Explain: how to read it",()=>{ mode="explain"; step=0; show(); },true);
+    if(canStop){ const b=ctlBtn(stop?XI.play+"Read on":OCT+"Stop here (Waqf)",()=>{ stop=!stop; if(window.EQSfx) EQSfx.stop(); build(); }); b.classList.toggle("stopon",stop); }
+    X.space=()=>{ mode="explain"; step=0; show(); };
+  }
+  if(!window.__yRS){ window.__yRS=1; addEventListener("resize",()=>{ const f=window.__yRedraw; if(f) f(); }); }
+  window.__yRedraw=()=>{ if(document.contains(xBody.querySelector(".yh3"))) show(); };
+  build();
+}
+window.XT={y:arg=>yHelp(arg), z:arg=>{ const [w,s,tag]=arg.split("|"); yHelp(w,s,tag); }};
+setTimeout(()=>{ document.querySelectorAll(".page").forEach(pg=>{ const tw=document.createTreeWalker(pg,NodeFilter.SHOW_TEXT); let n; while((n=tw.nextNode())) if(n.nodeValue.includes("\u064C")) n.nodeValue=disp(n.nodeValue); }); },0);
+setTimeout(()=>{ document.querySelectorAll('.page[data-title="Alif-Laam"] .yc').forEach(cell=>{ const w=cell.dataset.x.slice(2), R=P2.read(w), base=cell.querySelector(".yg.base"); if(!base) return;
+  base.innerHTML=R.ps.map((p,i)=>`${p.ws&&i?" ":""}<span${R.parts[i].role==="silent"?' class="ysk"':""}>${(p.jp?ZWJ:"")+p.ch+(p.jn?ZWJ:"")}</span>`).join(""); }); },0);
+
+/* =====================================================================
+   LESSONS PATH for Part 2 (22 steps) — read by practice.js
+   ===================================================================== */
+window.EQAIDA_PATH=({pageInfo,PAGES})=>{
+  const idx=no=>PAGES.findIndex(p=>{ const n=p.querySelector(".hdr .no"); return n&&n.textContent.trim()===String(no); });
+  const rows=(t,a,b)=>T[t].slice(a,b).flat().filter(c=>c!=="✦").map(c=>c==="مًا/مًی"?"مًا":c);
+  const out=[]; let g="";
+  const add=(group,id,title,src,games,extra)=>{ src=src.map(s=>({...s,page:idx(s.no)})).filter(s=>s.page>=0); if(!src.length) return;
+    const first=pageInfo(src[0].page), prevIds=src[0].ids||first.units.map(u=>u.id);
+    out.push(Object.assign({id:"p2/"+id,group,page:src[0].page,src,title,games,prev:prevIds.slice(0,6)},extra||{})); };
+  const G1="Lesson 1 · Sukun",G2="Lesson 2 · Tanween",G3="Lesson 3 · Standing sounds",G4="Lesson 4 · Madd letters",G5="Lesson 5 · Leen letters",G6="Lesson 6 · Shadda",G7="Ready for the Quran";
+  add(G1,"1","Sukun · 1",[{no:1,ids:rows("p1")}],["flash","which","train"]);
+  add(G1,"2","Sukun · 2",[{no:2,ids:rows("p2",0,4)}],["flash","find","balloon"]);
+  add(G1,"3","Sukun · 3",[{no:2,ids:rows("p2",4)}],["flash","which","peek"]);
+  add(G1,"4","The bounce letters",[{no:3,ids:rows("p3")},{no:1,ids:rows("p1")}],["flash","bounce","memory"]);
+  add(G1,"5","Sukun words",[{no:4,ids:rows("p4")}],["flash","spot2","build"]);
+  add(G2,"6","Tanween · 1",[{no:5,ids:rows("p5",0,4)}],["flash","which","train"]);
+  add(G2,"6b","Tanween · 2",[{no:5,ids:rows("p5",4,7)}],["flash","which","peek"]);
+  add(G2,"7","Tanween · 3",[{no:5,ids:rows("p5",7,11)}],["flash","which","balloon"]);
+  add(G2,"7b","Tanween · 4",[{no:5,ids:rows("p5",11)}],["flash","find","memory"]);
+  add(G2,"8","Twins and Tanween words",[{no:7,ids:rows("p7")},{no:6,ids:rows("p6")}],["flash","twins","spot2"]);
+  add(G3,"9","Standing sounds · 1",[{no:8,ids:rows("p8",0,6)}],["flash","quick","peek"]);
+  add(G3,"10","Standing sounds · 2",[{no:8,ids:rows("p8",6)}],["flash","which","balloon"]);
+  add(G3,"10b","Standing look-alikes",[{no:9}],["flash","quick","twins"]);
+  add(G3,"11","Standing words",[{no:10,ids:rows("p10")}],["flash","spot2","build"]);
+  add(G4,"12","Madd · 1",[{no:11,ids:rows("p11",0,5)}],["flash","find","train"]);
+  add(G4,"12b","Madd · 2",[{no:11,ids:rows("p11",5)}],["flash","which","peek"]);
+  add(G4,"13","Madd · 3",[{no:12,ids:rows("p12")}],["flash","which","balloon"]);
+  add(G4,"14","Short, Standing, Madd",[{no:12,ids:rows("p12r")}],["flash","quick","memory"]);
+  add(G4,"15","Madd words",[{no:13},{no:14,ids:rows("p14")}],["flash","spot2","build"]);
+  add(G5,"16","Leen · 1",[{no:15,ids:rows("p15",0,5)}],["flash","find","peek"]);
+  add(G5,"16b","Leen · 2",[{no:15,ids:rows("p15",5)}],["flash","leenmadd","train"]);
+  add(G5,"17","Leen or Madd? · 1",[{no:16,ids:rows("p16",0,5)}],["flash","leenmadd","memory"]);
+  add(G5,"17b","Leen or Madd? · 2",[{no:16,ids:rows("p16",5)}],["flash","leenmadd","balloon"]);
+  add(G5,"18","Leen words",[{no:17,ids:rows("p17")}],["flash","leenmadd","build"]);
+  add(G6,"19","Shadda",[{no:18,ids:rows("p18")}],["flash","twice","train"]);
+  add(G6,"20","Shadda words",[{no:19,ids:rows("p19")}],["flash","spot2","twice"]);
+  add(G7,"21","Signs and Alif-Laam",[{no:"19A"},{no:"19B"}],["flash","hum","spot2"]);
+  add(G7,"22","Read and stop",[{no:"19C"},{no:4,ids:[]},{no:7,ids:[]},{no:10,ids:[]},{no:14,ids:[]},{no:17,ids:[]},{no:19,ids:[]}],["stop","read"]);
+  return out;
+};
+
+
+/* =====================================================================
+   INTERACTIVE LAYER — help buttons and visual explainers (no audio)
+   ===================================================================== */
+/* Optional: a short video for any letter. Put the file in the "videos" folder
+   and add a line here, for example:  ba:"videos/ba.mp4",                       */
+const VIDEOS=new Proxy({},{get:()=>1});   /* every letter has a 3D makharij view (makharij-player.html) */
+
+const DOTS={alif:"No dots — it stands straight",ba:"1 dot below",ta:"2 dots on top",tha:"3 dots on top",jeem:"1 dot in its tummy",hha:"No dot",kha:"1 dot on top",
+ dal:"No dot",dhal:"1 dot on top",ra:"No dot",zay:"1 dot on top",seen:"No dots",sheen:"3 dots on top",sad:"No dot",dad:"1 dot on top",tta:"No dot",zza:"1 dot on top",
+ ain:"No dot",ghain:"1 dot on top",fa:"1 dot on top",qaf:"2 dots on top",kaf:"No dots — a small mark inside",lam:"No dots",meem:"No dots",noon:"1 dot on top",
+ waw:"No dots",ha:"No dots",hamza:"Small — it always sits alone",ya:"No dots alone — 2 dots below when it joins"};
+const DOTLESS={"ب":"ٮ","ت":"ٮ","ث":"ٮ","ن":"ں","ج":"ح","خ":"ح","ذ":"د","ز":"ر","ش":"س","ض":"ص","ظ":"ط","غ":"ع","ف":"ڡ","ق":"ٯ"};
+const VFAM=[["ba","ta","tha","noon"],["jeem","hha","kha"],["dal","dhal"],["ra","zay"],["seen","sheen"],["sad","dad"],["tta","zza"],["ain","ghain"],["fa","qaf"]];
+const VF={}; VFAM.forEach(f=>f.forEach(id=>VF[id]=f));
+const SND={alif:"",ba:"b",ta:"t",tha:"th",jeem:"j",hha:"ḥ",kha:"kh",dal:"d",dhal:"dh",ra:"r",zay:"z",seen:"s",sheen:"sh",sad:"ṣ",dad:"ḍ",tta:"ṭ",zza:"ẓ",
+ ain:"ʿ",ghain:"gh",fa:"f",qaf:"q",kaf:"k",lam:"l",meem:"m",noon:"n",waw:"w",ha:"h",hamza:"",ya:"y"};
+const HEAVYX=new Set(["kha","sad","dad","tta","zza","ghain","qaf"]);
+const FORMN={S:"Start",M:"Middle",E:"End",A:"Alone"};
+const HN={fatha:"Fatha",kasra:"Kasra",damma:"Damma"}, HU={fatha:"Zabar",kasra:"Zair",damma:"Paish"}, HV={fatha:"a",kasra:"i",damma:"u"};
+const HW={fatha:"a small line ON TOP",kasra:"a small line BELOW",damma:"a small curl ON TOP"};
+const XI=(()=>{ const sv=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+  return {left:sv('<path d="M15 5l-7 7 7 7"/>'),right:sv('<path d="M9 5l7 7-7 7"/>'),back:sv('<path d="M19 12H5M11 6l-6 6 6 6"/>'),fwd:sv('<path d="M5 12h14M13 6l6 6-6 6"/>'),
+    play:sv('<path d="M8 5v14l11-7z"/>'),pause:sv('<path d="M8 5v14M16 5v14"/>'),again:sv('<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4v4.5H15"/>'),
+    cut:sv('<circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8 8.5L20 17M8 15.5L20 7"/>'),join:sv('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+    x:sv('<path d="M6 6l12 12M18 6L6 18"/>'),stop:sv('<path d="M8.5 3h7L21 8.5v7L15.5 21h-7L3 15.5v-7z"/><path d="M8 12h8"/>'),fitw:sv('<path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/>'),full:sv('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>')}; })();
+const EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+/* ---------- makharij: where each letter comes from (book pages 4–5) ---------- */
+const ZONES={
+ throatLow:{x:383,y:440,area:"throat",label:"Throat — the part nearest the chest",book:"pronounced from that part of the throat which is nearest to the chest"},
+ throatMid:{x:381,y:352,area:"throat",label:"Throat — the middle",book:"pronounced from the middle of the throat"},
+ throatUp:{x:379,y:262,area:"throat",label:"Throat — the part nearest the mouth",book:"pronounced from the part of the throat which is nearest to the mouth"},
+ qaf:{x:352,y:206,area:"top",label:"Root (back) of the tongue",book:"pronounced from the root of the tongue and the voice box"},
+ kaf:{x:314,y:191,area:"top",label:"Back of the tongue, a little nearer the mouth than Qaaf",book:"pronounced slightly away from the Makhraj of Qaaf, towards the mouth"},
+ tongueMid:{x:222,y:183,area:"top",label:"Middle of the tongue + roof of the mouth",book:"pronounced from the middle of the tongue when it clicks with the upper inside of the mouth"},
+ tongueEdge:{x:270,y:186,area:"top",label:"Edge of the tongue + upper side teeth",book:"pronounced as the right edge of the tongue touches the upper right side teeth"},
+ tipGums:{x:142,y:190,area:"front",label:"Tip of the tongue + gums of the upper front teeth",book:"pronounced when the tip of the tongue touches the gums of the upper front teeth"},
+ tipRoot:{x:126,y:202,area:"front",label:"Tip of the tongue + root of the upper teeth",book:"pronounced when the tip of the tongue touches the root of the upper teeth"},
+ tipEnd:{x:112,y:235,area:"front",label:"Tip of the tongue + end (edge) of the upper teeth",book:"pronounced when the tip of the tongue touches the end of the upper teeth"},
+ tipBack:{x:124,y:224,area:"front",label:"Tip of the tongue + back of the front teeth (a whistle sound)",book:"pronounced when the tip of the tongue touches the back of the teeth"},
+ lipTeeth:{x:96,y:241,area:"front",label:"Upper front teeth + middle of the lower lip",book:"pronounced when the tip of the upper front teeth touches the middle of the lower lip"},
+ lips:{x:61,y:224,area:"front",label:"Both lips join together",book:"pronounced by joining the lips together"},
+ lipsRound:{x:57,y:224,area:"front",label:"The lips are made round",book:"pronounced by rounding the lips"},
+ mouthSpace:{x:232,y:184,area:"top",label:"The empty space inside the mouth",book:"pronounced from the empty space inside the mouth"}
+};
+const ZONE_LETTERS={};
+for(const id in ZONE_OF){ (ZONE_LETTERS[ZONE_OF[id]]=ZONE_LETTERS[ZONE_OF[id]]||[]).push(id); }
+
+function wrapText(t,n){ const out=[]; let line=""; for(const w of t.split(" ")){ if((line+" "+w).trim().length>n&&line){ out.push(line); line=w; } else line=(line+" "+w).trim(); } if(line) out.push(line); return out; }
+const MOUTH_BASE=`
+ <path d="M200 0 C170 30 110 60 62 92 C40 104 42 124 68 130 C82 134 84 142 78 156 C70 172 52 186 52 204 C52 214 58 218 64 220 L64 228 C56 232 48 244 52 258 C56 272 74 276 80 288 C84 300 70 316 78 336 C88 360 140 372 200 372 C250 372 285 395 300 430 L306 520 L520 520 C548 430 556 250 540 120 C532 70 512 30 486 0 Z" fill="#F8DCC6" stroke="#C99A7E" stroke-width="2.5"/>
+ <path d="M62 222 L104 212 L104 196 C130 186 145 178 160 176 C210 158 270 150 320 152 C360 156 392 178 402 215 L410 520 L350 520 L342 330 C330 320 300 318 260 316 C200 312 150 300 118 282 L106 250 L62 228 Z" fill="#5A2430"/>
+ <path d="M160 176 C210 158 270 150 320 152" fill="none" stroke="#F3C4B4" stroke-width="8" stroke-linecap="round"/>
+ <path d="M320 152 C350 154 372 166 384 188 C390 200 386 214 378 212 C372 210 368 196 352 182 C340 172 330 166 318 166 Z" fill="#EBA6A4"/>
+ ${[182,212,242,272].map(x=>`<rect x="${x}" y="${168-(x-182)*0.06}" width="25" height="15" rx="5" fill="#FFFDF5" stroke="#B9AE9C" stroke-width="1.5" opacity=".9"/>`).join("")}
+ <path d="M124 238 C150 222 196 204 250 199 C300 195 334 202 345 228 C352 255 348 292 340 320 C300 318 230 312 180 304 C150 298 126 280 120 262 C118 252 119 244 124 238 Z" fill="#E8858A" stroke="#B9535C" stroke-width="2.5"/>
+ <path d="M340 318 C350 300 362 296 367 308 C362 312 352 316 344 322 Z" fill="#EBA6A4"/>
+ <path d="M348 428 L372 422 M348 446 L372 452" stroke="#EBA6A4" stroke-width="4" stroke-linecap="round"/>
+ <path d="M100 190 C110 184 124 184 134 190 C128 197 112 199 100 197 Z" fill="#F0A3A1"/>
+ <path d="M104 196 C112 192 120 192 124 196 L122 226 C120 234 114 238 108 236 C104 230 103 214 104 196 Z" fill="#FFFDF5" stroke="#9E9585" stroke-width="1.8"/>
+ <path d="M106 246 C110 240 116 240 120 244 L124 274 C116 278 110 278 106 274 Z" fill="#FFFDF5" stroke="#9E9585" stroke-width="1.8"/>
+ <path d="M103 270 C112 266 122 266 128 272 L124 284 L104 282 Z" fill="#F0A3A1"/>
+ <path d="M56 190 C52 198 52 212 64 220 L102 213 L102 199 C86 199 68 196 56 190 Z" fill="#D9787A"/>
+ <path d="M64 228 C56 232 48 244 52 258 C56 268 70 272 80 270 C92 262 100 252 104 246 L104 236 Z" fill="#D9787A"/>
+ <text x="6" y="228" font-family="Source Sans 3, sans-serif" font-size="14" font-weight="700" fill="#8A8170">Lips</text>
+ <text x="196" y="140" font-family="Source Sans 3, sans-serif" font-size="14" font-weight="700" fill="#A27E68">Roof of the mouth</text>
+ <text x="230" y="268" font-family="Source Sans 3, sans-serif" font-size="16" font-weight="700" fill="#fff">Tongue</text>
+ <text x="378" y="506" text-anchor="middle" font-family="Source Sans 3, sans-serif" font-size="14" font-weight="700" fill="#fff">Throat</text>
+ <text x="140" y="120" font-family="Source Sans 3, sans-serif" font-size="13" font-weight="700" fill="#A27E68">Teeth</text>
+ <path d="M150 124 L118 192" stroke="#C9A99A" stroke-width="1.5"/>`;
+function mouthSVG(zs){
+  const slots={front:0,top:0,throat:0}; let marks="", labels="";
+  zs.forEach((zid,i)=>{
+    const z=ZONES[zid]; if(!z) return;
+    const num=zs.length>1?i+1:"";
+    const k=slots[z.area]++;
+    const w=z.area==="throat"?172:z.area==="top"?262:282;
+    const lines=wrapText((num?num+". ":"")+z.label, z.area==="throat"?19:z.area==="top"?30:32);
+    const h=14+lines.length*19;
+    let bx,by,ax,ay;
+    if(z.area==="front"){ bx=10; by=388+k*(h+8); ax=bx+60; ay=by; }
+    else if(z.area==="top"){ bx=330; by=8+k*(h+8); ax=bx; ay=by+h/2; }
+    else { bx=424; by=z.y-h/2; ax=bx; ay=by+h/2; }
+    labels+=`<line x1="${z.x}" y1="${z.y}" x2="${ax}" y2="${ay}" stroke="#C9A227" stroke-width="2.5" stroke-dasharray="6 4"/>
+      <rect x="${bx}" y="${by}" width="${w}" height="${h}" rx="9" fill="#0B3D2E" stroke="#C9A227" stroke-width="1.5"/>
+      <text font-family="Source Sans 3, sans-serif" font-size="15.5" font-weight="700" fill="#FAF6EE">${lines.map((t,j)=>`<tspan x="${bx+11}" y="${by+21+j*19}">${t}</tspan>`).join("")}</text>`;
+    if(zid==="mouthSpace") marks+=`<path class="zglow" d="M150 196 C200 172 270 166 330 172 C300 186 230 192 150 206 Z"/>`;
+    else marks+=`<circle class="zring" cx="${z.x}" cy="${z.y}" r="15"/><circle cx="${z.x}" cy="${z.y}" r="6.5" fill="#FFD43B" stroke="#0B3D2E" stroke-width="2"/>`;
+  });
+  return `<svg viewBox="0 0 600 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side view of the mouth and throat">${MOUTH_BASE}${labels}${marks}</svg>`;
+}
+
+/* ---------- names ---------- */
+function nameOf(p){
+  if(p.ch==="ة") return "Round Ta"; if(p.ch==="أ") return "Hamza on Alif"; if(p.ch==="ؤ") return "Hamza on Waaw"; if(p.ch==="ئ") return "Hamza on Yaa";
+  return L[p.id].en;
+}
+const isoOf=p=>p.ch==="ي"?"ی":p.ch;
+const sylOf=p=>{ const h=harakaOfX(p); const v=h?HV[h]:""; return (p.id==="alif"||p.id==="hamza")?v:SND[p.id]+v; };
+const harakaOfX=p=>p.m.includes(FATHA)?"fatha":p.m.includes(KASRA)?"kasra":p.m.includes(DAMMA)?"damma":null;
+
+/* ---------- pop-up shell ---------- */
+const X={list:[],i:0,tok:0,timer:null,space:null};
+const xm=document.getElementById("xm"), xBody=document.getElementById("xBody"), xCtl=document.getElementById("xCtl");
+function stopTimers(){ X.tok++; clearTimeout(X.timer); X.timer=null; }
+function openX(el){
+  if(window.EQSfx) EQSfx.open();
+  const pg=el.closest(".page");
+  X.list=[...pg.querySelectorAll("[data-x]")]; X.i=X.list.indexOf(el);
+  xm.hidden=false; document.body.style.overflow="hidden"; showX();
+}
+function closeX(){ stopTimers(); xm.hidden=true; xBody.innerHTML=""; document.body.style.overflow=""; }
+function moveX(d){ const n=X.i+d; if(n<0||n>=X.list.length) return; X.i=n; showX(); }
+function showX(){
+  stopTimers(); X.space=null; xCtl.innerHTML="";
+  const el=X.list[X.i], key=el.dataset.x, k=key.indexOf(":"), type=key.slice(0,k), arg=key.slice(k+1);
+  document.getElementById("xCount").textContent=`Box ${X.i+1} of ${X.list.length}`;
+  document.getElementById("xPrev").disabled=X.i===0; document.getElementById("xNext").disabled=X.i===X.list.length-1;
+  (({l:()=>{ const [id,sc]=arg.split(":"); if(sc) letterX(id,sc); else beginnerX(id); }, s:()=>singleX(arg), w:()=>wordX(arg,false), e:()=>wordX(arg,true), h:()=>{ const [id,h]=arg.split(":"); harakaX(id,h); }, m:()=>makhrajX(arg.split(","))})[type]||(()=>{ const f=(window.XT||{})[type]; if(f) f(arg); }))();
+}
+const setTitle=h=>document.getElementById("xTitle").innerHTML=h;
+function ctlBtn(label,fn,pri){ const b=document.createElement("button"); b.className="xbtn"+(pri?" pri":""); b.innerHTML=label; b.onclick=fn; xCtl.appendChild(b); return b; }
+
+/* ---------- 1. letter mini-lesson (about 12 seconds, plays by itself) ---------- */
+function letterX(id,start,note){
+  const l=L[id], fam=VF[id];
+  setTitle(`<bdi class="xa">${l.ch}</bdi> &nbsp;${l.en}`);
+  const S=[];
+  S.push({t:"Letter",h:`<div class="sc meet"><div class="mL" style="color:${l.c}">${l.ch}</div><div><div class="mEn">${l.en}</div><div class="mUr">${l.ur}</div><div class="mInfo">Letter ${ORDER.indexOf(id)+1} of 29</div></div></div>`});
+  const dl=DOTLESS[l.ch];
+  S.push({t:"Dots",h:`<div class="sc">${dl?`<div class="stack"><span class="sl full">${l.ch}</span><span class="sl skel">${dl}</span></div>`:`<div class="mL" style="color:${l.c};font-size:min(40vh,330px)">${l.ch}</div>`}<p class="cap"><b>${DOTS[id]}</b></p></div>`});
+  if(fam) S.push({t:"Look-alikes",h:`<div class="sc"><div class="famrow">${fam.map(x=>`<div class="fc ${x===id?"on":""}"><span class="fl" style="color:${x===id?L[x].c:"#BDB5A3"}">${L[x].ch}</span><b>${L[x].en}</b><small>${DOTS[x]}</small></div>`).join("")}</div><p class="cap">Same body — <b>only the dots are different.</b></p></div>`});
+  let shp;
+  if(l.j==="U") shp=`<div class="shp"><div class="shc"><div class="g" style="color:#7048E8">${l.ch}</div><div class="lbx cA">Alone</div><div class="sub">always</div></div></div><p class="cap">Hamza <b>never joins</b> any letter. Sometimes it sits on a “chair”: <span class="xar">أ ؤ ئ</span></p>`;
+  else{
+    const nj=l.j==="R";
+    const card=(f,lab,cls,sub,same)=>`<div class="shc${same?" same":""}"><div class="g">${formHTML(id,f,same?(f==="A"?"var(--A)":"var(--E)"):undefined)}</div><div class="lbx c${cls}">${lab}</div><div class="sub">${sub||""}</div></div>`;
+    shp=`<div class="shp">${card("A","Alone","A")}${nj?card("A","Start","S","same as alone",true):card("S","Start","S")}${nj?card("E","Middle","M","same as end",true):card("M","Middle","M")}${card("E","End","E")}</div>`;
+    const ex=example(id);
+    if(ex){ const p=analyze(ex.w)[ex.i]; shp+=`<div class="exl">In the book: <span class="xw2">${analyze(ex.w).map((q,j)=>`<span class="${j===ex.i?"":"dim"}" style="${j===ex.i?`color:${SC[q.form]}`:""}">${ptxt(q)}</span>`).join("")}</span> → ${l.en} is at the <span class="chipx c${p.form}">${FORMN[p.form]}</span></div>`; }
+    if(nj) shp+=`<p class="cap">${l.en} <b>never holds hands with the next letter.</b></p>`;
+    else shp+=`<p class="cap">The <b style="color:#A8861A">gold line</b> is its hand — where it joins the next letter.</p>`;
+  }
+  S.push({t:"Shapes",h:`<div class="sc">${note?`<div class="note">${note}</div>`:""}${shp}</div>`});
+  /* last step: the realistic 3D makhraj (tongue / lips / air) with the explanation underneath */
+  S.push({t:"How it’s said · 3D",video:true,h:`<div class="sc"><iframe class="vframe" src="makharij-player.html?l=${id}&embed=1" title="How ${l.en} is said" allow="autoplay; fullscreen"></iframe></div>`});
+  player(S, Math.max(0,S.findIndex(s=>s.t===start)));
+}
+/* ---------- celebration: party poppers from both corners + a big MashaAllah ---------- */
+function celebrate(host,stars){
+  if(window.EQSfx) EQSfx.win(stars||3);
+  let cv=document.getElementById("confetti");
+  if(!cv){ cv=document.createElement("canvas"); cv.id="confetti"; document.body.appendChild(cv); }
+  const d=window.devicePixelRatio||1, W=innerWidth, H=innerHeight; cv.width=W*d; cv.height=H*d; const c=cv.getContext("2d"); c.setTransform(d,0,0,d,0,0);
+  const cols=["#C9A227","#F2C94C","#098A46","#2FB36B","#E5484D","#1E6FD9","#7048E8","#E8590C"], P=[];
+  const pop=(x,y,from,to)=>{ for(let i=0;i<120;i++){ const a=(from+Math.random()*(to-from))*Math.PI/180, v=13+Math.random()*13;
+    P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:7+Math.random()*8,r:Math.random()*6,vr:(Math.random()-.5)*.5,c:cols[i%cols.length],k:i%3}); } };
+  pop(0,H,-80,-35); pop(W,H,-145,-100); const t0=performance.now();
+  if(host){ const old=host.querySelector(".yay"); if(old) old.remove(); const b=document.createElement("div"); b.className="yay";
+    b.innerHTML=`<div class="yAr">ما شاء الله</div><div class="yEn">MashaAllah! Great! 🎉</div>`; host.appendChild(b);
+    setTimeout(()=>b.classList.add("out"),2600); setTimeout(()=>b.remove(),3200); }
+  (function loop(){ const t=performance.now()-t0; c.clearRect(0,0,W,H);
+    for(const p of P){ p.vy+=0.38; p.vx*=0.99; p.vy*=0.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      c.save(); c.translate(p.x,p.y); c.rotate(p.r); c.fillStyle=p.c; c.globalAlpha=Math.max(0,1-t/3200);
+      if(p.k===0) c.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); else if(p.k===1){ c.beginPath(); c.arc(0,0,p.s/2.6,0,7); c.fill(); } else { c.beginPath(); c.moveTo(0,-p.s/2); c.lineTo(p.s/2,p.s/2); c.lineTo(-p.s/2,p.s/2); c.fill(); }
+      c.restore(); }
+    if(t<3300) requestAnimationFrame(loop); else c.clearRect(0,0,W,H); })();
+}
+/* ---------- 1b. first meeting with a letter (page 3): Meet it -> Trace it -> Find it ---------- */
+const MEMO={alif:"A straight line standing up, like the number 1.",ba:"A boat with 1 dot under it.",ta:"The same boat with 2 dots on top.",tha:"The same boat with 3 dots on top.",
+ jeem:"A hook with 1 dot inside it.",hha:"The same hook with no dot.",kha:"The same hook with 1 dot on top.",dal:"A small bent arm, like a corner.",dhal:"The same corner with 1 dot on top.",
+ ra:"A little slide going down.",zay:"The same slide with 1 dot on top.",seen:"Three little teeth and a bowl.",sheen:"The same teeth with 3 dots on top.",sad:"A long loop and a bowl.",
+ dad:"The same loop and bowl with 1 dot on top.",tta:"A loop with a tall stick standing on it.",zza:"The same loop and stick with 1 dot.",ain:"An open mouth on top and a bowl below.",
+ ghain:"The same as ع with 1 dot on top.",fa:"A small round head with 1 dot on top.",qaf:"A round head with 2 dots and a deep bowl.",kaf:"A tall bent stick with a little mark inside.",
+ lam:"A tall stick with a hook at the bottom.",meem:"A small round head with a tail going down.",noon:"A bowl with 1 dot inside.",waw:"A round head with a curly tail.",
+ ha:"A round face.",hamza:"A tiny letter like a little c with a tail. It never joins.",ya:"A swan swimming on the water."};
+function pickChoices(id){
+  const others=(VF[id]||[]).filter(x=>x!==id).slice(0,2); const k=ORDER.indexOf(id);
+  for(let j=1;others.length<2&&j<60;j++){ const c=ORDER[(k+j*7)%ORDER.length]; if(c&&c!==id&&!others.includes(c)&&L[c]) others.push(c); }
+  const a=[id,...others]; for(let i=a.length-1;i>0;i--){ const r=Math.floor(Math.random()*(i+1)); [a[i],a[r]]=[a[r],a[i]]; } return a;
+}
+function beginnerX(id){
+  const l=L[id], dl=DOTLESS[l.ch];
+  setTitle(`<bdi class="xa">${l.ch}</bdi> &nbsp;${l.en}`);
+  const STEPS=["Meet it","Trace it","Find it"];
+  xBody.innerHTML=`<div class="tabs">${STEPS.map((t,i)=>`<button class="tab" data-i="${i}"><span class="tn">${i+1}</span>${t}</button>`).join("")}</div><div class="stage" id="stg"></div>`;
+  const tabs=[...xBody.querySelectorAll(".tab")], stg=document.getElementById("stg");
+  let cur=0;
+  const meet=()=>{ stg.innerHTML=`<div class="sc meet bx">
+      ${dl?`<div class="stack"><span class="sl full">${l.ch}</span><span class="sl skel" style="color:${l.c}">${dl}</span></div>`:`<div class="mL" style="color:${l.c}">${l.ch}</div>`}
+      <div class="bxT"><div class="mEn">${l.en}</div><div class="mUr">${l.ur}</div><div class="memo">${MEMO[id]||""}</div><div class="dotsline">${DOTS[id]||""}</div></div></div>`; };
+  const trace=()=>{
+    stg.innerHTML=`<div class="sc trace"><div class="tw"><canvas class="tg"></canvas><canvas class="tc"></canvas></div>
+      <div class="trow"><div class="tprog"><div class="tbar"><i></i></div><b class="tpct">0% done</b></div>
+      <span class="tdots"></span><span class="tmsg">Trace <b>${l.en}</b> with your finger${dl?": the body first, then the dots.":"."}</span>
+      <button class="xbtn tclr">Clear</button></div></div>`;
+    const tw=stg.querySelector(".tw"), g=stg.querySelector(".tg"), cv=stg.querySelector(".tc"), gx=g.getContext("2d"), ctx=cv.getContext("2d");
+    const bar=stg.querySelector(".tbar i"), pctEl=stg.querySelector(".tpct"), msg=stg.querySelector(".tmsg"), dotsEl=stg.querySelector(".tdots");
+    const pen=(()=>{ const sp=document.createElement("span"); sp.style.color=l.c; tw.appendChild(sp); const c=getComputedStyle(sp).color; sp.remove(); return c; })();
+    const CELL=4; let W=0, H=0, cols=0, rows=0, tgt, comp, sizes=[], body=0, dots=[], near, ink, inside, penR=12, nearR=40, done=false, ready=false;
+    const fontAt=f=>`700 ${f}px "Noto Naskh Arabic"`;
+    async function setup(){
+      try{ await document.fonts.load(fontAt(200),l.ch); }catch(e){}
+      const r=tw.getBoundingClientRect(), d=window.devicePixelRatio||1; W=r.width; H=r.height; if(!W||!H) return;
+      for(const c of [g,cv]){ c.width=Math.round(W*d); c.height=Math.round(H*d); c.getContext("2d").setTransform(d,0,0,d,0,0); }
+      /* size the letter so it fills the board, then place it in the middle */
+      let fs=H; gx.font=fontAt(fs); let m=gx.measureText(l.ch);
+      let w=m.actualBoundingBoxLeft+m.actualBoundingBoxRight, h=m.actualBoundingBoxAscent+m.actualBoundingBoxDescent;
+      fs*=Math.min(H*0.78/h,W*0.8/w); gx.font=fontAt(fs); m=gx.measureText(l.ch);
+      w=m.actualBoundingBoxLeft+m.actualBoundingBoxRight; h=m.actualBoundingBoxAscent+m.actualBoundingBoxDescent;
+      const x=(W-w)/2+m.actualBoundingBoxLeft, y=(H-h)/2+m.actualBoundingBoxAscent;
+      gx.clearRect(0,0,W,H); gx.fillStyle="rgba(11,61,46,.07)"; gx.fillText(l.ch,x,y); gx.lineWidth=3; gx.lineJoin="round"; gx.strokeStyle="#D3C8AE"; gx.strokeText(l.ch,x,y);
+      /* the exact letter shape as a grid of small cells */
+      const off=document.createElement("canvas"); off.width=Math.ceil(W); off.height=Math.ceil(H); const ox=off.getContext("2d"); ox.font=fontAt(fs); ox.fillText(l.ch,x,y);
+      const px=ox.getImageData(0,0,off.width,off.height).data;
+      cols=Math.ceil(W/CELL); rows=Math.ceil(H/CELL); const N=cols*rows; tgt=new Uint8Array(N);
+      for(let j=0;j<rows;j++) for(let i=0;i<cols;i++){ const a=Math.min(off.width-1,i*CELL+2), b=Math.min(off.height-1,j*CELL+2); if(px[(b*off.width+a)*4+3]>110) tgt[j*cols+i]=1; }
+      /* separate the body from each dot (connected parts) */
+      comp=new Int16Array(N).fill(-1); sizes=[];
+      for(let s0=0;s0<N;s0++){ if(!tgt[s0]||comp[s0]>=0) continue; const id=sizes.length; let n=0; const st=[s0]; comp[s0]=id;
+        while(st.length){ const q=st.pop(); n++; const qi=q%cols, qj=(q-qi)/cols;
+          for(const [di,dj] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,-1],[1,-1],[-1,1]]){ const ni=qi+di, nj=qj+dj; if(ni<0||nj<0||ni>=cols||nj>=rows) continue; const nq=nj*cols+ni; if(tgt[nq]&&comp[nq]<0){ comp[nq]=id; st.push(nq); } } }
+        sizes.push(n); }
+      body=sizes.indexOf(Math.max(...sizes)); dots=sizes.map((n,k)=>k).filter(k=>k!==body&&sizes[k]>=6);
+      penR=Math.max(9,H*0.026); nearR=penR+fs*0.055;
+      /* "inside" = on the letter or within a pen-width of its edge */
+      inside=new Uint8Array(N); const rIn=Math.ceil((penR+12)/CELL);
+      for(let s0=0;s0<N;s0++){ if(!tgt[s0]) continue; const si=s0%cols, sj=(s0-si)/cols;
+        for(let dj=-rIn;dj<=rIn;dj++) for(let di=-rIn;di<=rIn;di++){ if(di*di+dj*dj>rIn*rIn) continue; const ni=si+di, nj=sj+dj; if(ni>=0&&nj>=0&&ni<cols&&nj<rows) inside[nj*cols+ni]=1; } }
+      ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=pen; ctx.fillStyle=pen; ctx.lineWidth=penR*2;
+      reset(); ready=true; tw.__trace={tgt,comp,cols,rows,CELL,body,dots,sizes};   /* read by the self-test only */
+    }
+    function reset(){ ctx.clearRect(0,0,W,H); near=new Uint8Array(cols*rows); ink=new Uint8Array(cols*rows); done=false; const y=stg.querySelector(".yay"); if(y) y.remove(); update(); }
+    function mark(a,b){
+      const R=nearR, x0=Math.max(0,Math.floor((Math.min(a[0],b[0])-R)/CELL)), x1=Math.min(cols-1,Math.ceil((Math.max(a[0],b[0])+R)/CELL));
+      const y0=Math.max(0,Math.floor((Math.min(a[1],b[1])-R)/CELL)), y1=Math.min(rows-1,Math.ceil((Math.max(a[1],b[1])+R)/CELL));
+      const vx=b[0]-a[0], vy=b[1]-a[1], L2=vx*vx+vy*vy||1;
+      for(let j=y0;j<=y1;j++) for(let i=x0;i<=x1;i++){ const cx=i*CELL+2, cy=j*CELL+2; let t=((cx-a[0])*vx+(cy-a[1])*vy)/L2; t=t<0?0:t>1?1:t;
+        const dx=cx-(a[0]+t*vx), dy=cy-(a[1]+t*vy), dd=dx*dx+dy*dy; if(dd<=R*R){ near[j*cols+i]=1; if(dd<=penR*penR) ink[j*cols+i]=1; } }
+    }
+    function update(){
+      if(!tgt) return;
+      const cov=new Array(sizes.length).fill(0); let inkN=0, outN=0;
+      for(let s0=0;s0<tgt.length;s0++){ if(tgt[s0]&&near[s0]) cov[comp[s0]]++; if(ink[s0]){ inkN++; if(!inside[s0]) outN++; } }
+      const fr=k=>cov[k]/sizes[k], bodyF=fr(body), dotsDone=dots.filter(k=>fr(k)>=0.7).length;
+      const parts=[body,...dots], tot=parts.reduce((a,k)=>a+sizes[k],0), got=parts.reduce((a,k)=>a+cov[k],0);
+      const outside=inkN?outN/inkN:0, ok=bodyF>=0.9&&dotsDone===dots.length&&outside<=0.3;
+      let pct=Math.round(100*got/tot*(outside>0.3?Math.max(0,1-(outside-0.3)*2):1)); if(ok) pct=100; else pct=Math.min(pct,99);
+      bar.style.width=pct+"%"; bar.style.background=ok?"#2FB36B":outside>0.3?"#E8590C":"#C9A227"; pctEl.textContent=pct+"% done";
+      dotsEl.innerHTML=dots.length?`Dots: <b>${dotsDone} / ${dots.length}</b>`:"";
+      if(ok){ msg.innerHTML=`<b style="color:#098A46">MashaAllah! Perfect tracing.</b>`; if(!done){ done=true; celebrate(stg); } }
+      else if(inkN>25&&outside>0.3) msg.innerHTML=`<b style="color:#C2410C">Stay inside the letter 🙂</b> Only the letter counts.`;
+      else if(bodyF>=0.9&&dots.length) msg.innerHTML=`Great! Now the <b>dot${dots.length>1?"s":""}</b>.`;
+      else if(inkN) msg.innerHTML="Keep going…";
+    }
+    let down=false, last=null, tmr=0;
+    const pt=e=>{ const r=cv.getBoundingClientRect(); return [e.clientX-r.left,e.clientY-r.top]; };
+    cv.onpointerdown=e=>{ if(!ready) return; down=true; try{ cv.setPointerCapture(e.pointerId); }catch(_){} last=pt(e); ctx.beginPath(); ctx.arc(last[0],last[1],penR,0,7); ctx.fill(); mark(last,last); update(); };
+    cv.onpointermove=e=>{ if(!down) return; const p=pt(e); ctx.beginPath(); ctx.moveTo(last[0],last[1]); ctx.lineTo(p[0],p[1]); ctx.stroke(); mark(last,p); last=p;
+      if(!tmr) tmr=setTimeout(()=>{ tmr=0; update(); },120); };
+    cv.onpointerup=cv.onpointercancel=()=>{ if(!down) return; down=false; update(); };
+    stg.querySelector(".tclr").onclick=reset;
+    window.onresize=()=>{ if(stg.querySelector(".tw")===tw) setup(); };
+    setTimeout(setup,30);
+  };
+  const find=()=>{
+    const ch=pickChoices(id);
+    stg.innerHTML=`<div class="sc find"><p class="fq">Which one is <b>${l.en}</b> <span class="xar">${l.ur}</span>?</p>
+      <div class="famrow">${ch.map(c=>`<button class="fc fbtn" data-id="${c}"><span class="fl">${L[c].ch}</span></button>`).join("")}</div>
+      <p class="cap fres">&nbsp;</p><button class="xbtn fagain">↻ Again</button></div>`;
+    const res=stg.querySelector(".fres");
+    stg.querySelectorAll(".fbtn").forEach(b=>b.onclick=()=>{ const c=b.dataset.id;
+      stg.querySelectorAll(".fbtn").forEach(x=>x.classList.remove("no"));
+      if(c===id){ b.classList.add("ok"); res.className="cap fres good"; res.innerHTML=`MashaAllah! ⭐ That is <b>${l.en}</b>.`; celebrate(stg); }
+      else { void b.offsetWidth; b.classList.add("no"); if(window.EQSfx) EQSfx.no(); res.className="cap fres bad"; res.innerHTML=`Try again. That one is <b>${L[c].en}</b>.`; } });
+    stg.querySelector(".fagain").onclick=find;
+  };
+  const back=ctlBtn(XI.back+"Back",()=>go(cur-1)), next=ctlBtn("Next step"+XI.fwd,()=>go(cur+1),true);
+  const go=i=>{ if(i<0||i>2) return; cur=i; tabs.forEach((t,j)=>t.classList.toggle("on",j===i)); back.disabled=i===0; next.disabled=i===2; [meet,trace,find][i](); };
+  tabs.forEach((t,j)=>t.onclick=()=>go(j));
+  X.space=()=>go(Math.min(2,cur+1));
+  go(0);
+}
+function singleX(t){
+  const ch=[...t].find(c=>CH[c]); const id=CH[ch].id;
+  const NOTE={"ک":"<b>ک</b> is Kaaf written another way (as in Urdu) — it is the same letter.","ڪ":"<b>ڪ</b> is Kaaf in a decorative shape — it is the same letter.","ة":"<b>ة</b> is Round Ta — it only comes at the end of a word.","أ":"Hamza sitting on an Alif “chair”.","ؤ":"Hamza sitting on a Waaw “chair”.","ئ":"Hamza sitting on a Yaa “chair”."};
+  let note=NOTE[ch];
+  if(!note&&t.includes(ZWJ)) note=`Here ${L[id].en} is in its <b>end</b> shape.`;
+  if(!note&&t.includes(TAT)) note=`Here ${L[id].en} is in its <b>start</b> shape.`;
+  letterX(id,"Shapes",note);
+}
+function player(S,start){
+  xBody.innerHTML=`<div class="tabs">${S.map((s,i)=>`<button class="tab" data-i="${i}">${s.t}<span class="pb"></span></button>`).join("")}</div><div class="stage" id="stg"></div>`;
+  const tabs=[...xBody.querySelectorAll(".tab")], stg=document.getElementById("stg");
+  let cur=start, playing=!S[start].video;
+  const DUR=3000;
+  const pbtn=ctlBtn("",()=>{ playing=!playing; if(playing&&cur>=S.length-1) cur=0; go(cur,true); },true);
+  ctlBtn(XI.again+"<span>From the start</span>",()=>{ playing=true; go(0,true); });
+  const go=(i,fresh)=>{
+    stopTimers(); cur=i;
+    tabs.forEach((t,j)=>{ t.classList.toggle("on",j===i); const pb=t.querySelector(".pb"); pb.style.transition="none"; pb.style.width=j<i?"100%":"0"; });
+    if(fresh!==false) stg.innerHTML=S[i].h;
+    pbtn.innerHTML=playing?XI.pause+"Pause":XI.play+"Play";
+    if(playing&&!S[i].video){
+      const pb=tabs[i].querySelector(".pb"); void pb.offsetWidth; pb.style.transition=`width ${DUR}ms linear`; pb.style.width="100%";
+      const my=X.tok; X.timer=setTimeout(()=>{ if(my!==X.tok) return; if(i<S.length-1&&!S[i+1].video) go(i+1); else { playing=false; pbtn.innerHTML=XI.play+"Play"; } },DUR);
+    }
+  };
+  tabs.forEach((t,j)=>t.onclick=()=>{ playing=false; go(j); });
+  X.space=()=>pbtn.click();
+  go(start);
+}
+
+/* ---------- 2. word / compound / exercise word: break into letters ---------- */
+function wordX(w,sounds){
+  const ps0=analyze(w), lastH=harakaOfX(ps0[ps0.length-1]); let broken=false, stop=false;
+  const draw=()=>{
+    const ps=stop?ps0.map((p,i)=>i===ps0.length-1?Object.assign({},p,{m:"ْ",stopped:true}):p):ps0, ws=ps.map(p=>p.ch+p.m).join("");
+    setTitle(`<bdi class="xa">${w}</bdi>${stop?` → <bdi class="xa">${ws}</bdi> &nbsp;stopping`:` &nbsp;${sounds?`${ps.length} sounds`:`${ps.length} letters joined`}`}`);
+    const col=p=>p.stopped?"var(--hs)":sounds?(HC[harakaOfX(p)]||"#2B2A26"):SC[p.form];
+    const syl=p=>p.stopped?((p.id==="alif"||p.id==="hamza")?"'":SND[p.id]):sylOf(p);
+    const chip=p=>p.stopped?`<span class="chipx" style="background:var(--hs)">Sukun</span>`:harakaOfX(p)?`<span class="chipx" style="background:${HC[harakaOfX(p)]}">${HN[harakaOfX(p)]}</span>`:"";
+    const piece=p=>`<div class="xp${p.stopped?" stp":""}"><span class="g" style="color:${col(p)}">${ptxt(p)}</span><div class="lb"><span class="iso">${sounds?p.ch+p.m:isoOf(p)}</span><b>${sounds?syl(p):nameOf(p)}</b>${sounds?chip(p):`<span class="chipx c${p.form}">${FORMN[p.form]}</span>`}</div></div>`;
+    let why=[];
+    if(!sounds){
+      ps.forEach((p,i)=>{ const n=ps[i+1]; if(n&&p.j==="R") why.push(`${nameOf(p)} never holds hands with the next letter, so ${nameOf(n)} starts again.`); });
+      if(ps.some(p=>p.id==="hamza")) why.push("Hamza never joins any letter.");
+      if(/لا/.test(w)) why.push("Laam + Alif are written together like this: لا");
+    }
+    const sy=ps.map(syl); if(stop&&sy.length>1) sy[sy.length-2]+=sy.pop();
+    const eqA=ps.map(p=>`<span style="color:${col(p)}">${sounds?p.ch+p.m:isoOf(p)}</span>`).join("<i>+</i>")+"<i>=</i>"+`<span>${sounds?ws:w}</span>`;
+    const eqE=sounds?`${sy.join(" + ")} = <span style="color:#098A46">${sy.join("")}</span>${stop?"":" — now read the whole word."}`:ps.map(nameOf).join(" + ");
+    if(stop) why.push(`<b>Stopping (Waqf):</b> the last letter rests. Its ${HN[lastH]} is dropped: <span class="xar">${w}</span> → <span class="xar" style="color:var(--hs)">${ws}</span>`);
+    xBody.innerHTML=`${sounds?`<div class="lgx"><span class="chipx" style="background:var(--hf)">Fatha</span><span class="chipx" style="background:var(--hk)">Kasra</span><span class="chipx" style="background:var(--hd)">Damma</span>${stop?`<span class="chipx" style="background:var(--hs)">Sukun</span>`:""}</div>`
+       :`<div class="lgx"><span class="chipx cA">Alone</span><span class="chipx cS">Start</span><span class="chipx cM">Middle</span><span class="chipx cE">End</span></div>`}
+      <div class="wx"><div class="xw" id="xw">${ps.map(piece).join("")}</div>
+      <div class="weq" id="weq"><div class="eqA">${eqA}</div><div class="eqE">${eqE}</div>${why.map(t=>`<div class="note${stop?" stopn":""}">${t}</div>`).join("")}</div></div>`;
+  };
+  const tb=ctlBtn(XI.cut+"Break it",()=>set(!broken),true);
+  ctlBtn(XI.again+"<span>Play again</span>",()=>{ set(false); run(); });
+  if(sounds&&ps0.length>1&&lastH){ const sb=ctlBtn("",()=>{ stop=!stop; if(window.EQSfx) EQSfx.stop(); lab(); draw(); set(broken); if(stop){ const g=document.querySelector("#xw .xp.stp"); if(g) g.classList.add("bump"); } });
+    const lab=()=>{ sb.innerHTML=stop?XI.play+"Read on":XI.stop+"Stop here (Waqf)"; sb.classList.toggle("stopon",stop); }; lab(); }
+  const set=b=>{ broken=b; const xw=document.getElementById("xw"), weq=document.getElementById("weq"); xw.classList.toggle("broken",b); weq.classList.toggle("on",b); tb.innerHTML=b?XI.join+"Join it":XI.cut+"Break it"; };
+  const run=()=>{ stopTimers(); const my=X.tok; X.timer=setTimeout(()=>{ if(my===X.tok){ set(true); if(window.EQSfx) EQSfx.swish(); } },900); };
+  X.space=()=>tb.click();
+  draw();
+  if(ps0.length>1) run(); else set(true);
+}
+
+/* ---------- 3. letter with a sign (pages 13–14) ---------- */
+function harakaX(id,h){
+  const base=id==="alif"?"ا":L[id].ch, s=(id==="alif"||id==="hamza"?"":SND[id])+HV[h];
+  setTitle(`<bdi class="xa">${base+HM[h]}</bdi> &nbsp;${L[id].en} + ${HN[h]}`);
+  const rules=[];
+  if(id==="alif") rules.push("<b>Alif with a sign is read as Hamza:</b> <span class='xar'>اَ اِ اُ</span> = a · i · u");
+  if(id==="ra") rules.push(h==="kasra"?"<b>Ra with Kasra is thin</b> — read it softly.":"<b>Ra with Fatha or Damma is heavy</b> — read it with a full mouth.");
+  if(HEAVYX.has(id)) rules.push("<b>Heavy letter</b> — always read with the mouth full.");
+  rules.push(`<b>Don’t drag the sound:</b> say «${s}», not «${s}${HV[h].repeat(3)}».`);
+  xBody.innerHTML=`<div class="hx">
+    <div class="hbig"><span class="hg" style="color:${HC[h]}">${base+HM[h]}</span><span class="hg base">${base}</span><div class="htag ${h==="kasra"?"bot":"top"}" style="background:${HC[h]}">${HN[h]} — ${HW[h]}</div></div>
+    <div class="hinfo"><div class="hsnd"><span class="xar" style="font-size:1.4em">${base+HM[h]}</span> = <b>${s}</b></div>
+      <div class="h3">${["fatha","kasra","damma"].map(x=>`<div class="t ${x===h?"on":""}"><span style="color:${HC[x]}">${base+HM[x]}</span><span style="color:#1F1E1B">${base}</span><small>${(id==="alif"||id==="hamza"?"":SND[id])+HV[x]}</small></div>`).join("")}</div>
+      ${rules.map(r=>`<div class="rule">${r}</div>`).join("")}</div></div>`;
+}
+
+/* ---------- 4. makharij (pages 4–6) ---------- */
+function makhrajX(zs){
+  const letters=zs.flatMap(z=>ZONE_LETTERS[z]||[]);
+  setTitle(`<bdi class="xa">${letters.map(id=>L[id].ch).join(" ")}</bdi> &nbsp;Where the sound comes from`);
+  const S=zs.map(z=>({t:`<span class="xar" style="font-size:1.2em">${(ZONE_LETTERS[z]||[]).map(id=>L[id].ch).join(" ")}</span>`,video:true,
+    h:`<div class="sc"><iframe class="vframe" src="makharij-player.html?z=${z}&embed=1" title="Makhraj" allow="autoplay; fullscreen"></iframe></div>`}));
+  player(S,0);
+}
+
+/* ---------- buttons, toolbar, keys ---------- */
+document.querySelectorAll("#book [data-x]").forEach(el=>{
+  const b=document.createElement("button"); b.type="button"; b.className="hs"; b.setAttribute("aria-label","Explain this"); b.innerHTML=EYE;
+  if(el.matches("p.mx")) el.prepend(b); else el.appendChild(b);
+});
+document.getElementById("book").addEventListener("click",e=>{ const el=e.target.closest("[data-x]"); if(el){ e.preventDefault(); openX(el); } });
+document.getElementById("xClose").onclick=closeX;
+document.getElementById("xNext").onclick=()=>moveX(1);
+document.getElementById("xPrev").onclick=()=>moveX(-1);
+xm.addEventListener("click",e=>{ if(e.target===xm) closeX(); });
+
+const PAGES=[...document.querySelectorAll("#book .page")];
+PAGES.forEach(p=>{ const w=document.createElement("div"); w.className="pgw"; p.parentNode.insertBefore(w,p); w.appendChild(p); });
+const pSel=document.getElementById("pSel");
+pSel.innerHTML=PAGES.map((p,i)=>{ const no=p.querySelector(".hdr .no"); return `<option value="${i}">${no?"Page "+no.textContent:"Cover"}</option>`; }).join("");
+let fitMode="page";
+const PW=148*96/25.4, PH=210*96/25.4;
+function fit(){
+  const tb=document.querySelector(".tb").offsetHeight;
+  const vw=document.documentElement.clientWidth||innerWidth, vh=document.documentElement.clientHeight||innerHeight;
+  const wFit=Math.min(vw-(vw<700?12:28),1150)/PW;
+  const z=fitMode==="page"?Math.max(.3,Math.min((vh-tb-44)/PH,wFit)):Math.max(.3,wFit);
+  document.getElementById("book").style.setProperty("--z",z.toFixed(3));
+}
+function goPage(i){ i=Math.max(0,Math.min(PAGES.length-1,i)); if(i!==curPage()&&window.EQSfx) EQSfx.page(); const tb=document.querySelector(".tb").offsetHeight; scrollTo({top:PAGES[i].getBoundingClientRect().top+scrollY-tb-12,behavior:"smooth"}); pSel.value=i; }
+function curPage(){ let c=0; PAGES.forEach((p,i)=>{ if(p.getBoundingClientRect().top<innerHeight*.5) c=i; }); return c; }
+addEventListener("scroll",()=>{ pSel.value=curPage(); },{passive:true});
+addEventListener("resize",fit);
+pSel.onchange=()=>goPage(+pSel.value);
+document.getElementById("pPrev").onclick=()=>goPage(curPage()-1);
+document.getElementById("pNext").onclick=()=>goPage(curPage()+1);
+document.getElementById("hsBtn").onclick=e=>{ const off=document.body.classList.toggle("nohs"); e.currentTarget.classList.toggle("on",!off); };
+document.getElementById("fitBtn").onclick=e=>{ fitMode=fitMode==="page"?"width":"page"; e.currentTarget.querySelector("span").textContent=fitMode==="page"?"Fit width":"Fit page"; const c=curPage(); fit(); setTimeout(()=>goPage(c),50); };
+document.getElementById("sndBtn").onclick=()=>{ if(!window.EQSfx) return; EQSfx.on=!EQSfx.on; if(EQSfx.on) EQSfx.yay(); };
+document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b||!window.EQSfx||b.closest(".pz")||b.matches("#pPrev,#pNext,#sndBtn,#pzOpen,.fbtn")) return; EQSfx.tap(); },true);
+document.getElementById("fsBtn").onclick=()=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(e){} };
+document.getElementById("hsBtn").insertAdjacentHTML("afterbegin",EYE);
+document.getElementById("fitBtn").insertAdjacentHTML("afterbegin",XI.fitw);
+document.getElementById("pPrev").innerHTML=XI.left; document.getElementById("pNext").innerHTML=XI.right; document.getElementById("fsBtn").innerHTML=XI.full;
+document.getElementById("xClose").innerHTML=XI.x; document.getElementById("xNext").innerHTML=XI.back+"<span>Next box</span>"; document.getElementById("xPrev").innerHTML="<span>Previous box</span>"+XI.fwd;
+addEventListener("keydown",e=>{
+  if(!xm.hidden){
+    if(e.key==="Escape") closeX();
+    else if(e.key==="ArrowLeft"){ e.preventDefault(); moveX(1); }
+    else if(e.key==="ArrowRight"){ e.preventDefault(); moveX(-1); }
+    else if(e.key===" "&&X.space){ e.preventDefault(); X.space(); }
+    return;
+  }
+  if(e.target.tagName==="SELECT") return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){ e.preventDefault(); goPage(curPage()+1); }
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){ e.preventDefault(); goPage(curPage()-1); }
+});
+fit();
+
+</script>
+<script>
+/* eQuran connection. Leave api empty to keep scores on this device only. See README, "Connecting to eQuran". */
+window.EQAIDA_CONFIG={api:""};
+window.EQAIDA_BOOK="part2";
+</script>
+<script src="sounds.js?v=1116220000"></script>
+<script src="practice.js?v=1116220000"></script>
+<script>
+/* if this page was opened without its folder (for example straight from inside a zip), say so clearly */
+addEventListener("load",function(){ setTimeout(function(){ if(window.EQPractice||window.__SINGLE) return;
+  var d=document.createElement("div"); d.id="eqMissing";
+  d.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(11,61,46,.97);color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Arial,sans-serif";
+  d.innerHTML='<div style="max-width:660px;font-size:20px;line-height:1.5"><div style="font-size:30px;font-weight:800;color:#F2D57A;margin-bottom:10px">&#9888; Some files are missing</div>'+
+   'This page was opened without the rest of its folder, so the videos, pictures and games cannot load. This happens when it is opened from inside the zip file.'+
+   '<ol><li>Close this page.</li><li>Find the zip file. <b>Right-click it, then choose Extract All</b> (on a Mac: double-click it).</li><li>Open the new folder and double-click <b>START HERE</b>.</li></ol>'+
+   'Or use the single file <b>eQaida.html</b>, which needs no unzipping.<br><br>'+
+   '<button onclick="document.getElementById(\'eqMissing\').remove()" style="font:inherit;padding:8px 18px;border-radius:10px;border:0;cursor:pointer">Continue anyway</button></div>';
+  document.body.appendChild(d); },900); });
+</script>
+</body>
+</html>

@@ -123,6 +123,8 @@ const S={
     noise(t,{type:"lowpass",f:180,f2:1400,vol:0.55,a:0.35,dur:2.3,rev:0.3});
     noise(t,{f:900,f2:3200,q:0.6,vol:0.18,a:0.6,dur:2.2});
     tone(t,{f:55,to:90,dur:2,vol:0.35,a:0.3}); },
+  swish(){ const t=now(); noise(t,{f:600,f2:2800,q:0.9,dur:0.24,vol:0.32,a:0.06}); tone(t+0.06,{f:540,to:900,glide:0.16,dur:0.18,vol:0.07,a:0.02}); },
+  stop(){ const t=now(); noise(t,{type:"lowpass",f:420,vol:0.3,a:0.002,tau:0.03,dur:0.09}); tone(t,{f:392,to:330,glide:0.08,dur:0.14,vol:0.2,type:"triangle",lp:1600,a:0.004}); tone(t+0.14,{f:262,dur:0.34,vol:0.2,type:"triangle",lp:1400,a:0.004}); },
   win(stars){ const t=now();
     if((stars||3)>=2){ popper(t,-0.6); popper(t+0.09,0.6); fanfare(t+0.25); sparkle(t+0.45,8,0.06); clap(t+0.3,stars===2?2.2:3,stars===2?11:16,0.9); }
     else { bell(t,880,0.26,0.6); bell(t+0.14,1046.5,0.26,0.8); clap(t+0.2,1.5,9,0.95); } }

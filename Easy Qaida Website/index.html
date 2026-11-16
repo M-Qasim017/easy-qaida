@@ -6,14 +6,14 @@
 <meta name="theme-color" content="#0C3B2C">
 <title>eQaida — Interactive</title>
 <link href="fonts/fonts.css" rel="stylesheet">
-<link href="practice.css?v=1113100000" rel="stylesheet">
+<link href="practice.css?v=1116220000" rel="stylesheet">
 <style>
 @page{size:148mm 210mm;margin:0}
 :root{
   --green:#098A46;--deep:#0B3D2E;--gold:#C9A227;--cream:#FAF6EE;--ink:#2B2A26;--muted:#6E6A60;--rule:#2F2D28;--paper:#FFFDF7;
   --P:#D2186E;--B:#1A84C6;--G:#2A9443;--R:#CF3A2C;
   --S:#1C6FD1;--M:#0E8A43;--E:#D6336C;--A:#7048E8;
-  --hf:#E03131;--hk:#1971C2;--hd:#2F9E44;
+  --hf:#E03131;--hk:#1971C2;--hd:#2F9E44;--hs:#7048E8;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -283,6 +283,11 @@ p.mx>.hs{position:relative;top:-.4mm;right:auto;display:inline-grid;vertical-ali
 .lb b{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(15px,2.3vh,23px);color:#0B3D2E}
 .weq{opacity:0;transition:opacity .5s;text-align:center;display:flex;flex-direction:column;gap:.6vh;align-items:center}
 .weq.on{opacity:1}
+.xp.stp .g{text-shadow:0 0 0 transparent}
+.xp.stp.bump{animation:xbump .6s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes xbump{40%{transform:scale(1.12)}}
+.note.stopn{background:#F1ECFF;border-color:#D6CBFA;color:#3B2A80}
+.xbtn.stopon{background:#C92A2A!important;border-color:#C92A2A!important;color:#fff!important}
 .weq .eqA{font-family:'Noto Naskh Arabic',serif;font-weight:700;font-size:min(6.5vh,52px);direction:rtl;line-height:1.4}
 .weq .eqA i{font-style:normal;color:#C9A227;font-family:'Montserrat',sans-serif;font-weight:800;margin:0 .25em;font-size:.7em}
 .weq .eqE{font-size:clamp(17px,2.4vh,24px);font-weight:700;color:#0B3D2E}
@@ -499,6 +504,7 @@ button{touch-action:manipulation}
 <body>
 <div class="tb">
   <span class="tbm">ب</span><b class="tbt">eQaida<small>Interactive · Takhti 1–3</small></b>
+  <a class="tbb wide" id="bookSw" href="part2.html" title="Open the other part of eQaida"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg><span>Part 2</span></a>
   <div class="tbsp"></div>
   <button class="tbb" id="pPrev" aria-label="Previous page">‹</button>
   <select id="pSel" aria-label="Go to page"></select>
@@ -954,7 +960,7 @@ const XI=(()=>{ const sv=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="curren
   return {left:sv('<path d="M15 5l-7 7 7 7"/>'),right:sv('<path d="M9 5l7 7-7 7"/>'),back:sv('<path d="M19 12H5M11 6l-6 6 6 6"/>'),fwd:sv('<path d="M5 12h14M13 6l6 6-6 6"/>'),
     play:sv('<path d="M8 5v14l11-7z"/>'),pause:sv('<path d="M8 5v14M16 5v14"/>'),again:sv('<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4v4.5H15"/>'),
     cut:sv('<circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8 8.5L20 17M8 15.5L20 7"/>'),join:sv('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
-    x:sv('<path d="M6 6l12 12M18 6L6 18"/>'),fitw:sv('<path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/>'),full:sv('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>')}; })();
+    x:sv('<path d="M6 6l12 12M18 6L6 18"/>'),stop:sv('<path d="M8.5 3h7L21 8.5v7L15.5 21h-7L3 15.5v-7z"/><path d="M8 12h8"/>'),fitw:sv('<path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/>'),full:sv('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>')}; })();
 const EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 
 /* ---------- makharij: where each letter comes from (book pages 4–5) ---------- */
@@ -1048,7 +1054,7 @@ function showX(){
   const el=X.list[X.i], key=el.dataset.x, k=key.indexOf(":"), type=key.slice(0,k), arg=key.slice(k+1);
   document.getElementById("xCount").textContent=`Box ${X.i+1} of ${X.list.length}`;
   document.getElementById("xPrev").disabled=X.i===0; document.getElementById("xNext").disabled=X.i===X.list.length-1;
-  ({l:()=>{ const [id,sc]=arg.split(":"); if(sc) letterX(id,sc); else beginnerX(id); }, s:()=>singleX(arg), w:()=>wordX(arg,false), e:()=>wordX(arg,true), h:()=>{ const [id,h]=arg.split(":"); harakaX(id,h); }, m:()=>makhrajX(arg.split(","))})[type]();
+  (({l:()=>{ const [id,sc]=arg.split(":"); if(sc) letterX(id,sc); else beginnerX(id); }, s:()=>singleX(arg), w:()=>wordX(arg,false), e:()=>wordX(arg,true), h:()=>{ const [id,h]=arg.split(":"); harakaX(id,h); }, m:()=>makhrajX(arg.split(","))})[type]||(()=>{ const f=(window.XT||{})[type]; if(f) f(arg); }))();
 }
 const setTitle=h=>document.getElementById("xTitle").innerHTML=h;
 function ctlBtn(label,fn,pri){ const b=document.createElement("button"); b.className="xbtn"+(pri?" pri":""); b.innerHTML=label; b.onclick=fn; xCtl.appendChild(b); return b; }
@@ -1245,30 +1251,38 @@ function player(S,start){
 
 /* ---------- 2. word / compound / exercise word: break into letters ---------- */
 function wordX(w,sounds){
-  const ps=analyze(w);
-  setTitle(`<bdi class="xa">${w}</bdi> &nbsp;${sounds?`${ps.length} sounds`:`${ps.length} letters joined`}`);
-  const col=p=>sounds?(HC[harakaOfX(p)]||"#2B2A26"):SC[p.form];
-  const piece=p=>`<div class="xp"><span class="g" style="color:${col(p)}">${ptxt(p)}</span><div class="lb"><span class="iso">${sounds?p.ch+p.m:isoOf(p)}</span><b>${sounds?sylOf(p):nameOf(p)}</b>${sounds?(harakaOfX(p)?`<span class="chipx" style="background:${HC[harakaOfX(p)]}">${HN[harakaOfX(p)]}</span>`:""):`<span class="chipx c${p.form}">${FORMN[p.form]}</span>`}</div></div>`;
-  let why=[];
-  if(!sounds){
-    ps.forEach((p,i)=>{ const n=ps[i+1]; if(n&&p.j==="R") why.push(`${nameOf(p)} never holds hands with the next letter, so ${nameOf(n)} starts again.`); });
-    if(ps.some(p=>p.id==="hamza")) why.push("Hamza never joins any letter.");
-    if(/لا/.test(w)) why.push("Laam + Alif are written together like this: لا");
-  }
-  const eqA=ps.map(p=>`<span style="color:${col(p)}">${sounds?p.ch+p.m:isoOf(p)}</span>`).join("<i>+</i>")+"<i>=</i>"+`<span>${w}</span>`;
-  const eqE=sounds?`${ps.map(sylOf).join(" + ")} = <span style="color:#098A46">${ps.map(sylOf).join("")}</span> — now read the whole word.`:ps.map(nameOf).join(" + ");
-  xBody.innerHTML=`${sounds?`<div class="lgx"><span class="chipx" style="background:var(--hf)">Fatha</span><span class="chipx" style="background:var(--hk)">Kasra</span><span class="chipx" style="background:var(--hd)">Damma</span></div>`
-     :`<div class="lgx"><span class="chipx cA">Alone</span><span class="chipx cS">Start</span><span class="chipx cM">Middle</span><span class="chipx cE">End</span></div>`}
-    <div class="wx"><div class="xw" id="xw">${ps.map(piece).join("")}</div>
-    <div class="weq" id="weq"><div class="eqA">${eqA}</div><div class="eqE">${eqE}</div>${why.map(t=>`<div class="note">${t}</div>`).join("")}</div></div>`;
-  const xw=document.getElementById("xw"), weq=document.getElementById("weq");
-  let broken=false;
+  const ps0=analyze(w), lastH=harakaOfX(ps0[ps0.length-1]); let broken=false, stop=false;
+  const draw=()=>{
+    const ps=stop?ps0.map((p,i)=>i===ps0.length-1?Object.assign({},p,{m:"ْ",stopped:true}):p):ps0, ws=ps.map(p=>p.ch+p.m).join("");
+    setTitle(`<bdi class="xa">${w}</bdi>${stop?` → <bdi class="xa">${ws}</bdi> &nbsp;stopping`:` &nbsp;${sounds?`${ps.length} sounds`:`${ps.length} letters joined`}`}`);
+    const col=p=>p.stopped?"var(--hs)":sounds?(HC[harakaOfX(p)]||"#2B2A26"):SC[p.form];
+    const syl=p=>p.stopped?((p.id==="alif"||p.id==="hamza")?"'":SND[p.id]):sylOf(p);
+    const chip=p=>p.stopped?`<span class="chipx" style="background:var(--hs)">Sukun</span>`:harakaOfX(p)?`<span class="chipx" style="background:${HC[harakaOfX(p)]}">${HN[harakaOfX(p)]}</span>`:"";
+    const piece=p=>`<div class="xp${p.stopped?" stp":""}"><span class="g" style="color:${col(p)}">${ptxt(p)}</span><div class="lb"><span class="iso">${sounds?p.ch+p.m:isoOf(p)}</span><b>${sounds?syl(p):nameOf(p)}</b>${sounds?chip(p):`<span class="chipx c${p.form}">${FORMN[p.form]}</span>`}</div></div>`;
+    let why=[];
+    if(!sounds){
+      ps.forEach((p,i)=>{ const n=ps[i+1]; if(n&&p.j==="R") why.push(`${nameOf(p)} never holds hands with the next letter, so ${nameOf(n)} starts again.`); });
+      if(ps.some(p=>p.id==="hamza")) why.push("Hamza never joins any letter.");
+      if(/لا/.test(w)) why.push("Laam + Alif are written together like this: لا");
+    }
+    const sy=ps.map(syl); if(stop&&sy.length>1) sy[sy.length-2]+=sy.pop();
+    const eqA=ps.map(p=>`<span style="color:${col(p)}">${sounds?p.ch+p.m:isoOf(p)}</span>`).join("<i>+</i>")+"<i>=</i>"+`<span>${sounds?ws:w}</span>`;
+    const eqE=sounds?`${sy.join(" + ")} = <span style="color:#098A46">${sy.join("")}</span>${stop?"":" — now read the whole word."}`:ps.map(nameOf).join(" + ");
+    if(stop) why.push(`<b>Stopping (Waqf):</b> the last letter rests. Its ${HN[lastH]} is dropped: <span class="xar">${w}</span> → <span class="xar" style="color:var(--hs)">${ws}</span>`);
+    xBody.innerHTML=`${sounds?`<div class="lgx"><span class="chipx" style="background:var(--hf)">Fatha</span><span class="chipx" style="background:var(--hk)">Kasra</span><span class="chipx" style="background:var(--hd)">Damma</span>${stop?`<span class="chipx" style="background:var(--hs)">Sukun</span>`:""}</div>`
+       :`<div class="lgx"><span class="chipx cA">Alone</span><span class="chipx cS">Start</span><span class="chipx cM">Middle</span><span class="chipx cE">End</span></div>`}
+      <div class="wx"><div class="xw" id="xw">${ps.map(piece).join("")}</div>
+      <div class="weq" id="weq"><div class="eqA">${eqA}</div><div class="eqE">${eqE}</div>${why.map(t=>`<div class="note${stop?" stopn":""}">${t}</div>`).join("")}</div></div>`;
+  };
   const tb=ctlBtn(XI.cut+"Break it",()=>set(!broken),true);
   ctlBtn(XI.again+"<span>Play again</span>",()=>{ set(false); run(); });
-  const set=b=>{ broken=b; xw.classList.toggle("broken",b); weq.classList.toggle("on",b); tb.innerHTML=b?XI.join+"Join it":XI.cut+"Break it"; };
-  const run=()=>{ stopTimers(); const my=X.tok; X.timer=setTimeout(()=>{ if(my===X.tok) set(true); },900); };
+  if(sounds&&ps0.length>1&&lastH){ const sb=ctlBtn("",()=>{ stop=!stop; if(window.EQSfx) EQSfx.stop(); lab(); draw(); set(broken); if(stop){ const g=document.querySelector("#xw .xp.stp"); if(g) g.classList.add("bump"); } });
+    const lab=()=>{ sb.innerHTML=stop?XI.play+"Read on":XI.stop+"Stop here (Waqf)"; sb.classList.toggle("stopon",stop); }; lab(); }
+  const set=b=>{ broken=b; const xw=document.getElementById("xw"), weq=document.getElementById("weq"); xw.classList.toggle("broken",b); weq.classList.toggle("on",b); tb.innerHTML=b?XI.join+"Join it":XI.cut+"Break it"; };
+  const run=()=>{ stopTimers(); const my=X.tok; X.timer=setTimeout(()=>{ if(my===X.tok){ set(true); if(window.EQSfx) EQSfx.swish(); } },900); };
   X.space=()=>tb.click();
-  if(ps.length>1) run(); else set(true);
+  draw();
+  if(ps0.length>1) run(); else set(true);
 }
 
 /* ---------- 3. letter with a sign (pages 13–14) ---------- */
@@ -1354,9 +1368,10 @@ fit();
 <script>
 /* eQuran connection. Leave api empty to keep scores on this device only. See README, "Connecting to eQuran". */
 window.EQAIDA_CONFIG={api:""};
+window.EQAIDA_BOOK="part1";
 </script>
-<script src="sounds.js?v=1113100000"></script>
-<script src="practice.js?v=1113100000"></script>
+<script src="sounds.js?v=1116220000"></script>
+<script src="practice.js?v=1116220000"></script>
 <script>
 /* if this page was opened without its folder (for example straight from inside a zip), say so clearly */
 addEventListener("load",function(){ setTimeout(function(){ if(window.EQPractice||window.__SINGLE) return;

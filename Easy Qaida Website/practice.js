@@ -39,6 +39,13 @@ const ICO={
   flame:'<path d="M12 21c3.9 0 6.5-2.6 6.5-6.2 0-3.4-2.3-5.6-4-7.8-.4 2-1.4 3.2-2.6 3.8.3-2.9-.7-5.6-3-7.8.2 3.4-3.4 5.8-3.4 10.3C5.5 17.6 8.1 21 12 21z"/>',
   gauge:'<path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
+  sign:'<path d="M6 18l6-12 6 12"/><path d="M8.5 13h7"/><path d="M10 3.5h4"/>',
+  stopsign:'<path d="M8.2 3h7.6L21 8.2v7.6L15.8 21H8.2L3 15.8V8.2z"/><path d="M8.5 12h7"/>',
+  twins:'<rect x="3" y="6" width="8" height="12" rx="2"/><rect x="13" y="6" width="8" height="12" rx="2"/>',
+  split:'<path d="M12 3v18"/><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/>',
+  bounce:'<circle cx="12" cy="6" r="2.6"/><path d="M4.5 20h15"/><path d="M12 10v6M9.5 14l2.5 2.5 2.5-2.5"/>',
+  nose:'<path d="M12 3.5c-1 5-4.5 8-4.5 11.5a4.5 4.5 0 0 0 9 0c0-3.5-3.5-6.5-4.5-11.5z"/>',
+  soft:'<path d="M3.5 14c3-5 6-5 8.5 0s5.5 5 8.5 0"/><path d="M3.5 9h17"/>',
   trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 5.5H5V7a3.5 3.5 0 0 0 3.5 3.5M16 5.5h3V7a3.5 3.5 0 0 1-3.5 3.5"/><path d="M12 13v4M8.5 20h7M9.5 17h5v3h-5z"/>',
   list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/>',
   cal:'<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'
@@ -71,6 +78,7 @@ function lvOf(p){ p=p||0; let i=0; while(i+1<LVS.length&&p>=LVS[i+1]) i++;
 const pts=()=>stu().pts||0;
 /* scoring by day: today, this week (Monday to Sunday), days in a row, daily goal */
 const GOAL=100;
+const BOOK=window.EQAIDA_BOOK||"part1";
 const dayKey=d=>{ d=d||new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
 const weekDays=()=>{ const d=new Date(), wd=(d.getDay()+6)%7, out=[]; for(let i=0;i<=wd;i++){ const x=new Date(d); x.setDate(d.getDate()-i); out.push(dayKey(x)); } return out; };
 const ptsOf=(s,keys)=>keys.reduce((a,k)=>a+((s.days||{})[k]||0),0);
@@ -78,8 +86,8 @@ const todayPts=s=>ptsOf(s,[dayKey()]), weekPts=s=>ptsOf(s,weekDays());
 function dayStreak(s){ const days=s.days||{}, d=new Date(); let n=0; if(!days[dayKey(d)]) d.setDate(d.getDate()-1); while(days[dayKey(d)]){ n++; d.setDate(d.getDate()-1); } return n; }
 /* eQuran: every change of score is sent out, and the leaderboard is read back (see README) */
 const CFG=Object.assign({api:""},window.EQAIDA_CONFIG||{}), API=String(CFG.api||"").replace(/\/+$/,"");
-function scoreData(){ const s=stu(); return {source:"eqaida",type:"score",book:"part1",sid:s.sid||"",name:store.cur,points:s.pts||0,weekPoints:weekPts(s),todayPoints:todayPts(s),
-  stars:s.stars||0,level:lvOf(s.pts).n,streakDays:dayStreak(s),stepsDone:Object.keys(s.path||{}).length,weekStart:weekDays().slice(-1)[0],updated:new Date().toISOString()}; }
+function scoreData(){ const s=stu(); return {source:"eqaida",type:"score",book:BOOK,sid:s.sid||"",name:store.cur,points:s.pts||0,weekPoints:weekPts(s),todayPoints:todayPts(s),
+  stars:s.stars||0,level:lvOf(s.pts).n,streakDays:dayStreak(s),stepsDone:Object.keys(s.path||{}).filter(k=>PATH.some(x=>x.id===k)).length,weekStart:weekDays().slice(-1)[0],updated:new Date().toISOString()}; }
 let syncT=0;
 function sync(){ const p=scoreData(); try{ if(window.parent&&window.parent!==window) window.parent.postMessage(p,"*"); }catch(e){}
   if(API){ try{ fetch(API+"/score",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p),keepalive:true}).catch(()=>{}); }catch(e){} } }
@@ -91,7 +99,7 @@ const short_=()=>(document.documentElement.clientHeight||innerHeight)<500;   /* 
 const sfx=new Proxy({},{get:(_,k)=>(...a)=>{ try{ if(window.EQSfx&&EQSfx[k]) EQSfx[k](...a); }catch(e){} }});
 
 /* ================= the things we practise ================= */
-const A=(t,cls)=>`<span class="pz-a${cls?" "+cls:""}">${t}</span>`;
+const A=(t,cls)=>`<span class="pz-a${cls?" "+cls:""}">${String(t).replace(/\u064C/g,"\u08F1")}</span>`;
 const cache={};
 const LI=id=>cache["l:"+id]||(cache["l:"+id]={key:"l:"+id,kind:"letter",id,html:A(L[id].ch),name:L[id].en,ur:L[id].ur,k:1,len:1,answer:`<b>${L[id].en}</b> ${A(L[id].ur)}`});
 function FI(id,f){ const key=`f:${id}:${f}`; return cache[key]||(cache[key]={key,kind:"form",id,f,html:A(formHTML(id,f,INK)),name:L[id].en,k:.85,len:1,
@@ -106,6 +114,10 @@ function EI(w){ const key="e:"+w; if(cache[key]) return cache[key]; const ps=ana
   return cache[key]={key,kind:"word",w,ps,html:A(w),name:ps.map(sylOf).join(""),k:n<=2?.75:n===3?.58:.46,len:n,
     answer:`<b>${ps.map(sylOf).join("")}</b><br><small>${ps.map(sylOf).join(" · ")}</small>`}; }
 
+function YI(w,lesson){ const key="y:"+w; if(cache[key]) return cache[key]; const R=window.P2.read(w), co=window.P2.core(w,lesson)||null, n=R.ps.length;
+  const TG={bounce:"bounce",nose:"nose sound",hold:"hold"};
+  return cache[key]={key,kind:"sig",w,ps:R.ps,html:A(w),name:R.text,k:n<=2?1:n===3?.8:n<=5?.62:n<=8?.48:.36,len:n,core:co&&co.c,pat:co&&co.pat,fam:co&&co.fam,tags:R.tags,
+    answer:`<b>${R.text}</b>${R.tags.length?`<br><small>${R.tags.map(t=>TG[t]).join(" · ")}</small>`:""}`}; }
 /* what a page offers: units the teacher can switch on or off, and the items inside them */
 function pageInfo(i){
   const pg=PAGES[i], xs=pg?$$("[data-x]",pg).map(e=>e.dataset.x):[], uniq=a=>[...new Set(a)];
@@ -116,9 +128,13 @@ function pageInfo(i){
   const Ws=uniq(xs.filter(x=>x.startsWith("w:")).map(x=>x.slice(2))).filter(w=>analyze(w).length>=2);
   const Hs=uniq(xs.filter(x=>x.startsWith("h:")).map(x=>x.slice(2)));
   const Es=uniq(xs.filter(x=>x.startsWith("e:")).map(x=>x.slice(2)));
+  const Ys=uniq(xs.filter(x=>x.startsWith("y:")).map(x=>x.slice(2))), Zs=uniq(xs.filter(x=>x.startsWith("z:")).map(x=>x.slice(2)));
+  const lesson=pg&&pg.dataset.lesson||"", stops=Zs.map(z=>{ const [w,s,tag]=z.split("|"); return {w,s,tag:tag||""}; }); let twins=[]; try{ twins=JSON.parse(pg&&pg.dataset.twins||"[]"); }catch(e){}
   const U=(id,label,name,items)=>({id,label,name,items});
   let mode, title, units, words=[], note="";
-  if(Sh.length){ mode="shapes"; title="Joined shapes"; units=Sh.map(id=>U(id,L[id].ch,L[id].en,(L[id].j==="D"?["S","M","E"]:["E"]).map(f=>FI(id,f)))); words=Ws.map(WI); }
+  if(Ys.length&&window.P2){ mode="signs"; title=pg.dataset.title||"Signs"; units=Ys.map(w=>U(w,w,"",[YI(w,+lesson||0)])); words=units.flatMap(u=>u.items).filter(it=>it.len>=3); }
+  else if(BOOK!=="part1"){ mode="none"; title="Lessons"; units=[]; }
+  else if(Sh.length){ mode="shapes"; title="Joined shapes"; units=Sh.map(id=>U(id,L[id].ch,L[id].en,(L[id].j==="D"?["S","M","E"]:["E"]).map(f=>FI(id,f)))); words=Ws.map(WI); }
   else if(Hs.length){ mode="har"; title="Fatha · Kasra · Damma"; const by={}; Hs.forEach(x=>{ const [id,h]=x.split(":"); (by[id]=by[id]||[]).push(HI(id,h)); });
     units=Object.keys(by).map(id=>U(id,id==="alif"?"ا":L[id].ch,L[id].en,by[id])); }
   else if(Es.length){ mode="word"; title="Words"; units=Es.map(w=>U(w,w,"",[EI(w)])); words=Es.map(EI); }
@@ -127,7 +143,8 @@ function pageInfo(i){
     if(!Ls.length&&!Ms.length) note="This page has no table to practise, so here are the 29 letters.";
     units=ids.map(id=>U(id,L[id].ch,L[id].en,[LI(id)])); }
   const rows6=mode==="letters"&&units.length===29;
-  return {i,key:rows6?"letters":"p"+i,label,title,mode,units,words,note,rows6,all:units.flatMap(u=>u.items)};
+  const lines=!!(pg&&pg.dataset.lines), only=mode==="signs"&&lesson==="B"?(lines?["flash","stop","read"]:["flash","find","hum","spot2","read"]):null;
+  return {i,key:rows6?"letters":(BOOK==="part1"?"p":BOOK+"-p")+i,label,title,mode,units,words,note,rows6,lesson,stops,twins,lines,only,all:units.flatMap(u=>u.items)};
 }
 
 /* ================= shell ================= */
@@ -167,31 +184,31 @@ function award(n,el,cls,label){
   const g=$("#pzGp b",B); if(g) g.textContent=fmtN(S.gp);
   floatAt(el,label||("+"+n),cls); setTimeout(sfx.coin,220);
 }
-function open(i){ sfx.open(); S.info=pageInfo(i); loadSel(); PZ.hidden=false; document.body.style.overflow="hidden"; header(); hub(); }
+function open(i){ sfx.open(); S.info=pageInfo(i); loadSel(); PZ.hidden=false; document.body.style.overflow="hidden"; header(); if(!S.info.units.length) pathView(); else hub(); }
 function close(){ runCleanup(); PZ.hidden=true; B.innerHTML=""; document.body.style.overflow=""; }
 
 /* ================= hub: 1 choose what, 2 choose a game ================= */
 const LEG=`<div class="pz-leg"><span><i></i>New</span><span><i class="lv-weak"></i>Needs practice</span><span><i class="lv-learn"></i>Learning</span><span><i class="lv-good"></i>Knows it</span></div>`;
 const unitChip=u=>`<button class="pz-u ${S.sel.has(u.id)?"on":""} lv-${level(u.items)}" data-u="${esc(u.id)}">${A(u.label)}${u.name?`<small>${u.name}</small>`:""}</button>`;
 function count(){ const n=selUnits().length, m=S.info.mode, el=$("#pzN",B); if(!el) return;
-  el.textContent=n+" "+(m==="word"?(n===1?"word":"words"):m==="comp"?(n===1?"box":"boxes"):(n===1?"letter":"letters"))+" chosen"; }
+  el.textContent=n+" "+(m==="signs"?(n===1?"box":"boxes"):m==="word"?(n===1?"word":"words"):m==="comp"?(n===1?"box":"boxes"):(n===1?"letter":"letters"))+" chosen"; }
 const tint=a=>`--t:${ACTS[a].t};--tc:${ACTS[a].tc}`;
 function statsHTML(){ const s=stu(), t=todayPts(s), st=dayStreak(s);
   return `<div class="pz-stats"><div><span class="i" style="--t:#FBF3D8;--tc:#8A6A0C">${IC("coin")}</span><b>${fmtN(t)} <small>/ ${GOAL}</small></b><em>Today’s points</em><span class="bar"><i style="width:${Math.min(100,Math.round(100*t/GOAL))}%"></i></span></div>
     <div><span class="i" style="--t:#E8F0FB;--tc:#2F5FA7">${IC("cal")}</span><b>${fmtN(weekPts(s))}</b><em>This week</em></div>
     <div><span class="i" style="--t:#FFF1E4;--tc:#B4540A">${IC("flame")}</span><b>${st} ${st===1?"day":"days"}</b><em>Practised in a row</em></div>
-    <div><span class="i" style="--t:#E5F4EB;--tc:#0B6B45">${IC("check")}</span><b>${Object.keys(s.path||{}).length} <small>/ ${PATH.length}</small></b><em>Lesson steps done</em></div></div>`; }
+    <div><span class="i" style="--t:#E5F4EB;--tc:#0B6B45">${IC("check")}</span><b>${Object.keys(s.path||{}).filter(k=>PATH.some(x=>x.id===k)).length} <small>/ ${PATH.length}</small></b><em>Lesson steps done</em></div></div>`; }
 function hub(){
   runCleanup(); S.view="hub"; navSync(); const inf=S.info;
   const pre=inf.rows6?[["r1","Row 1"],["r2","Rows 1–2"],["r3","Rows 1–3"],["r4","Rows 1–4"],["all","All 29"]]:[["all","All"],["none","None"]];
-  const acts=Object.keys(ACTS).filter(a=>!ACTS[a].ok||ACTS[a].ok(inf));
+  const acts=actOrder().filter(a=>(!ACTS[a].ok||ACTS[a].ok(inf))&&(!inf.only||inf.only.includes(a)));
   B.innerHTML=`<div class="pz-hub">${inf.note?`<p class="pz-hint">${inf.note}</p>`:""}
     <section class="pz-sec"><div class="pz-sh"><h3>What to practise</h3><span class="n" id="pzN"></span></div>
       <div class="pz-pres">${pre.map(([k,t])=>`<button class="pz-pre" data-pre="${k}">${t}</button>`).join("")}<button class="pz-pre" data-pre="weak">Needs practice</button></div>
-      <div class="pz-units ${inf.rows6?"rows6":""} ${inf.mode==="comp"||inf.mode==="word"?"wide":""}" id="pzU">${inf.units.map(unitChip).join("")}</div>${LEG}</section>
+      <div class="pz-units ${inf.rows6?"rows6":""} ${inf.mode==="comp"||inf.mode==="word"||inf.mode==="signs"?"wide":""}" id="pzU">${inf.units.map(unitChip).join("")}</div>${LEG}</section>
     <section class="pz-sec"><div class="pz-sh"><h3>Pick a game</h3><div class="pz-sp"></div>
         <div class="pz-tg"><label class="pz-lit"><input type="checkbox" id="pzOn" ${online()?"checked":""}>Online class</label><label class="pz-lit"><input type="checkbox" id="pzLit" ${little()?"checked":""}>Age 3–5</label></div></div>
-      <button class="pz-quick" data-quick="1"><span class="t">${IC("bolt")}</span><span><b>Quick practice</b><small>About 5 minutes · Flash cards, Find it, Balloon pop, then a rocket launch</small></span><span class="go">${IC("right")}</span></button>
+      <button class="pz-quick" data-quick="1"><span class="t">${IC("bolt")}</span><span><b>Quick practice</b><small>About 5 minutes · ${quickSteps(inf).map(a=>ACTS[a].title).join(", ")}, then a rocket launch</small></span><span class="go">${IC("right")}</span></button>
       <div class="pz-acts">${acts.map(a=>`<button class="pz-act" data-act="${a}" style="${tint(a)}">${ACTS[a].isNew?`<span class="pz-new">New</span>`:""}<span class="t">${IC(ACTS[a].ic)}</span><div><b>${ACTS[a].title}</b><span>${ACTS[a].desc}</span></div></button>`).join("")}</div>
       <div class="pz-tip">${IC("vol")}<div><b>Online class:</b> turn on the numbers above so the child can say them. So the child also hears the sound effects, share your computer sound (Zoom: <b>Share sound</b> · Google Meet: share a Chrome tab with <b>Also share tab audio</b> · Teams: <b>Include computer sound</b>).</div></div></section></div>`;
   count();
@@ -234,9 +251,10 @@ function start(name,opt){
     none:msg=>{ toast(msg); hub(); },
     done:r=>finish(name,r,opt,stage)});
 }
+const quickSteps=inf=>inf.only?["flash","find","read"].filter(a=>inf.only.includes(a)):["flash",inf.mode==="signs"&&ACTS.which.ok(inf)?"which":"find","balloon"];
 function quick(){
   const sel=selItems(); if(!sel.length){ toast("Choose at least one first."); return; }
-  const chain={steps:["flash","find","balloon"],i:0,stars:0,sets:[order(sel).slice(0,little()?6:10),sel,sel]};
+  const steps=quickSteps(S.info), chain={steps,i:0,stars:0,sets:steps.map(a=>a==="flash"?order(sel).slice(0,little()?6:10):sel)};
   start("flash",{chain,items:chain.sets[0]});
 }
 const ROCKET=`<svg viewBox="0 0 100 190" aria-hidden="true"><g class="fl"><path d="M34 148 Q50 196 66 148Z" fill="#F59E0B"/><path d="M41 148 Q50 178 59 148Z" fill="#FDE68A"/></g><path d="M50 4C76 26 80 80 70 150H30C20 80 24 26 50 4Z" fill="#fff" stroke="#14231D" stroke-width="3"/><path d="M50 4C62 14 69 28 72 44H28C31 28 38 14 50 4Z" fill="#0B6B45" stroke="#14231D" stroke-width="3"/><circle cx="50" cy="80" r="13" fill="#D7EEFB" stroke="#14231D" stroke-width="3"/><path d="M30 110L12 146L30 140ZM70 110L88 146L70 140Z" fill="#C9A227" stroke="#14231D" stroke-width="3" stroke-linejoin="round"/></svg>`;
@@ -276,21 +294,24 @@ function finish(name,r,opt,stage){
 }
 
 /* wrong answers to show next to the right one: look-alikes first */
-function distract(t,n){
+function distract(t,n,strict){
   const pool=S.info.all.filter(x=>x.key!==t.key&&x.kind===t.kind); let pri;
   if(t.kind==="letter"){ const sel=selItems().filter(x=>x.kind==="letter"&&x.id!==t.id).map(x=>x.id), fam=(VF[t.id]||[]).filter(x=>x!==t.id);
     pri=[...shuffle(fam.filter(x=>sel.includes(x))),...shuffle(sel),...shuffle(fam),...shuffle(ORDER.filter(x=>x!==t.id))].map(LI); }
   else if(t.kind==="form"){ const same=pool.filter(x=>x.f===t.f), fam=same.filter(x=>(VF[t.id]||[]).includes(x.id));
     pri=[...shuffle(fam),...shuffle(same),...shuffle(ORDER.filter(id=>id!==t.id&&L[id].j!=="U"&&(t.f==="E"||L[id].j==="D")).map(id=>FI(id,t.f)))]; }
   else if(t.kind==="har") pri=[...shuffle(pool.filter(x=>x.id===t.id)),...shuffle(pool.filter(x=>x.h===t.h)),...shuffle(pool)];
+  else if(t.kind==="sig"){ const L_=+S.info.lesson||0, vs=(window.P2?P2.variants(t.w,L_,8):[]).map(w=>YI(w,L_)), same=pool.filter(x=>x.core&&x.core===t.core), pat=pool.filter(x=>x.pat&&x.pat===t.pat&&x.core!==t.core);
+    pri=strict?[...shuffle(vs),...shuffle(same)]:[...shuffle(vs).slice(0,2),...shuffle(same),...shuffle(pat),...shuffle(pool.filter(x=>t.len>=3&&x.len>=3&&(x.ps[0].id===t.ps[0].id||x.ps[x.ps.length-1].id===t.ps[t.ps.length-1].id))),...shuffle(vs),...shuffle(pool).sort((a,b)=>Math.abs(a.len-t.len)-Math.abs(b.len-t.len))]; }
   else pri=shuffle(pool).sort((a,b)=>Math.abs(a.len-t.len)-Math.abs(b.len-t.len));
-  const out=[], seen=new Set([t.key]); for(const x of pri){ if(seen.has(x.key)) continue; seen.add(x.key); out.push(x); if(out.length>=n) break; } return out;
+  const out=[], seen=new Set([t.key]), names=new Set([t.name]); for(const x of pri){ if(seen.has(x.key)||t.kind==="sig"&&names.has(x.name)) continue; seen.add(x.key); names.add(x.name); out.push(x); if(out.length>=n) break; } return out;
 }
 function promptOf(t){
   if(t.kind==="letter") return `Find <b>${t.name}</b> ${A(t.ur,"sm")}`;
   if(t.kind==="form") return `Find <b>${t.name}</b><small>in its ${FORMN[t.f].toLowerCase()} shape</small>`;
   if(t.kind==="har") return `Find <b>${t.name}</b><small>${L[t.id].en} with ${HN[t.h]}</small>`;
   if(t.kind==="comp") return `Find ${A(t.ps.map(isoOf).join(" + "))}<small>joined together</small>`;
+  if(t.kind==="sig") return `Find <b dir="ltr">${t.name}</b><small>The teacher says it, the child finds it</small>`;
   return `Find <b>${t.name}</b>`;
 }
 /* a list of rounds, weakest first, without the same one twice in a row */
@@ -319,12 +340,12 @@ function actFlash(c){
 
 /* ---------- 2. find it: the teacher says the name, the child taps it ---------- */
 function actFind(c){
-  const rounds=c.opt.chain?(c.little?5:8):(c.little?6:Math.max(8,Math.min(12,c.items.length)));
-  const targets=roundsOf(c.items,rounds); let n=0, right=0, streak=0; const missed=[];
+  const rounds=c.opt.chain?(c.little?5:8):(c.little?6:Math.max(8,Math.min(12,c.items.length))), withCore=c.which?c.items.filter(it=>it.core&&it.core!=="ا"):[];
+  const targets=roundsOf(withCore.length?withCore:c.items,rounds); let n=0, right=0, streak=0; const missed=[];
   c.stage.innerHTML=`<div class="pz-find"><div class="pz-q" id="fiQ"></div><div class="pz-ch" id="fiC"></div><p class="pz-fb" id="fiF">&nbsp;</p>${c.online?`<p class="pz-hint">The child says the number. You tap it, or press that number key.</p>`:""}</div>`;
   const Q=$("#fiQ",c.stage), C=$("#fiC",c.stage), F=$("#fiF",c.stage);
   function round(){
-    const t=targets[n], k=c.little?(streak>=3?3:2):(streak>=6?6:streak>=3?4:3), ch=shuffle([t,...distract(t,k-1)]); let firstTry=true, lock=false;
+    const t=targets[n], k=c.little?(streak>=3?3:2):(streak>=6?6:streak>=3?4:3), nd=c.which?Math.max(3,k)-1:k-1, ds0=distract(t,nd,c.which), ch=shuffle([t,...(c.which&&ds0.length<2?distract(t,nd,false):ds0)]); let firstTry=true, lock=false;
     Q.innerHTML=promptOf(t); F.innerHTML="&nbsp;"; F.className="pz-fb"; c.prog(n+1,rounds);
     const cols=narrow()?(ch.length===4?2:Math.min(3,ch.length)):(ch.length>4?3:ch.length); C.className="pz-ch"+(Math.ceil(ch.length/cols)>1?" two":""); C.style.setProperty("--c",cols);
     C.innerHTML=ch.map((it,i)=>`<button class="pz-c" data-i="${i}" style="--k:${it.k};--i:${i}">${c.online?`<i class="pz-num">${i+1}</i>`:""}${it.html}</button>`).join("");
@@ -381,10 +402,10 @@ function actBalloon(c){
 /* ---------- 4. memory match (cards turn over in 3D) ---------- */
 function actMemory(c){
   const want=c.little?3:6, used=new Set(), chosen=[];
-  const take=it=>{ const b=it.kind==="form"?it.id:it.key; if(used.has(b)||chosen.length>=want) return; used.add(b); chosen.push(it); };
+  const take=it=>{ const b=it.kind==="form"?it.id:it.kind==="sig"?"n:"+it.name:it.key; if(used.has(b)||chosen.length>=want) return; used.add(b); chosen.push(it); };
   shuffle(c.items).forEach(take); if(chosen.length<3) distract(chosen[0],8).forEach(it=>{ if(chosen.length<3) take(it); });
   const isForm=chosen[0].kind==="form";
-  const cards=shuffle(chosen.flatMap((it,i)=>[{p:i,html:it.html,k:it.k},{p:i,html:isForm?LI(it.id).html:it.html,k:isForm?1:it.k}]));
+  const cards=shuffle(chosen.flatMap((it,i)=>[{p:i,html:it.html,k:it.k},{p:i,html:it.kind==="sig"?`<span class="pz-lat">${it.name}</span>`:isForm?LI(it.id).html:it.html,k:it.kind==="sig"||isForm?1:it.k}]));
   const n=cards.length, cols=narrow()?(n<=6?2:3):short_()?(n<=6?3:n<=8?4:6):(n<=6?3:n<=8?4:n<=10?5:4);
   c.stage.innerHTML=`<div class="pz-mmw"><p class="pz-hint">${isForm?"Match each joined shape with its letter.":"Turn two cards over and find the pairs."} Say the name every time.${c.online?" The child says the two numbers.":""}</p>
     <div class="pz-mm" style="--c:${cols}">${cards.map((cd,i)=>`<button class="pz-mc" data-i="${i}" style="--k:${cd.k}"><span class="in"><span class="bk">${IC("star")}</span><span class="fr">${cd.html}</span></span>${c.online?`<i class="pz-num">${i+1}</i>`:""}</button>`).join("")}</div></div>`;
@@ -432,10 +453,12 @@ function actRead(c){
   c.stage.innerHTML=`<div class="pz-rc"><p class="pz-hint">The child reads every box, starting from the right. Tap any box that was wrong, then tap Done.</p><div class="pz-rg" id="rcG"></div>
     <div class="pz-rf"><button class="pz-btn sm" id="rcSh">${IC("turn")}Shuffle again</button><span class="pz-time" id="rcT">0:00</span><button class="pz-btn pri" id="rcDone">${IC("check")}Done</button></div></div>`;
   const G=$("#rcG",c.stage), T=$("#rcT",c.stage);
-  function deal(){ items=shuffle(c.items).slice(0,cap); bad=new Set(); const n=items.length, cols=narrow()?Math.min(4,n):(n<=4?n:n<=8?4:n<=15?5:6), rows=Math.ceil(n/cols);
-    G.style.setProperty("--c",cols); G.style.setProperty("--fs",narrow()?`min(${Math.round(40/rows)}vh,${Math.round(46/cols)}vw)`:`min(${Math.round(36/rows)}vh,${Math.round(340/cols)+40}px)`);
-    G.innerHTML=items.map((it,i)=>`<button class="pz-rcell" data-i="${i}" style="--k:${it.k}">${it.html}</button>`).join(""); t0=Date.now();
-    c.label(n<c.items.length?`${n} of ${c.items.length} boxes`:`${n} boxes`); }
+  const inOrder=!!(S.info&&S.info.lines);
+  if(inOrder){ $(".pz-hint",c.stage).textContent="The child reads each line, from the top. Tap any line that was wrong, then tap Done."; $("#rcSh",c.stage).style.display="none"; }
+  function deal(){ items=inOrder?c.items.slice(0,cap):shuffle(c.items).slice(0,cap); bad=new Set(); const n=items.length, cols=inOrder?1:narrow()?Math.min(4,n):(n<=4?n:n<=8?4:n<=15?5:6), rows=Math.ceil(n/cols);
+    G.style.setProperty("--c",cols); G.style.setProperty("--fs",inOrder?(narrow()?"6.2vw":`min(${Math.round(30/rows)}vh,40px)`):narrow()?`min(${Math.round(40/rows)}vh,${Math.round(46/cols)}vw)`:`min(${Math.round(36/rows)}vh,${Math.round(340/cols)+40}px)`);
+    G.innerHTML=items.map((it,i)=>`<button class="pz-rcell${inOrder?" line":""}" data-i="${i}" style="--k:${inOrder?1:it.k}">${it.html}</button>`).join(""); t0=Date.now();
+    const u=inOrder?"lines":"boxes"; c.label(n<c.items.length?`${n} of ${c.items.length} ${u}`:`${n} ${u}`); }
   G.onclick=e=>{ const b=e.target.closest(".pz-rcell"); if(!b) return; const it=items[+b.dataset.i]; b.classList.toggle("bad"); if(bad.has(it)){ bad.delete(it); sfx.tap(); } else { bad.add(it); sfx.no(); } };
   const iv=setInterval(()=>{ T.textContent=fmt(Math.round((Date.now()-t0)/1000)); },500); c.onLeave(()=>clearInterval(iv));
   $("#rcSh",c.stage).onclick=deal;
@@ -579,7 +602,7 @@ function bpieces(it){ const ps=it.ps, out=[]; for(let i=0;i<ps.length;i++){ cons
   if(p.id==="lam"&&n&&n.ch==="ا"&&p.jn){ out.push({t:(p.jp?ZWJ:"")+p.ch+p.m+n.ch+n.m,iso:"لا"+p.m+n.m,id:"lam"}); i++; }
   else out.push({t:ptxt(p),iso:isoOf(p)+p.m,id:p.id}); } return out; }
 function actBuild(c){
-  const words=c.items.filter(w=>w.ps&&w.ps.length>=2); if(!words.length) return c.none("Build the word needs words. Choose some first.");
+  const words=c.items.filter(w=>w.ps&&w.ps.length>=2&&!(w.kind==="sig"&&/[\s\/]/.test(w.w))); if(!words.length) return c.none("Build the word needs words. Choose some first.");
   const rounds=Math.min(c.little?3:5,Math.max(words.length,3)), list=roundsOf(words,rounds); let n=0, right=0; const missed=[];
   c.stage.innerHTML=`<div class="pz-bd"><div class="pz-q">Build the word<small>Pick the letters in order, starting from the right</small></div><div class="pz-bw2" id="bdW"></div><div class="pz-tiles" id="bdT"></div><p class="pz-fb" id="bdF">&nbsp;</p></div>`;
   const W=$("#bdW",c.stage), T=$("#bdT",c.stage), F=$("#bdF",c.stage);
@@ -605,6 +628,151 @@ function actBuild(c){
   round();
 }
 
+/* ================= Part 2 games: one contrast at a time ================= */
+const P2R=w=>window.P2.read(w);
+/* one big cell, two fixed answer buttons (1 and 2 never move) */
+function actSort(c,cfg){
+  let pool=c.items.filter(it=>cfg.cls(it)!=null); if(cfg.extra) pool=pool.concat(cfg.extra(c.items).filter(it=>cfg.cls(it)!=null&&!pool.includes(it)));
+  if(pool.length<2) return c.none(cfg.empty);
+  const rounds=Math.min(c.little?6:10,Math.max(6,pool.length)), grp=[0,1].map(k=>pool.filter(it=>cfg.cls(it)===k)); let list;
+  if(grp[0].length&&grp[1].length){ const a=Math.round(rounds/2); list=shuffle([...roundsOf(grp[0],a),...roundsOf(grp[1],rounds-a)]);
+    for(let i=1;i<list.length;i++) if(list[i]===list[i-1]){ const j=list.findIndex((x,k)=>k>i&&x!==list[i]&&x!==list[i-1]); if(j>0) [list[i],list[j]]=[list[j],list[i]]; } }
+  else list=roundsOf(pool,rounds);
+  let n=0,right=0; const missed=[];
+  c.stage.innerHTML=`<div class="pz-sort"><div class="pz-q">${cfg.q}</div><div class="pz-sc" id="soC"></div>
+    <div class="pz-sb" id="soB">${cfg.btn.map((b,i)=>`<button class="pz-so" data-i="${i}" style="--fc:${b.col}"><i class="pz-num">${i+1}</i><span class="pic">${b.pic||""}</span><b>${b.label}</b></button>`).join("")}</div>
+    <p class="pz-fb" id="soF">&nbsp;</p></div>`;
+  const Cc=$("#soC",c.stage), Bb=$("#soB",c.stage), F=$("#soF",c.stage);
+  c.keys(e=>{ const k=+e.key; if(k>=1&&k<=cfg.btn.length) Bb.children[k-1].click(); });
+  function round(){ const it=list[n]; let firstTry=true, lock=false; c.prog(n+1,list.length); F.className="pz-fb"; F.innerHTML="&nbsp;";
+    Cc.className="pz-sc"; Cc.style.setProperty("--k",it.k); Cc.innerHTML=it.html; $$(".pz-so",Bb).forEach(b=>b.classList.remove("ok","bad"));
+    Bb.onclick=e=>{ const b=e.target.closest(".pz-so"); if(!b||lock) return; const i=+b.dataset.i;
+      if(i===cfg.cls(it)){ lock=true; b.classList.add("ok"); Cc.classList.add("ok"); if(cfg.hop&&cfg.hop(it,i)) Cc.classList.add("hop"); sfx.yay(); if(firstTry){ right++; record(it.key,true); } c.right(b,firstTry);
+        F.className="pz-fb good"; F.innerHTML=cfg.ok(it); c.later(()=>{ n++; if(n>=list.length) c.done({right,total:list.length,missed}); else round(); },1500); }
+      else { b.classList.remove("bad"); void b.offsetWidth; b.classList.add("bad"); sfx.no(); c.wrong(); if(firstTry){ firstTry=false; record(it.key,false); if(!missed.includes(it)) missed.push(it); }
+        F.className="pz-fb bad"; F.innerHTML=cfg.miss(it); } };
+  }
+  round();
+}
+const shortOf=items=>{ const L_=+S.info.lesson||0, out=[], seen=new Set(); items.forEach(it=>{ if(!it.core||it.core==="ا") return; ["َ","ِ","ُ"].forEach(m=>{ const w=it.core+m; if(!seen.has(w)){ seen.add(w); out.push(YI(w,L_)); } }); }); return shuffle(out).slice(0,Math.ceil(items.length/2)); };
+const roleIs=(it,r)=>P2R(it.w).parts.some(p=>p.role===r);
+const uniqI=a=>a.filter((x,i)=>a.findIndex(y=>y.key===x.key)===i);
+const bounceOf=items=>{ const L_=+S.info.lesson||0, sig=items.filter(it=>it.kind==="sig"), hasB=sig.some(it=>it.tags.includes("bounce")), hasN=sig.some(it=>!it.tags.includes("bounce")), out=[];
+  if(!hasB) [...new Set(sig.map(it=>it.pat).filter(p=>p&&p.includes("X")&&/ْ/.test(p)))].forEach(p=>[..."قطبجد"].forEach(l=>out.push(YI(p.replace("X",l),L_))));
+  if(!hasN) sig.forEach(it=>{ if(it.core) ["َ","ِ","ُ"].forEach(m=>out.push(YI(it.core+m,L_))); });
+  return shuffle(uniqI(out)).slice(0,Math.max(4,Math.ceil(sig.length/2))); };
+/* Leen or Madd? looks only at the Waaw or Yaa */
+const wyRole=it=>{ const R=P2R(it.w), r=R.parts.map((p,i)=>(R.ps[i].id==="waw"||R.ps[i].id==="ya")?p.role:"").filter(x=>x==="leen"||x==="madd"); return r.includes("leen")&&!r.includes("madd")?0:r.includes("madd")&&!r.includes("leen")?1:null; };
+const leenMaddOf=items=>{ const L_=+S.info.lesson||0, sig=items.filter(it=>it.kind==="sig"&&it.len<=3), hasL=sig.some(it=>wyRole(it)===0), hasM=sig.some(it=>wyRole(it)===1), out=[];
+  sig.forEach(it=>{ const k=wyRole(it); if(k===0&&!hasM) out.push(YI(it.w.replace("َوْ","ُوْ").replace("َیْ","ِیْ"),L_)); if(k===1&&!hasL) out.push(YI(it.w.replace("ُوْ","َوْ").replace("ِیْ","َیْ"),L_)); });
+  return shuffle(uniqI(out.filter(x=>wyRole(x)!=null))).slice(0,Math.max(4,Math.ceil(sig.length/2))); };
+function actQuick(c){ actSort(c,{q:"Quick or long?<small>The child says the number, then reads it</small>",empty:"Quick or long? needs letters with signs.",
+  btn:[{label:"Quick",col:"#1C6FD1",pic:'<i style="width:22px"></i>'},{label:"Long",col:"#7048E8",pic:'<i style="width:64px"></i>'}],
+  cls:it=>it.kind==="sig"&&it.core?(/aa|ee|oo/.test(it.name)?1:0):null, extra:shortOf,
+  ok:it=>`MashaAllah! <b dir="ltr">${it.name}</b> is ${/aa|ee|oo/.test(it.name)?"long":"quick"}.`, miss:()=>"Look again: a standing sign or a Madd letter makes it long."}); }
+function actBounce(c){ actSort(c,{q:"Does it bounce?<small>Bounce letters: ق ط ب ج د, only when resting</small>",empty:"Bounce it needs Sukun cells.",
+  btn:[{label:"Bounce",col:"#C2410C",pic:IC("bounce")},{label:"No bounce",col:"#5F6D67",pic:IC("x")}],
+  cls:it=>it.kind==="sig"?(it.tags.includes("bounce")?0:1):null, hop:(it,i)=>i===0, extra:bounceOf,
+  ok:it=>it.tags.includes("bounce")?`MashaAllah! It bounces: <b dir="ltr">${it.name}</b>`:`MashaAllah! No bounce: <b dir="ltr">${it.name}</b>`, miss:()=>"Bounce letters: ق ط ب ج د, only when resting."}); }
+function actLeenMadd(c){ actSort(c,{q:"Soft or stretch?<small>Look at the sign before the Waaw or Yaa</small>",empty:"Leen or Madd? needs Leen and Madd cells.",
+  btn:[{label:"Soft (Leen)",col:"#C2410C",pic:IC("soft")},{label:"Stretch (Madd)",col:"#0E8A43",pic:'<i style="width:64px"></i>'}],
+  cls:it=>it.kind==="sig"?wyRole(it):null, extra:leenMaddOf,
+  ok:it=>`MashaAllah! <b dir="ltr">${it.name}</b>`, miss:()=>"Fatha before it: soft and quick. Damma before Waaw, Kasra before Yaa: stretch."}); }
+/* Say it twice: the Shadda letter splits into two, then the child finds the same word */
+function splitShadda(w){ const ch=[...w], k=ch.indexOf("ّ"); if(k<1) return null; let li=k-1; while(li>=0&&/[ً-ٰٟ]/.test(ch[li])) li--; if(li<0) return null;
+  const letter=ch[li]; let j=k+1, vowel=""; while(j<ch.length&&/[ً-ٰٟ]/.test(ch[j])) vowel+=ch[j++];
+  const prevV=ch.slice(0,li).join("").match(/[َ-ِ]$/); if((letter==="و"&&prevV&&prevV[0]==="ُ")||(letter==="ی"&&prevV&&prevV[0]==="ِ")) return null;
+  return {a:ch.slice(0,li).join("")+letter+"ْ", b:letter+vowel+ch.slice(j).join(""), noSh:w.replace(/ّ/g,"")}; }
+function actTwice(c){
+  const pool=c.items.filter(it=>it.kind==="sig"&&!/[\s\/]/.test(it.w)&&splitShadda(it.w)); if(!pool.length) return c.none("Say it twice needs Shadda cells.");
+  const L_=+S.info.lesson||0, rounds=Math.min(c.little?5:8,Math.max(5,pool.length)), list=roundsOf(pool,rounds); let n=0,right=0; const missed=[];
+  c.stage.innerHTML=`<div class="pz-find"><div class="pz-q">Say it twice<small>First it rests, then it takes its sign</small></div><div class="pz-split" id="twS"></div><div class="pz-ch" id="twC"></div><p class="pz-fb" id="twF">&nbsp;</p></div>`;
+  const Sp=$("#twS",c.stage), C=$("#twC",c.stage), F=$("#twF",c.stage);
+  function round(){ const it=list[n], sp=splitShadda(it.w), opts=shuffle([it,YI(sp.noSh,L_),YI(sp.a,L_)].filter((x,i,a)=>a.findIndex(y=>y.key===x.key)===i)); let firstTry=true, lock=false;
+    c.prog(n+1,list.length); F.className="pz-fb"; F.innerHTML="Which one is the same?";
+    Sp.innerHTML=`<span class="tile">${A(sp.a)}<b>${P2R(sp.a).text}</b></span><i>+</i><span class="tile" style="animation-delay:.25s">${A(sp.b)}<b>${P2R(sp.b).text}</b></span>`;
+    C.className="pz-ch"; C.style.setProperty("--c",opts.length);
+    C.innerHTML=opts.map((o,i)=>`<button class="pz-c" data-i="${i}" style="--k:${o.k};--i:${i}">${c.online?`<i class="pz-num">${i+1}</i>`:""}${o.html}</button>`).join("");
+    c.keys(e=>{ const k=+e.key; if(k>=1&&k<=opts.length) C.children[k-1].click(); });
+    C.onclick=e=>{ const b=e.target.closest(".pz-c"); if(!b||lock) return; const o=opts[+b.dataset.i];
+      if(o===it){ lock=true; b.classList.add("ok"); okBadge(b); sfx.yay(); if(firstTry){ right++; record(it.key,true); } c.right(b,firstTry); F.className="pz-fb good"; F.innerHTML=`MashaAllah! <b dir="ltr">${it.name}</b>`;
+        c.later(()=>{ n++; if(n>=list.length) c.done({right,total:list.length,missed}); else round(); },1500); }
+      else { b.classList.add("bad"); sfx.no(); c.wrong(); if(firstTry){ firstTry=false; record(it.key,false); if(!missed.includes(it)) missed.push(it); } F.className="pz-fb bad"; F.innerHTML="Look for the Shadda: the letter is read twice."; } };
+  }
+  round();
+}
+/* Stop sign: how do we say this word when we stop? */
+function stopOpts(p){ const w=p.w;
+  if(p.w===p.s){ const R=P2R(w); let j=R.ps.length-1; while(j>0&&["madd","leen","silent"].includes(R.parts[j].role)) j--;
+    const head=R.ps.slice(0,j).map((q,i)=>(q.ws&&i?" ":"")+q.ch+q.m).join("")+(R.ps[j].ws&&j?" ":"")+R.ps[j].ch, own=R.ps[j].m.replace(/[ٰٖٗ]/g,"");
+    return [...new Set([head+"ْ",head+(own==="َ"?"ِ":"َ"),head+(own==="ُ"?"ِ":"ُ")])].filter(x=>x!==p.s); }
+  const tail=/[ً-ْٰٖٗ]+$/, noSeat=w.replace(/(ً)[ایى]$/,"$1"), base=noSeat.replace(tail,"");
+  return [...new Set([w,base+"ْ",base+"َا",w.replace(/ة[ً-ْ]*$/,"هْ"),base+"َ"])].filter(x=>x!==p.s&&x!==base); }
+function actStop(c){
+  const all=(c.opt.stops||S.info.stops||[]); if(!all.length) return c.none("No stopping pairs on this page.");
+  const L_=+S.info.lesson||0, rounds=Math.min(c.little?5:8,all.length<4?all.length*2:all.length), list=[]; while(list.length<rounds) shuffle(all).forEach(p=>{ if(list.length<rounds) list.push(p); });
+  let n=0,right=0; const missed=[];
+  c.stage.innerHTML=`<div class="pz-find"><div class="pz-q">How do we say it when we stop?</div><div class="pz-stopw" id="stW"></div><div class="pz-ch" id="stC"></div><p class="pz-fb" id="stF">&nbsp;</p></div>`;
+  const W=$("#stW",c.stage), C=$("#stC",c.stage), F=$("#stF",c.stage);
+  function round(){ const p=list[n], it=YI(p.w,L_), opts=shuffle([p.s,...shuffle(stopOpts(p)).slice(0,2)]).map(x=>YI(x,L_)); let firstTry=true, lock=false;
+    c.prog(n+1,list.length); F.className="pz-fb"; F.innerHTML="&nbsp;";
+    W.innerHTML=`<span class="w">${it.html}</span><span class="sg">STOP</span>`;
+    C.className="pz-ch"; C.style.setProperty("--c",opts.length);
+    C.innerHTML=opts.map((o,i)=>`<button class="pz-c" data-i="${i}" style="--k:${o.k};--i:${i}">${c.online?`<i class="pz-num">${i+1}</i>`:""}${o.html}</button>`).join("");
+    c.keys(e=>{ const k=+e.key; if(k>=1&&k<=opts.length) C.children[k-1].click(); });
+    C.onclick=e=>{ const b=e.target.closest(".pz-c"); if(!b||lock) return; const o=opts[+b.dataset.i];
+      if(o.w===p.s){ lock=true; b.classList.add("ok"); okBadge(b); sfx.yay(); if(firstTry){ right++; record("z:"+p.w,true); } c.right(b,firstTry);
+        F.className="pz-fb good"; F.innerHTML=`MashaAllah! Stopping: <b dir="ltr">${o.name}</b>${p.tag==="hold"?" — hold it a little longer":p.tag==="bounce"?" — let it bounce":""}`;
+        c.later(()=>{ n++; if(n>=list.length) c.done({right,total:list.length,missed:[]}); else round(); },1700); }
+      else { b.classList.add("bad"); sfx.no(); c.wrong(); if(firstTry){ firstTry=false; record("z:"+p.w,false); } F.className="pz-fb bad"; F.innerHTML="Not quite. When we stop, the last letter rests; two Fathas become “aa”; Round Ta becomes “h”."; } };
+  }
+  round();
+}
+/* Twins: two look-alike sounds; the teacher asks for one, then the other */
+function actTwins(c){
+  const L_=+S.info.lesson||0; let groups=(S.info.twins||[]).map(g=>g.map(w=>YI(w,L_))); if(!groups.length) return c.none("Twins needs a look-alike table.");
+  groups=shuffle(groups).slice(0,c.little?4:6); let gi=0, turn=0, right=0, clean=true, cards=[], asked=[];
+  c.stage.innerHTML=`<div class="pz-find"><div class="pz-q" id="tnQ"></div><div class="pz-ch" id="tnC"></div><p class="pz-fb" id="tnF">&nbsp;</p><p class="pz-hint">The teacher says it. Then the cards swap and the teacher asks for the other one.</p></div>`;
+  const Q=$("#tnQ",c.stage), C=$("#tnC",c.stage), F=$("#tnF",c.stage);
+  function round(){ const g=groups[gi]; if(turn===0){ asked=shuffle(g).slice(0,2); clean=true; } cards=shuffle(g); const t=asked[turn]; let firstTry=true, lock=false;
+    c.prog(gi+1,groups.length); Q.innerHTML=`Find <b dir="ltr">${t.name}</b><small>${turn===0?"First one":"Now the other one"}</small>`; F.className="pz-fb"; F.innerHTML="&nbsp;";
+    C.className="pz-ch"; C.style.setProperty("--c",cards.length);
+    C.innerHTML=cards.map((o,i)=>`<button class="pz-c" data-i="${i}" style="--k:${o.k};--i:${i}">${c.online?`<i class="pz-num">${i+1}</i>`:""}${o.html}</button>`).join("");
+    c.keys(e=>{ const k=+e.key; if(k>=1&&k<=cards.length) C.children[k-1].click(); });
+    C.onclick=e=>{ const b=e.target.closest(".pz-c"); if(!b||lock) return; const o=cards[+b.dataset.i];
+      if(o===t){ lock=true; b.classList.add("ok"); okBadge(b); sfx.yay(); record(t.key,firstTry); c.right(b,firstTry); F.className="pz-fb good"; F.innerHTML="MashaAllah!";
+        c.later(()=>{ if(turn===0){ turn=1; round(); return; } if(clean&&firstTry){ right++; } turn=0; gi++; if(gi>=groups.length) c.done({right,total:groups.length,text:`${right} of ${groups.length} twins won`}); else round(); },1100); }
+      else { b.classList.add("bad"); sfx.no(); c.wrong(); if(firstTry){ firstTry=false; clean=false; record(t.key,false); } F.className="pz-fb bad"; F.innerHTML=`That one is <b dir="ltr">${o.name}</b>. Listen again.`; } };
+  }
+  round();
+}
+/* Spot the sign / Hum it: tap the letter that carries the sign */
+function signGroups(R){ const out=[]; for(let i=0;i<R.ps.length;i++){ const p=R.ps[i], nx=R.ps[i+1];
+    if(p.id==="lam"&&nx&&!nx.ws&&nx.ch==="ا"&&p.jn){ out.push({ix:[i,i+1],t:(p.jp?ZWJ:"")+p.ch+p.m+nx.ch+nx.m,gap:p.ws&&i>0}); i++; }
+    else out.push({ix:[i],t:ptxt(p),gap:p.ws&&i>0}); } return out; }
+const SPOT={1:["Tap the resting letter (with Sukun)",(R,i)=>R.parts[i].role==="rest"],2:["Tap the letter with Tanween",(R,i)=>/[ً-ٍ]/.test(R.ps[i].m)],
+  3:["Tap the letter with a Standing sign",(R,i)=>/[ٰٖٗ]/.test(R.ps[i].m)],4:["Tap the Madd letter (the one that stretches)",(R,i)=>R.parts[i].role==="madd"],
+  5:["Tap the Leen letter (soft and quick)",(R,i)=>R.parts[i].role==="leen"],6:["Tap the letter with Shadda",(R,i)=>/ّ/.test(R.ps[i].m)],
+  B:["Tap a letter we do not read",(R,i)=>R.parts[i].role==="silent"],hum:["Which letter hums through the nose?",(R,i)=>(R.ps[i].id==="noon"||R.ps[i].id==="meem")&&/ّ/.test(R.ps[i].m)]};
+function actSpotSign(c,key){
+  const [q,test]=SPOT[key]||SPOT[1], tg=it=>{ const R=P2R(it.w); return R.ps.map((_,i)=>i).filter(i=>test(R,i)); };
+  const words=c.items.filter(it=>it.kind==="sig"&&it.ps.length>=2&&tg(it).length); if(!words.length) return c.none("Nothing to spot here. Choose some words first.");
+  const rounds=Math.min(c.little?5:8,Math.max(5,words.length)), list=roundsOf(words,rounds); let n=0,right=0; const missed=[];
+  c.stage.innerHTML=`<div class="pz-spot"><div class="pz-q">${q}</div><div class="pz-word${c.online?" num":""}" id="ssW"></div><p class="pz-fb" id="ssF">&nbsp;</p></div>`;
+  const W=$("#ssW",c.stage), F=$("#ssF",c.stage);
+  function round(){ const it=list[n], R=P2R(it.w), targets=new Set(tg(it)), gs=signGroups(R); let firstTry=true, lock=false, num=0;
+    c.prog(n+1,list.length); F.className="pz-fb"; F.innerHTML="&nbsp;"; W.style.setProperty("--k",Math.min(1,it.k*1.05));
+    W.innerHTML=gs.map((g,i)=>`${g.gap?`<i class="gap"></i>`:""}<span data-i="${i}" data-n="${++num}">${g.t}</span>`).join("");
+    c.keys(e=>{ const k=+e.key; const s=W.querySelector(`span[data-n="${k}"]`); if(s) s.click(); });
+    W.onclick=e=>{ const s=e.target.closest("span"); if(!s||lock) return; const g=gs[+s.dataset.i];
+      if(g.ix.some(i=>targets.has(i))){ lock=true; s.classList.add("ok"); sfx.yay(); if(firstTry){ right++; record(it.key,true); } c.right(s,firstTry);
+        F.className="pz-fb good"; F.innerHTML=`MashaAllah! <b dir="ltr">${it.name}</b>`; c.later(()=>{ n++; if(n>=list.length) c.done({right,total:list.length,missed}); else round(); },1500); }
+      else { s.classList.add("bad"); setTimeout(()=>s.classList.remove("bad"),450); sfx.no(); c.wrong(); if(firstTry){ firstTry=false; record(it.key,false); if(!missed.includes(it)) missed.push(it); } F.className="pz-fb bad"; F.innerHTML="Not that one. Look at the signs again."; } };
+  }
+  round();
+}
+const isSigns=inf=>inf.mode==="signs", lessonIn=(inf,...l)=>isSigns(inf)&&l.map(String).includes(String(inf.lesson));
+const actOrder=()=>BOOK==="part1"?Object.keys(ACTS):["flash","which","find","quick","bounce","leenmadd","twice","twins","stop","hum","spot2","train","balloon","peek","memory","build","read"];
 const ACTS={
   flash:{ic:"cards",t:"#E8F0FB",tc:"#2F5FA7",title:"Flash cards",desc:"The child says it, you mark it. Missed cards come back.",run:actFlash},
   find:{ic:"pointer",t:"#E5F4EB",tc:"#0B6B45",title:"Find it",desc:"You say the name, the child picks it.",run:actFind},
@@ -614,31 +782,40 @@ const ACTS={
   memory:{ic:"grid",t:"#F0ECFA",tc:"#6246B5",title:"Memory match",desc:"Turn two cards over and find the pairs.",run:actMemory},
   dot:{ic:"dots",t:"#FBF1D9",tc:"#8A6A0C",title:"Dot it!",desc:"Give the letter its right dots.",run:actDot,isNew:true,ok:inf=>inf.mode==="letters"||inf.mode==="shapes"},
   shape:{ic:"shapes",t:"#FCEBE4",tc:"#B4501F",title:"Shape detective",desc:"Start, middle or end shape?",run:actShape,isNew:true,ok:inf=>["shapes","comp","word"].includes(inf.mode)},
-  spot:{ic:"search",t:"#E6F2F0",tc:"#2C7A73",title:"Spot it",desc:"Find the letter hiding inside a word.",run:actSpot,ok:inf=>inf.words.length>0},
-  build:{ic:"blocks",t:"#E9EEF9",tc:"#3B5BA5",title:"Build the word",desc:"Put the letters in order to make the word.",run:actBuild,isNew:true,ok:inf=>["shapes","comp","word"].includes(inf.mode)&&inf.words.some(w=>w.len>=2)},
-  read:{ic:"clipboard",t:"#EEF1EF",tc:"#44524C",title:"Read check",desc:"The page, shuffled. Tap the ones that were wrong.",run:actRead}
+  spot:{ic:"search",t:"#E6F2F0",tc:"#2C7A73",title:"Spot it",desc:"Find the letter hiding inside a word.",run:actSpot,ok:inf=>!isSigns(inf)&&inf.words.length>0},
+  build:{ic:"blocks",t:"#E9EEF9",tc:"#3B5BA5",title:"Build the word",desc:"Put the letters in order to make the word.",run:actBuild,isNew:true,ok:inf=>["shapes","comp","word","signs"].includes(inf.mode)&&inf.words.some(w=>w.len>=2&&!/[\s\/]/.test(w.w||""))},
+  read:{ic:"clipboard",t:"#EEF1EF",tc:"#44524C",title:"Read check",desc:"The page, shuffled. Tap the ones that were wrong.",run:actRead},
+  which:{ic:"sign",t:"#E5F4EB",tc:"#0B6B45",title:"Which sign?",desc:"Same letter, different signs. Find the one the teacher says.",run:c=>actFind(Object.assign(c,{which:true})),isNew:true,ok:inf=>isSigns(inf)&&inf.lesson!=="B"&&inf.all.filter(it=>it.core&&it.core!=="ا").length>=Math.max(2,inf.all.length/2)},
+  quick:{ic:"gauge",t:"#EDE9FB",tc:"#5B3FC4",title:"Quick or long?",desc:"Is the sound quick or long?",run:actQuick,isNew:true,ok:inf=>lessonIn(inf,3,4)&&inf.all.some(it=>it.core&&it.core!=="ا")},
+  bounce:{ic:"bounce",t:"#FDEDE3",tc:"#B4501F",title:"Bounce it",desc:"Does the letter bounce (Qalqala)?",run:actBounce,isNew:true,ok:inf=>lessonIn(inf,1)},
+  leenmadd:{ic:"soft",t:"#FDEDE3",tc:"#B4501F",title:"Leen or Madd?",desc:"Soft and quick, or stretched?",run:actLeenMadd,isNew:true,ok:inf=>lessonIn(inf,5)&&inf.all.some(it=>wyRole(it)!=null)},
+  twice:{ic:"split",t:"#FBF1D9",tc:"#8A6A0C",title:"Say it twice",desc:"Watch the Shadda letter split into two.",run:actTwice,isNew:true,ok:inf=>lessonIn(inf,6)},
+  twins:{ic:"twins",t:"#E8F0FB",tc:"#2F5FA7",title:"Twins",desc:"Two look-alike sounds. The teacher asks for one, then the other.",run:actTwins,isNew:true,ok:inf=>isSigns(inf)&&inf.twins&&inf.twins.length>0},
+  stop:{ic:"stopsign",t:"#FDECEC",tc:"#B42318",title:"Stop sign",desc:"How do we say the word when we stop?",run:actStop,isNew:true,ok:inf=>isSigns(inf)&&inf.stops&&inf.stops.length>0},
+  hum:{ic:"nose",t:"#E8F0FB",tc:"#2F5FA7",title:"Hum it",desc:"Find the letter that hums through the nose.",run:c=>actSpotSign(c,"hum"),isNew:true,ok:inf=>lessonIn(inf,"B")&&inf.all.some(it=>it.tags&&it.tags.includes("nose"))},
+  spot2:{ic:"search",t:"#E6F2F0",tc:"#2C7A73",title:"Spot the sign",desc:"Tap the letter that carries the sign.",run:c=>actSpotSign(c,S.info.lesson||1),isNew:true,ok:inf=>isSigns(inf)&&inf.words.length>0}
 };
 
 /* ================= progress: level, points and the letter journey ================= */
 function progress(){
-  runCleanup(); S.view="prog"; navSync(); const inf=S.info, lvs=ORDER.map(id=>level([LI(id)])), cnt=k=>lvs.filter(x=>x===k).length, lv=lvOf(pts());
-  const per=narrow()?4:6, RH=narrow()?96:120, here=ORDER.findIndex((id,i)=>lvs[i]!=="good"), rows=Math.ceil(ORDER.length/per), H=rows*RH+30;
+  runCleanup(); S.view="prog"; navSync(); const inf=S.info, P1=BOOK==="part1", doneP=stu().path||{}, NODES=P1?ORDER:PATH, lvs=P1?ORDER.map(id=>level([LI(id)])):PATH.map(s=>doneP[s.id]?"good":"new"), cnt=k=>lvs.filter(x=>x===k).length, lv=lvOf(pts());
+  const per=narrow()?4:6, RH=narrow()?96:120, here=NODES.findIndex((id,i)=>lvs[i]!=="good"), rows=Math.ceil(NODES.length/per), H=rows*RH+30;
   const pos=i=>{ const r=Math.floor(i/per), j=i%per, x0=narrow()?13:8; return {x:x0+(r%2===0?per-1-j:j)*((100-2*x0)/(per-1)), y:(narrow()?58:70)+r*RH}; };
-  let d=""; ORDER.forEach((_,i)=>{ const p=pos(i); if(!i){ d+=`M${p.x} ${p.y}`; return; } const q=pos(i-1);
+  let d=""; NODES.forEach((_,i)=>{ const p=pos(i); if(!i){ d+=`M${p.x} ${p.y}`; return; } const q=pos(i-1);
     d+= Math.floor(i/per)===Math.floor((i-1)/per)?` L${p.x} ${p.y}`:` C${q.x+(q.x>50?7:-7)} ${q.y} ${p.x+(p.x>50?7:-7)} ${p.y} ${p.x} ${p.y}`; });
   B.innerHTML=`<div class="pz-pv"><div class="pz-acth"><div class="gt"><span class="t">${IC("map")}</span>Progress · ${esc(store.cur)}</div></div>
     <div class="pz-lvcard"><div class="lv"><small>Level</small><b>${lv.n}</b></div><div class="grow"><div class="t">${fmtN(pts())} points · ${stu().stars||0} stars</div><div class="s">${fmtN(lv.hi-pts())} more points to level ${lv.n+1}</div><div class="bar"><i style="width:${Math.round(100*(pts()-lv.lo)/(lv.hi-lv.lo))}%"></i></div></div>
-      <div class="pz-cnt"><span class="lv-good">Knows it: ${cnt("good")}</span><span class="lv-learn">Learning: ${cnt("learn")}</span><span class="lv-weak">Needs practice: ${cnt("weak")}</span><span>New: ${cnt("new")}</span></div></div>
+      ${P1?`<div class="pz-cnt"><span class="lv-good">Knows it: ${cnt("good")}</span><span class="lv-learn">Learning: ${cnt("learn")}</span><span class="lv-weak">Needs practice: ${cnt("weak")}</span><span>New: ${cnt("new")}</span></div>`:`<div class="pz-cnt"><span class="lv-good">Steps done: ${cnt("good")}</span><span>Still to do: ${cnt("new")}</span></div>`}</div>
     ${statsHTML()}
-    <h3>Letter journey</h3>
+    <h3>${P1?"Letter journey":"Lesson journey"}</h3>
     <div class="pz-jm" style="height:${H}px"><svg class="path" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="#D8E0DB" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/><path d="${d}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-      ${ORDER.map((id,i)=>{ const p=pos(i); return `<div class="pz-jn lv-${lvs[i]}${i===here?" here":""}" style="left:${p.x}%;top:${p.y}px">${A(L[id].ch)}<small>${L[id].en}</small>${lvs[i]==="good"?`<span class="pz-jst">${IC("star")}</span>`:""}${i===here?`<span class="flag">Next</span>`:""}</div>`; }).join("")}</div>
-    ${inf.mode!=="letters"?`<h3>${inf.label} · ${inf.title}</h3><div class="pz-pg">${inf.units.map(u=>`<div class="pz-pc lv-${level(u.items)}">${A(u.label)}${u.name?`<small>${u.name}</small>`:""}</div>`).join("")}</div>`:""}
-    ${LEG}<p class="pz-hint" style="text-align:left">A letter turns green when it has been answered right three times more than wrong. Every game counts.</p>
-    <div class="pz-rb" style="justify-content:flex-start"><button class="pz-btn pri" data-go="weak">${IC("cards")}Practise the letters that need work</button></div></div>`;
+      ${NODES.map((id,i)=>{ const p=pos(i); return `<div class="pz-jn lv-${lvs[i]}${i===here?" here":""}"${P1?"":` data-step="${i}" title="${esc(id.title)}"`} style="left:${p.x}%;top:${p.y}px">${P1?`${A(L[id].ch)}<small>${L[id].en}</small>`:`<b class="pz-jnum">${i+1}</b><small>${esc(id.title)}</small>`}${lvs[i]==="good"?`<span class="pz-jst">${IC("star")}</span>`:""}${i===here?`<span class="flag">Next</span>`:""}</div>`; }).join("")}</div>
+    ${inf.mode!=="letters"&&inf.mode!=="none"?`<h3>${inf.label} · ${inf.title}</h3><div class="pz-pg">${inf.units.map(u=>`<div class="pz-pc lv-${level(u.items)}">${A(u.label)}${u.name?`<small>${u.name}</small>`:""}</div>`).join("")}</div>`:""}
+    ${LEG}<p class="pz-hint" style="text-align:left">${P1?"A letter turns green when it has been answered right three times more than wrong. Every game counts.":"A step turns green when it is finished. Tap a step to play it."}</p>
+    ${P1?`<div class="pz-rb" style="justify-content:flex-start"><button class="pz-btn pri" data-go="weak">${IC("cards")}Practise the letters that need work</button></div>`:""}</div>`;
 }
 /* ================= lesson path: the whole of Part 1 as short practice steps ================= */
-const PATH=(()=>{
+const PATH=window.EQAIDA_PATH?window.EQAIDA_PATH({pageInfo,PAGES}):(()=>{
   const out=[], pageIdx=no=>PAGES.findIndex(p=>{ const n=p.querySelector(".hdr .no"); return n&&n.textContent.trim()===no; });
   const add=(group,no,id,title,pick)=>{ const i=pageIdx(no); if(i<0) return; const us=pageInfo(i).units, units=pick?pick(us):us; if(!units.length) return;
     out.push({id,group,page:i,title,ids:units.map(u=>u.id),prev:units.slice(0,6).map(u=>u.label)}); };
@@ -655,14 +832,22 @@ const PATH=(()=>{
   add(G4,"15","15","Words with sounds");
   return out;
 })();
+function stepInfo(st){ const src=st.src||[{page:st.page,ids:st.ids}];
+  const parts=src.map(s=>{ const inf=pageInfo(s.page); return {inf,ids:s.ids?s.ids.filter(id=>inf.units.some(u=>u.id===id)):inf.units.map(u=>u.id)}; });
+  if(parts.length===1) return {info:parts[0].inf,ids:parts[0].ids};
+  const seen=new Set(), units=[]; parts.forEach(p=>p.inf.units.forEach(u=>{ if(!seen.has(u.id)){ seen.add(u.id); units.push(u); } }));
+  const all=units.flatMap(u=>u.items);
+  return {info:Object.assign({},parts[0].inf,{key:"step-"+st.id,units,all,words:all.filter(it=>it.len>=3),stops:parts.flatMap(p=>p.inf.stops||[]),twins:parts.flatMap(p=>p.inf.twins||[])}),ids:parts.flatMap(p=>p.ids)};
+}
 function startStep(st){
-  if(!st) return; S.info=pageInfo(st.page); S.sel=new Set(st.ids); header(); const items=selItems(); if(!items.length) return toast("Nothing to practise in this step.");
-  const chain={steps:["flash","find",["train","balloon","peek"][PATH.indexOf(st)%3]],i:0,stars:0,step:st.id,sets:[order(items).slice(0,little()?6:10),items,items]};
-  start("flash",{chain,items:chain.sets[0]});
+  if(!st) return; const {info,ids}=stepInfo(st); S.info=info; S.sel=new Set(ids); header(); const items=selItems(); if(!items.length) return toast("Nothing to practise in this step.");
+  const games=st.games||["flash","find",["train","balloon","peek"][PATH.indexOf(st)%3]];
+  const sets=games.map(g=>g==="flash"?order(items).slice(0,little()?6:10):items);
+  start(games[0],{chain:{steps:games,i:0,stars:0,step:st.id,sets},items:sets[0]});
 }
 function pathView(){
   runCleanup(); S.view="path"; navSync(); const done=stu().path||{}, nextI=PATH.findIndex(s=>!done[s.id]), n=PATH.filter(s=>done[s.id]).length; let g="";
-  B.innerHTML=`<div class="pz-pv"><div class="pz-lvcard"><div class="lv"><small>Steps</small><b>${n}</b></div><div class="grow"><div class="t">${n} of ${PATH.length} steps done</div><div class="s">Each step is a short practice: Flash cards, Find it, then a game.</div><div class="bar"><i style="width:${Math.round(100*n/PATH.length)}%"></i></div></div>
+  B.innerHTML=`<div class="pz-pv"><div class="pz-lvcard"><div class="lv"><small>Steps</small><b>${n}</b></div><div class="grow"><div class="t">${n} of ${PATH.length} steps done</div><div class="s">Each step is a short practice: Flash cards, then two games.</div><div class="bar"><i style="width:${Math.round(100*n/PATH.length)}%"></i></div></div>
       ${nextI>=0?`<button class="pz-btn pri" data-step="${nextI}">${n?"Continue":"Start"}${IC("right")}</button>`:`<span class="pz-lvup">All steps done</span>`}</div>
     <div class="pz-path">${PATH.map((s,i)=>(s.group!==g?(g=s.group,`<h3>${s.group}</h3>`):"")+`<button class="pz-step${done[s.id]?" done":""}${i===nextI?" next":""}" data-step="${i}"><span class="pz-sno">${done[s.id]?IC("check"):i+1}</span><span class="pz-stt"><b>${s.title}</b><span class="pz-spv" dir="rtl">${s.prev.map(t=>A(t)).join("")}</span></span><span class="pz-sst">${[1,2,3].map(k=>`<i class="${k<=(done[s.id]||0)?"on":""}">${STAR}</i>`).join("")}</span><span class="pz-sgo">${i===nextI?"Start":done[s.id]?"Again":"Play"}</span></button>`).join("")}</div></div>`;
   const nx=$(".pz-step.next",B); if(nx&&n) nx.scrollIntoView({block:"center"});
@@ -671,7 +856,7 @@ function pathView(){
 /* ================= leaderboard: this week / all time; all students once connected to eQuran ================= */
 let boardPeriod="week", boardTok=0;
 async function boardRows(period){
-  if(API){ try{ const r=await fetch(API+"/leaderboard?book=part1&period="+period,{cache:"no-store"});
+  if(API){ try{ const r=await fetch(API+"/leaderboard?book="+BOOK+"&period="+period,{cache:"no-store"});
       if(r.ok){ const d=await r.json(), list=Array.isArray(d)?d:(d.rows||[]);
         return {live:true,rows:list.map(x=>({name:String(x.name||"Student"),sid:String(x.sid||""),pts:+x.points||0,level:+x.level||1}))}; } }catch(e){} }
   return {live:false,rows:Object.keys(store.students).map(n=>{ const s=store.students[n]; return {name:n,sid:s.sid||"",pts:period==="week"?weekPts(s):(s.pts||0),level:lvOf(s.pts).n}; })};

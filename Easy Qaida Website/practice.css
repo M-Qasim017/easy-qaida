@@ -213,6 +213,8 @@
 .pz-rg{flex:1;min-height:0;display:grid;direction:rtl;gap:8px;grid-template-columns:repeat(var(--c,6),minmax(0,1fr));grid-auto-rows:1fr}
 .pz-rcell{font:inherit;position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;cursor:pointer;display:grid;place-items:center;min-height:0;overflow:hidden;touch-action:manipulation}
 .pz-rcell .pz-a{font-size:calc(var(--fs,64px) * var(--k,1));line-height:1.45;pointer-events:none}
+.pz-rcell.line{padding:6px 14px}
+.pz-rcell.line .pz-a{line-height:1.7}
 .pz-rcell.bad{background:var(--redt);border-color:var(--red)}
 .pz-rcell.bad::after{content:"";position:absolute;top:8px;left:8px;width:14px;height:14px;border-radius:50%;background:var(--red)}
 .pz-rf{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap}
@@ -669,3 +671,53 @@
   .pz-nav{padding:3px 12px}
   .pz-nav button{padding:4px 12px;font-size:13.5px}
 }
+
+/* ================= Part 2 games (16 Nov) ================= */
+.pz-sort{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh}
+.pz-sc{min-width:min(44vh,340px);height:min(30vh,250px);padding:0 4vw;background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:var(--sh);display:grid;place-items:center;transition:background .3s,border-color .3s}
+.pz-sc .pz-a{font-size:calc(min(18vh,150px) * var(--k,1));line-height:1.5}
+.pz-sc.ok{border-color:var(--g2);background:#F2FBF6}
+.pz-sc.hop .pz-a{animation:pzHop .55s cubic-bezier(.3,1.6,.5,1) 2}
+@keyframes pzHop{40%{transform:translateY(-24px)}}
+.pz-sb{display:flex;direction:rtl;gap:14px;width:min(720px,96%)}
+.pz-so{flex:1;font:inherit;direction:ltr;position:relative;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px 10px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--sh);transition:transform .15s;touch-action:manipulation}
+.pz-so:hover{transform:translateY(-2px)}
+.pz-so b{font-size:clamp(17px,2.6vh,22px);color:var(--fc)}
+.pz-so .pic{display:flex;align-items:center;justify-content:center;height:26px;color:var(--fc)}
+.pz-so .pic i{display:block;height:12px;border-radius:6px;background:var(--fc)}
+.pz-so .pic .pz-i{width:26px;height:26px}
+.pz-so.ok{border-color:var(--fc);background:color-mix(in srgb,var(--fc) 10%,#fff)}
+.pz-so.bad{border-color:var(--red);animation:pzShake .4s}
+.pz-lat{font-family:'Source Sans 3',sans-serif;font-weight:800;font-size:min(6vh,46px);color:var(--g);direction:ltr}
+.pz-split{display:flex;align-items:center;gap:16px;direction:rtl}
+.pz-split .tile{display:flex;flex-direction:column;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:0 18px 8px;box-shadow:var(--sh);animation:pzPopIn .45s ease both}
+.pz-split .tile .pz-a{font-size:min(9vh,72px);line-height:1.55}
+.pz-split .tile b{direction:ltr;font-size:19px;color:var(--g)}
+.pz-split>i{font-style:normal;font-weight:800;font-size:30px;color:var(--gold)}
+.pz-stopw{display:flex;align-items:center;gap:18px;direction:rtl}
+.pz-stopw .w{background:#fff;border:1px solid var(--line);border-radius:20px;padding:0 26px;box-shadow:var(--sh)}
+.pz-stopw .w .pz-a{font-size:calc(min(12vh,96px) * var(--k,1));line-height:1.6}
+.pz-stopw .sg{width:70px;height:70px;background:#D64545;color:#fff;font-weight:800;font-size:15px;letter-spacing:.04em;display:grid;place-items:center;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
+.pz-word i.gap{display:inline-block;width:.35em}
+.pz-jnum{font-size:22px;font-weight:800;color:var(--ink);line-height:1.1}
+.pz-jn small{max-width:84px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pz-jn[data-step]{cursor:pointer}
+@media (max-width:700px){
+  .pz-sc{min-width:0;width:min(84vw,340px);height:min(24vh,200px)}
+  .pz-sc .pz-a{font-size:calc(min(14vh,40vw,150px) * var(--k,1))}
+  .pz-sb{gap:8px;width:100%}
+  .pz-so{padding:12px 6px 10px}
+  .pz-split .tile .pz-a{font-size:min(7vh,15vw)}
+  .pz-stopw .w .pz-a{font-size:calc(min(9vh,22vw) * var(--k,1))}
+  .pz-stopw .sg{width:54px;height:54px;font-size:12px}
+  .pz-jnum{font-size:17px}
+  .pz-jn small{max-width:56px}
+}
+@media (max-height:500px){
+  .pz-sc{height:30vh}
+  .pz-sc .pz-a{font-size:calc(20vh * var(--k,1))}
+  .pz-so{padding:6px;gap:3px}
+  .pz-split .tile .pz-a{font-size:12vh}
+}
+
+.pz-spot .pz-word.num span{padding:0 .17em}
