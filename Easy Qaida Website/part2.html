@@ -504,7 +504,7 @@ button{touch-action:manipulation}
 .ygrid{width:100%}
 .ytab>.ygrid+.ygrid{border-top:0}
 .yc{display:grid;place-items:center}
-.yp{display:inline-grid;position:relative;direction:rtl;white-space:nowrap;vertical-align:middle}
+.yp{display:inline-grid;position:relative;direction:rtl;white-space:nowrap;vertical-align:middle;font-feature-settings:"liga" 0}
 .yp>.yg{grid-area:1/1}
 .yp>.yg.base{color:#1F1E1B}
 .yp .ysk{color:#C3BBAA}
@@ -649,7 +649,18 @@ button{touch-action:manipulation}
 .m-break .ywd,.m-explain .ywd{display:none}
 .ygs{display:none;direction:rtl;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:18px 26px}
 .m-break .ygs,.m-explain .ygs{display:flex}
-.ygap{width:30px}
+.ygplus{font:800 34px Montserrat,sans-serif;color:#C9A227;font-style:normal;align-self:center;margin-top:-60px;opacity:.25;transition:opacity .3s}
+.ygplus.on{opacity:1}
+.ygplus.sp{margin-left:14px;margin-right:14px}
+.yldr{display:none;flex-direction:column;align-items:center;gap:6px}
+.m-break .yldr,.m-explain .yldr{display:flex}
+.ylr{display:flex;align-items:center;gap:10px;direction:ltr;font:800 clamp(18px,2.8vh,24px) 'Source Sans 3',sans-serif;color:#0B3D2E;opacity:0;transform:translateY(6px);transition:.35s}
+.ylr.on{opacity:1;transform:none}
+.ylr span{background:#fff;border-radius:999px;padding:2px 14px;box-shadow:0 2px 8px rgba(11,61,46,.1)}
+.ylr i{font-style:normal;color:#C9A227;font-family:Montserrat,sans-serif}
+.ylr b{background:#0B6B45;color:#fff;border-radius:999px;padding:2px 16px}
+.ylr.now b{box-shadow:0 0 0 3px #F59F00}
+.m-break .ylr:not(:last-child) b{background:#2F7D5B}
 .ygp{display:flex;flex-direction:column;align-items:center;gap:54px}
 .ycds{display:flex;direction:rtl;gap:10px;align-items:stretch}
 .ycd{display:flex;flex-direction:column;align-items:center;background:#fff;border-radius:18px;box-shadow:0 6px 18px rgba(11,61,46,.12);padding:4px 16px 12px;min-width:120px;transition:box-shadow .3s,transform .3s;animation:ycdIn .45s both}
@@ -685,6 +696,37 @@ button{touch-action:manipulation}
 .m-word .yread{display:block!important}
 .yh3>*{flex-shrink:0}
 @media screen and (max-width:700px){ .ycap{flex-wrap:wrap;gap:6px} }
+@media screen and (max-width:700px){ .ygplus{font-size:26px;margin-top:-40px} .ylr{font-size:16px;gap:6px} .ylr span,.ylr b{padding:1px 9px} }
+.yp.yplain{font-feature-settings:normal}
+
+/* Arabic only: the teacher says the names, the sounds and the joining (18 Nov 2026) */
+.yh3 .yh2key,.yh3 .yread,.yh3 .ycn,.yh3 .ycs,.yh3 .ycb,.yh3 .ypl,.yh3 .yldr,.yh3 .yrs,.yh3 .yar,.yh3 .ywhy{display:none!important}
+.yh3 .ygp{gap:0}
+.yh3 .ycd{padding:6px 18px 10px;min-width:110px}
+.yh3 .ycg>.yp{font-size:min(16vh,128px)}
+.yh3 .ygplus{margin-top:0;font-size:46px;opacity:1}
+.m-explain .ygplus{opacity:.2}.m-explain .ygplus.on{opacity:1}
+.m-explain .ycap{background:transparent;box-shadow:none;padding:0}
+.ycn2{font-size:15px}
+.ycg.sgr{box-shadow:0 0 0 4px var(--rc,#F59F00);animation:yring 1s ease-in-out 2}
+.m-explain.fin .ywd{display:flex;margin-top:10px}
+.ywd>.yp{font-size:min(20vh,170px)}
+@media screen and (max-width:700px){ .yh3 .ycd{min-width:76px;padding:4px 10px 8px} .yh3 .ycg>.yp{font-size:min(10vh,64px)} .yh3 .ygplus{font-size:32px} .ywd>.yp{font-size:min(14vh,104px)} }
+.yh3 .yhst{margin-top:auto;margin-bottom:auto}
+.m-explain .ycap{margin-top:auto}.m-explain .yhst{margin-top:0}
+@media screen and (max-width:700px){ .yh3 .ycd{min-width:0;padding:2px 8px 6px;border-radius:12px} .yh3 .ycg>.yp{font-size:min(9vh,50px)} .yh3 .ycg{padding:0 2px} .yh3 .ycds{gap:6px} .yh3 .ygs{gap:12px 6px} .yh3 .ygplus{font-size:24px} }
+
+/* "+" buttons: the teacher clicks to join two parts */
+.yh3 .ygplus{appearance:none;border:0;cursor:pointer;width:52px;height:52px;border-radius:50%;background:#C9A227;color:#fff;font:800 34px/52px Montserrat,sans-serif;padding:0;box-shadow:0 4px 12px rgba(201,162,39,.4);transition:transform .15s,box-shadow .15s;animation:yplusIn 1.6s ease-in-out infinite;flex:none}
+.yh3 .ygplus:hover{transform:scale(1.12);box-shadow:0 6px 18px rgba(201,162,39,.55)}
+.yh3 .ygplus:active{transform:scale(.94)}
+@keyframes yplusIn{50%{box-shadow:0 0 0 8px rgba(201,162,39,.18),0 4px 12px rgba(201,162,39,.4)}}
+.m-explain .ygplus{animation:none;opacity:.35;cursor:default}
+.ymc{cursor:pointer;background:#FFFBEB;box-shadow:0 0 0 3px #C9A227,0 6px 18px rgba(11,61,46,.12)}
+.ymc.pop{animation:ymcPop .45s cubic-bezier(.2,.9,.3,1.5)}
+@keyframes ymcPop{from{transform:scale(.7)}}
+.ygs.all .ymc{box-shadow:0 0 0 4px #0B6B45,0 8px 24px rgba(11,107,69,.25)}
+@media screen and (max-width:700px){ .yh3 .ygplus{width:38px;height:38px;font-size:26px;line-height:38px} }
 
 </style>
 </head>
@@ -916,7 +958,7 @@ window.READ2=w=>P2.read(w).text;
 /* ---------- page helpers ---------- */
 const SIGNCOL={1:"#D64545",2:"#1C6FD1",3:"#7048E8",4:"#0E8A43",5:"#C2410C",6:"#A16207",B:"#0B6B45"};
 const stripMarks=t=>t.replace(/[ً-ٰٟ]/g,"");
-const COL={fatha:"#E03131",kasra:"#1971C2",damma:"#2F9E44",sukun:"#7048E8",shadda:"#E8590C",madd:"#0C8599"};
+const COL={fatha:"#E03131",kasra:"#1971C2",damma:"#2F9E44",sukun:"#7048E8",shadda:"#E8590C",madd:"#0C8599",ink:"#3D4A44"};
 const COLN={fatha:"Fatha",kasra:"Kasra",damma:"Damma",sukun:"Sukun",shadda:"Shadda",madd:"Madd sign"};
 const MARKGRP={"\u064E":"fatha","\u064B":"fatha","\u0670":"fatha","\u0650":"kasra","\u064D":"kasra","\u0656":"kasra","\u064F":"damma","\u064C":"damma","\u0657":"damma","\u0652":"sukun","\u0653":"madd","\u08F1":"damma"};
 const isMk=c=>/[\u064B-\u065F\u0670\u08F0-\u08F2]/.test(c);
@@ -924,14 +966,19 @@ const disp=t=>t.replace(/\u064C/g,"\u08F1");
 const JOINSVG=`<svg class="yj" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M94 5 C80 30 22 30 7 7"/><path class="yjh" d="M7 7 L19 9 M7 7 L9 19"/></svg>`;
 /* draw Arabic with every sign in its own colour: one layer per colour, the letters in ink on top */
 function paint(w,o){ o=o||{}; const segs=(typeof w==="string"?[{t:w}]:w).map(g=>({t:disp(g.t.replace(/آ/g,"ا\u0653")),grey:g.grey})), all=segs.map(g=>g.t).join(""), ch=[...all];
+  /* the name of Allah has its own joined shape: it is written in one piece, plain, as in the Mushaf */
+  if(/لله/.test(all.replace(/[\u064B-\u065F\u0670\u08F0-\u08F2\u200D]/g,""))) return `<span class="yp yplain${o.cls?" "+o.cls:""}"><span class="yg base">${all}</span></span>`;
+  /* each letter's signs get ONE colour (its vowel's colour first), so stacked signs keep their exact place */
+  const grpOf=[], cg=m=>{ for(const c of m){ const g=MARKGRP[c]; if(g&&g!=="sukun"&&g!=="madd") return g; } return m.includes("\u0652")?"sukun":m.includes("\u0653")?"madd":m.includes("\u0651")?"shadda":null; };
+  for(let i=0;i<ch.length;){ if(isMk(ch[i])){ let j=i; while(j<ch.length&&isMk(ch[j])) j++; const g=cg(ch.slice(i,j).join("")); for(let k=i;k<j;k++) grpOf[k]=g; i=j; } else { grpOf[i]=null; i++; } }
+  const keepIdx=f=>ch.filter((c,i)=>!isMk(c)||f(i)).join("");
+  const grps=["fatha","kasra","damma","sukun","madd","shadda"].filter(g=>grpOf.includes(g));
+  const L=grps.map(g=>`<span class="yg" style="color:${COL[g]}">${keepIdx(i=>grpOf[i]===g)}</span>`);
   const keep=(t,f)=>[...t].filter(c=>!isMk(c)||f(c)).join("");
-  const grps=["fatha","kasra","damma","sukun","madd"].filter(g=>ch.some(c=>MARKGRP[c]===g));
-  const L=grps.map(g=>`<span class="yg" style="color:${COL[g]}">${keep(all,c=>MARKGRP[c]===g||c==="\u0651")}</span>`);
-  if(all.includes("\u0651")) L.push(`<span class="yg" style="color:${COL.shadda}">${keep(all,c=>c==="\u0651")}</span>`);
   const base=segs.length>1?segs.map(g=>`<span${g.grey?' class="ysk"':""}>${keep(g.t,()=>false)}</span>`).join(""):keep(all,()=>false);
   return `<span class="yp${o.cls?" "+o.cls:""}">${L.join("")}<span class="yg base">${base}</span>${o.join?JOINSVG:""}</span>`; }
 const MSIGNS=[["\u064E","Fatha","fatha"],["\u064B","Fathatain (2 Fathas)","fatha"],["\u0670","Standing Fatha","fatha"],["\u0650","Kasra","kasra"],["\u064D","Kasratain (2 Kasras)","kasra"],["\u0656","Standing Kasra","kasra"],
-  ["\u064F","Damma","damma"],["\u064C","Dammatain (2 Dammas)","damma"],["\u0657","Standing Damma","damma"],["\u0652","Sukun","sukun"],["\u0651","Shadda","shadda"],["\u0653","Madd sign","madd"]];
+  ["\u064F","Damma","damma"],["\u064C","Dammatain (2 Dammas)","damma"],["\u0657","Standing Damma","damma"],["\u0652","Sukun","sukun"],["\u0651","Shadda","ink"],["\u0653","Madd sign","madd"]];
 const signsIn=w=>{ const t=w.replace(/آ/g,"ا\u0653"); return MSIGNS.filter(([c])=>t.includes(c)); };
 /* one tappable cell: the signs are drawn in the lesson's colour, the letters in ink */
 function yc(w,L_,o){ o=o||{}; const show=o.show||w, small=o.small?" sm":"";
@@ -1320,7 +1367,25 @@ const XIC={brk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 function yHelp(w,stopped,tag){
   const pgEl=X.list[X.i]&&X.list[X.i].closest(".page"), lesson=+(pgEl&&pgEl.dataset.lesson)||0, R0=P2.read(w), keys=helpKeys(w,R0,lesson,pgEl&&pgEl.dataset.title);
   const SFm=stopped?Object.assign(stopForm(w),{s:stopped}):stopForm(w), canStop=SFm.s!==w||SFm.k==="long";
-  let stop=!!stopped, mode="word", step=0, steps=[], G=[], R=R0;
+  let stop=!!stopped, mode="word", step=0, steps=[], G=[], R=R0, lad=[], bBlocks=[];
+  /* the letters of joined parts, written together */
+  const blockText=gs=>{ const map=new Map(); gs.forEach(gi=>G[gi].items.forEach(it=>{ const e=map.get(it.i); if(!e) map.set(it.i,{p:it.p,roles:[it.role],m:it.m}); else { e.roles.push(it.role); if(e.roles.includes("sh1")&&e.roles.includes("sh2")) e.m=it.p.m; } }));
+    const arr=[...map.entries()].sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+    return arr.map((e,k)=>(e.p.ws&&k?" ":"")+(k===0&&e.p.jp?ZWJ:"")+(e.p.ch==="ي"?"ی":e.p.ch)+e.m+(k===arr.length-1&&e.p.jn?ZWJ:"")).join(""); };
+  const mergeAt=(bl,gi)=>{ const bi=bl.findIndex(b=>b.includes(gi)); if(bi<1) return bl; const out=bl.slice(); out.splice(bi-1,2,bl[bi-1].concat(bl[bi])); return out; };
+  function drawGroups(bl){ const box=$("#ygs"); if(!box) return;
+    box.innerHTML=bl.map((b,k)=>{ const gap=k&&R.sw[G[b[0]].k]!==R.sw[G[bl[k-1][bl[k-1].length-1]].k];
+      const plus=k?`<button class="ygplus${gap?" sp":""}" data-k="${k}" title="Join">+</button>`:"";
+      const body=b.length===1?`<div class="ygp" data-g="${b[0]}"><div class="ycds">${G[b[0]].items.map((it,ci)=>card(it,b[0],ci)).join("")}</div><div class="ypl">${G[b[0]].t}</div></div>`
+        :`<div class="ygp ymg"><div class="ycds"><div class="ycd ymc" data-k="${k}" title="Split again"><div class="ycg">${paint(blockText(b))}</div></div></div></div>`;
+      return plus+body; }).join("");
+    box.classList.toggle("all",bl.length===1&&G.length>1); }
+  window.__yJoin=k=>{ if(mode!=="break") { if(mode==="explain"&&step<steps.length-1){ step++; show(); } return; }
+    const bl=bBlocks.slice(); bl.splice(k-1,2,bl[k-1].concat(bl[k])); bBlocks=bl; show();
+    if(window.EQSfx){ if(bl.length===1){ EQSfx.swish(); setTimeout(()=>EQSfx.yay(),250); } else { EQSfx.swish(); setTimeout(()=>EQSfx.coin(),250); } }
+    const m=$$(".ymc")[0]&&[...$$(".ygp")].map(x=>x.querySelector(".ymc")).filter(Boolean); (m||[]).forEach(x=>{ x.classList.remove("pop"); }); const just=$(`.ymc[data-k="${k-1}"]`); if(just) just.classList.add("pop"); };
+  window.__ySplit=k=>{ if(mode!=="break") return; const b=bBlocks[k]; if(!b||b.length<2) return; const bl=bBlocks.slice(); bl.splice(k,1,...b.map(x=>[x])); bBlocks=bl; if(window.EQSfx) EQSfx.flip(); show(); };
+  if(!window.__yClickOn){ window.__yClickOn=1; document.addEventListener("click",e=>{ const p=e.target.closest(".yh3 .ygplus"); if(p){ e.preventDefault(); window.__yJoin(+p.dataset.k); return; } const m=e.target.closest(".yh3 .ymc"); if(m) window.__ySplit(+m.dataset.k); }); }
   const why=()=>(typeof STOPWHY[SFm.k]==="function"?STOPWHY[SFm.k](SFm.v):STOPWHY[SFm.k])+((tag==="hold"||SFm.hold)?" Hold the long sound a little.":"")+(P2.read(SFm.s).tags.includes("bounce")?" Let it bounce.":"");
   const rule=k=>{ const h=HELP[k]; if(!h) return ""; const [smp,line,ex]=h;
     return `<div class="yr" style="--c:${KCOL[k]||"#0B6B45"}">${smp?`<div class="ys">${paint(smp)}</div>`:""}<div class="yrt"><h4>${HELPT[k]}</h4><p>${line}</p>${ex.length?`<div class="yx">${ex.map(([a,b])=>`<span>${paint(a)}<b>${b}</b></span>`).join("")}</div>`:""}</div></div>`; };
@@ -1329,21 +1394,26 @@ function yHelp(w,stopped,tag){
       <div class="ycs" style="--c:${sg.c}">${it.m.replace(/[ّ]/g,"")||it.m?`<span class="ycm">${paint("ـ"+it.m)}</span>`:""}<span>${sg.n}</span></div><b class="ycb">${cardSound(it,R)}</b></div>`; };
   function build(){ const word=stop?SFm.s:w; R=stop?P2.read(word):R0; G=groups(R);
     setTitle(`<bdi class="xa">${disp(w)}</bdi>${stop?` → <bdi class="xa">${disp(SFm.s)}</bdi>`:""}`);
+    lad=[]; let acc=G.length?G[0].t:""; G.forEach((g,gi)=>{ if(!gi) return; const sp=R.sw[g.k]!==R.sw[G[gi-1].k]?" ":""; const c=acc+sp+g.t; lad.push({a:acc,b:g.t,c}); acc=c; });
+    if(G.length>8) lad=[];
     steps=[]; G.forEach((g,gi)=>{ const hi=g.items.findIndex(isHead), h=hi>=0?g.items[hi]:null, others=g.items.map((it,ci)=>({it,ci})).filter(x=>x.ci!==hi);
       if(h) steps.push({ring:[[gi,hi]],cap:h.role==="sh2"?`This is <b>${nameOf2(h)}</b> again: the second half of the Shadda.`:`This is <b>${nameOf2(h)}</b>.`});
       others.forEach(({it,ci})=>{ const n=`<b>${nameOf2(it)}</b>`;
         steps.push({ring:[[gi,ci]],cap:{rest:`${n} has <b>Sukun</b>: it rests (Saakin). It joins the letter before it.`,sh1:`${n} has <b>Shadda</b>: we say it twice. First it rests here, with the letter before it.`,
           madd:`${n} is a Madd letter: it stretches the sound.`,leen:`${n} has Sukun after a Fatha: say it softly (Leen).`,silent:`${n} has no sign: we do not read it.`}[it.role]||`${n}.`}); });
       const snd=h?cardSound(h,R):"";
-      steps.push({sign:h?[[gi,hi]]:[],pill:gi,cap:h?`${nameOf2(h)} with <b style="color:${signOf(h.m).c}">${signOf(h.m).n}</b> says “${snd}”.${g.items.length>1?` Put it together: <b class="ycapr">${g.t}</b>`:""}`:`Say <b class="ycapr">${g.t}</b>`}); });
+      steps.push({sign:h?[[gi,hi]]:[],pill:gi,cap:h?`${nameOf2(h)} with <b style="color:${signOf(h.m).c}">${signOf(h.m).n}</b> says “${snd}”.${g.items.length>1?` Put it together: <b class="ycapr">${g.t}</b>`:""}`:`Say <b class="ycapr">${g.t}</b>`});
+      if(gi&&lad[gi-1]) steps.push({lad:gi,cap:`Join them: ${lad[gi-1].a} <b>+</b> ${lad[gi-1].b} = <b class="ycapr">${lad[gi-1].c}</b>`}); });
     if(stop) steps.push({ring:[[G.length-1,G[G.length-1].items.length-1]],cap:`<span class="ycstop">${OCT}STOP</span> ${why()}`});
     steps.push({final:1,cap:`Now read it all together: <b class="ycapr">${R.text}</b>`});
+    bBlocks=G.map((_,i)=>[i]);
     xBody.innerHTML=`<div class="yh3 m-${mode}">
       <div class="yh2key">${signsIn(word).map(([,n,c])=>`<span style="background:${COL[c]}">${n}</span>`).join("")}</div>
       <div class="ycap" id="ycap"></div>
       <div class="yhst" id="yhst"><div class="ywd">${paint(word)}${stop?`<span class="yh2sb">${OCT}STOP</span>`:""}</div>
-        <div class="ygs">${G.map((g,gi)=>`${gi&&R.sw[g.k]!==R.sw[G[gi-1].k]?`<i class="ygap"></i>`:""}<div class="ygp" data-g="${gi}"><div class="ycds">${g.items.map((it,ci)=>card(it,gi,ci)).join("")}</div><div class="ypl">${g.t}</div></div>`).join("")}</div>
+        <div class="ygs" id="ygs"></div>
         <svg class="yar" id="yar"></svg></div>
+      ${lad.length?`<div class="yldr">${lad.map((l,k)=>`<div class="ylr" data-k="${k+1}"><span>${l.a}</span><i>+</i><span>${l.b}</span><i>=</i><b>${l.c}</b></div>`).join("")}</div>`:""}
       <div class="yread"><b>${R.text}</b>${stop?`<p class="ywhy">${OCT} ${why()}</p>`:""}</div>
       <div class="yrs">${keys.map(rule).join("")}</div></div>`;
     show(); }
@@ -1354,17 +1424,21 @@ function yHelp(w,stopped,tag){
       const cs=$$(`.ycd[data-g="${gi}"]:not(.sil)`), sp=Math.min(26,pr.width/2-14); return cs.map((c,ci)=>{ const cr=c.getBoundingClientRect(), x1=cr.left+cr.width/2-sr.left, y1=cr.bottom-sr.top+2, xe=x2+Math.max(-sp,Math.min(sp,(x1-x2)*.45)), dy=y2-y1;
         return `<path class="${anim?"an":""}" pathLength="1" d="M${x1} ${y1} C${x1} ${y1+dy*.6} ${xe} ${y2-dy*.6} ${xe} ${y2}" marker-end="url(#yah)"/>`; }).join(""); }).join(""); }
   function show(){ const yh=$(".yh3"); if(!yh) return; yh.className="yh3 m-"+mode+(G.length===1&&!stop?" one":""); const cap=$("#ycap");
-    $$(".ring").forEach(e=>e.classList.remove("ring")); $$(".ypl").forEach(e=>e.classList.remove("on"));
+    if(mode==="explain"){ let bl=G.map((_,i)=>[i]); for(let k=0;k<=step;k++) if(steps[k].lad) bl=mergeAt(bl,steps[k].lad); drawGroups(bl); } else drawGroups(bBlocks);
+    $$(".ring,.sgr").forEach(e=>e.classList.remove("ring","sgr")); $$(".ypl,.ylr,.ygplus").forEach(e=>e.classList.remove("on"));
     if(mode==="word"){ cap.innerHTML=""; arrows([]); }
-    else if(mode==="break"){ cap.innerHTML=""; $$(".ypl").forEach(e=>e.classList.add("on")); requestAnimationFrame(()=>arrows(G.map((_,i)=>i),false)); }
-    else { const sp=steps[step]; cap.innerHTML=`<span class="ycn2">Step ${step+1} of ${steps.length}</span><span class="yct">${sp.cap}</span>`;
+    else if(mode==="break"){ cap.innerHTML=""; $$(".ypl,.ylr,.ygplus").forEach(e=>e.classList.add("on")); arrows([]); }
+    else { const sp=steps[step]; cap.innerHTML=`<span class="ycn2">${step+1} / ${steps.length}</span>`;
       const done=new Set(); for(let k=0;k<=step;k++) if(steps[k].pill!=null) done.add(steps[k].pill);
       done.forEach(gi=>{ const e=$(`.ygp[data-g="${gi}"] .ypl`); if(e) e.classList.add("on"); });
+      for(let k=0;k<=step;k++) if(steps[k].lad){ const e=$(`.ylr[data-k="${steps[k].lad}"]`); if(e){ e.classList.add("on"); if(k===step) e.classList.add("now"); } const pl=$$(".ygplus")[steps[k].lad-1]; if(pl) pl.classList.add("on"); }
+      $$(".ylr.now").forEach(e=>{ if(+e.dataset.k!==sp.lad) e.classList.remove("now"); });
       (sp.ring||[]).forEach(([g,c])=>{ const e=cardEl(g,c); if(e) e.classList.add("ring"); });
-      (sp.sign||[]).forEach(([g,c])=>{ const e=cardEl(g,c); if(e){ e.querySelector(".ycs").classList.add("ring"); e.querySelector(".ycg").classList.add("ring"); } });
+      (sp.sign||[]).forEach(([g,c])=>{ const e=cardEl(g,c), it=G[g]&&G[g].items[c]; if(e&&it){ const q=e.querySelector(".ycg"); q.style.setProperty("--rc",signOf(it.m).c); q.classList.add("ring","sgr"); } });
+      if(sp.final) $$(".ygplus").forEach(e=>e.classList.add("on"));
       yh.classList.toggle("fin",!!sp.final);
-      requestAnimationFrame(()=>arrows([...done],true));
-      if(window.EQSfx){ if(sp.final) EQSfx.yay(); else if(sp.pill!=null){ EQSfx.swish(); setTimeout(()=>EQSfx.coin(),420); } else if(/STOP/.test(sp.cap)) EQSfx.stop(); else EQSfx.bloop(); } }
+      arrows([]);
+      if(window.EQSfx){ if(sp.final) EQSfx.yay(); else if(sp.lad){ EQSfx.swish(); setTimeout(()=>EQSfx.ok(),300); } else if(sp.pill!=null){ EQSfx.swish(); setTimeout(()=>EQSfx.coin(),420); } else if(/STOP/.test(sp.cap)) EQSfx.stop(); else EQSfx.bloop(); } }
     btns(); }
   /* buttons along the bottom change with the view */
   function btns(){ xCtl.innerHTML="";
@@ -1375,7 +1449,7 @@ function yHelp(w,stopped,tag){
       ctlBtn(XI.x+"<span>Close</span>",()=>{ mode="word"; show(); });
       X.space=()=>{ if(step<steps.length-1){ step++; show(); } };
       return; }
-    ctlBtn(mode==="break"?XI.join+"Join it":XIC.brk+"Break it",()=>{ mode=mode==="break"?"word":"break"; if(window.EQSfx) EQSfx.swish(); show(); },mode==="word");
+    ctlBtn(mode==="break"?XI.join+"Join it":XIC.brk+"Break it",()=>{ mode=mode==="break"?"word":"break"; bBlocks=G.map((_,i)=>[i]); if(window.EQSfx) EQSfx.swish(); show(); },mode==="word");
     ctlBtn(XIC.exp+"Explain: how to read it",()=>{ mode="explain"; step=0; show(); },true);
     if(canStop){ const b=ctlBtn(stop?XI.play+"Read on":OCT+"Stop here (Waqf)",()=>{ stop=!stop; if(window.EQSfx) EQSfx.stop(); build(); }); b.classList.toggle("stopon",stop); }
     X.space=()=>{ mode="explain"; step=0; show(); };
@@ -1387,7 +1461,7 @@ function yHelp(w,stopped,tag){
 window.XT={y:arg=>yHelp(arg), z:arg=>{ const [w,s,tag]=arg.split("|"); yHelp(w,s,tag); }};
 setTimeout(()=>{ document.querySelectorAll(".page").forEach(pg=>{ const tw=document.createTreeWalker(pg,NodeFilter.SHOW_TEXT); let n; while((n=tw.nextNode())) if(n.nodeValue.includes("\u064C")) n.nodeValue=disp(n.nodeValue); }); },0);
 setTimeout(()=>{ document.querySelectorAll('.page[data-title="Alif-Laam"] .yc').forEach(cell=>{ const w=cell.dataset.x.slice(2), R=P2.read(w), base=cell.querySelector(".yg.base"); if(!base) return;
-  base.innerHTML=R.ps.map((p,i)=>`${p.ws&&i?" ":""}<span${R.parts[i].role==="silent"?' class="ysk"':""}>${(p.jp?ZWJ:"")+p.ch+(p.jn?ZWJ:"")}</span>`).join(""); }); },0);
+  const plain=!!cell.querySelector(".yplain"); base.innerHTML=R.ps.map((p,i)=>`${p.ws&&i?" ":""}<span${R.parts[i].role==="silent"?' class="ysk"':""}>${(p.jp?ZWJ:"")+p.ch+(plain?disp(p.m):"")+(p.jn?ZWJ:"")}</span>`).join(""); }); },0);
 
 /* =====================================================================
    LESSONS PATH for Part 2 (22 steps) — read by practice.js
